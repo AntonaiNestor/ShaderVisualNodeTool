@@ -7,25 +7,24 @@
 class ConstantNode : public Node
 {
 public:
-	ConstantNode(float a, float x, float y);
+	ConstantNode();
+	ConstantNode(float a);
 	~ConstantNode();
 
 	//attributes
 	float value;
+	float DefaultValue = 1.0;
 	std::string varName;
 
 	//visual attributes
-
-	glm::vec2 NodePos;
-
-
+	
 
 	//methods
 	void Compile(std::string *ShaderCode);
 	std::string CodeString();
 
 
-	void DrawNode(bool active);
+	
 	//float NodeValue();
 };
 

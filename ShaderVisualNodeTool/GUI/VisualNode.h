@@ -22,7 +22,7 @@ public:
 
 	//attributes 
 
-	Node* GNode; // the actual node that is linked to the visual part 
+	std::shared_ptr<Node> GNode; // the actual node that is linked to the visual part 
 	GUIManager* Manager;
 	ImVec2 VNodePos;
 	ImVec2 VNodeSize;
@@ -32,7 +32,7 @@ public:
 
 
 	//constructors
-	VisualNode(GUIManager* manager,Node* Gnode, ImVec2 position);
+	VisualNode(std::shared_ptr<Node> Gnode, ImVec2 position);
 	~VisualNode();
 
 	void DisplayNode(ImDrawList* drawList,ImVec2 offset);

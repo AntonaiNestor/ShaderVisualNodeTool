@@ -340,17 +340,17 @@ int main()
 
 	 //Graph graph;
 
-	 
-	 ConstantNode a(2.0,100,100);
-	 ConstantNode b(3.0,200, 200);
-	 ConstantNode c(4.0, 300, 300);
-	 ConstantNode d(5.0 , 400, 400);
+	/* 
+	 ConstantNode a(2.0);
+	 ConstantNode b(3.0);
+	 ConstantNode c(4.0);
+	 ConstantNode d(5.0);*/
 	
-	 AddNode add;
+	/* AddNode add;
 	 MultNode mult;
-	 PowNode power;
+	 PowNode power;*/
 
-	 Graph* x = Graph::getInstance();
+	 Graph* graph = Graph::getInstance();
 	 std::string code;
 
 
@@ -359,21 +359,21 @@ int main()
 	// x->CreateConnection(&b, &add, 0 , 1 );
 	
 	 //mult 4 and 5
-	 x->CreateConnectionOutIn(&c, &mult, 0, 0);
-	 x->CreateConnectionInOut(&mult, &d, 1, 0);
+	 //x->CreateConnectionOutIn(&c, &mult, 0, 0);
+	 //x->CreateConnectionInOut(&mult, &d, 1, 0);
 	
-	 // power and add the results from the above outputs
-	 //x->CreateConnection(&add, &power, 0, 0);
-	 
-	 x->CreateConnectionOutIn(&mult, &power, 0, 1);
-	 x->CreateConnectionInOut(&power, &a, 0, 0);
+	 //// power and add the results from the above outputs
+	 ////x->CreateConnection(&add, &power, 0, 0);
+	 //
+	 //x->CreateConnectionOutIn(&mult, &power, 0, 1);
+	 //x->CreateConnectionInOut(&power, &a, 0, 0);
 	
-	 //assign current root to graph
-	 x->root = &power;
-	 //Traverse and compile graph
-	 x->CompileGraph(x->root,&code);
+	 ////assign current root to graph
+	 //x->root = &power;
+	 ////Traverse and compile graph
+	 //x->CompileGraph(x->root,&code);
 
-	 std::cout << "(2+3)^2 + (4*5)^2= " << power.CalculateValue() << std::endl;
+	 //std::cout << "(2+3)^2 + (4*5)^2= " << power.CalculateValue() << std::endl;
 	 std::cout << code << std::endl;
 
 
@@ -470,6 +470,7 @@ int main()
 	//ImGui::StyleColorsClassic();
 
 
+
 	bool windowOpen = true;
 	
 	ImVec2 NodePos(100, 100); //position relevant to the nodeview Window
@@ -479,21 +480,35 @@ int main()
 	int NodeID = 90;
 	std::string NodeName = "Constant";
 
+	//probably need singleton
+	GUIManager* GUI = GUIManager::getInstance();
 
-	GUIManager GUI;
+	GUI->SetupGUI(window);
 
-	GUI.SetupGUI(window);
+	GUI->CreateNode(ImVec2(100,100));
+	GUI->CreateNode(ImVec2(400, 100));
+	GUI->CreateNode(ImVec2(100, 300));
+	GUI->CreateNode(ImVec2(400, 300));
+	
+	/*
+	VisualNode Visual1(&a, ImVec2(100, 100));
+	VisualNode Visual2(&b, ImVec2(300, 100));
+	VisualNode Visual3(&c, ImVec2(100, 300));
+	VisualNode Visual4(&d, ImVec2(300, 300));
 
-	VisualNode Visual(&GUI,&a, ImVec2(100, 100));
-	GUI.vnode = &Visual;
+	GUI->VNodeList.push_back(&Visual1);
+	GUI->VNodeList.push_back(&Visual2);
+	GUI->VNodeList.push_back(&Visual3);
+	GUI->VNodeList.push_back(&Visual4);*/
+	//GUI->vnode = &Visual;
 
 
 	bool show_demo_window = true;
 	bool show_another_window = false;
-	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+	//ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
-	ImVec2 initPos;
-	ImVec2 endPos;
+	//ImVec2 initPos;
+	//ImVec2 endPos;
 
 	bool drawPermant = false;
 	bool drawingLine = false;
@@ -513,6 +528,8 @@ int main()
 	double lastTime = glfwGetTime();
 	double initTime = glfwGetTime();
 	int framerate = 0;
+
+
 	// render loop
 	// -----------
 	while (!glfwWindowShouldClose(window))
@@ -548,272 +565,11 @@ int main()
 			
 			//new
 
+			//Render GUI
+			GUI->RenderGUI();
+		
 
-			GUI.RenderGUI();
-			
-			//ImGui_ImplGlfwGL3_NewFrame();
-
-			
-			//ImGui::ShowDemoWindow();
-			//x->DrawConstantNodes();
-			
-			//-non resizable window
-			//-specific dimensions that change depending on the type of constant node
-			//-at  Position NodePos
-			
-
-			// Call next window pos
-			
-			//ImVec2 NodeViewPos(500,200);
-			//ImVec2 NodeViewSize(800,600);
-			////Call next window size
-			//ImGui::SetNextWindowPos(NodeViewPos, 0 ,ImVec2(0.0,0.0)); // set next window position. call before Begin(). use pivot=(0.5f,0.5f) to center on given point, etc.
-			//ImGui::SetNextWindowSize(NodeViewSize, 0);    // set next window size. set axis to 0.0f to force an auto-fit on this axis. call before Begin()
-			//ImGui::Begin("Node View", &windowOpen,2);
-			////the drawlist in the main GUI Manager for the node view
-			//ImDrawList* drawList = ImGui::GetWindowDrawList();
-
-
-
-
-				//Node 1
-			
-			////draw info
-			//float titleBoxHeight = 20;
-			//float contentPaddingX = 20;
-			//float contentPaddingY = 15;
-			//ImVec2 titlePads(30, 5);
-			////draw Node box
-			//drawList->ChannelsSetCurrent(0); // Background
-
-		 //   ImGui::SetCursorScreenPos(NodePos+NodeViewPos);
-
-			////Moveable node by title 
-			//ImGui::InvisibleButton("node", ImVec2(NodeSize.x, titleBoxHeight));
-			//if (ImGui::IsItemHovered())
-			//{
-
-			//}
-			//bool node_moving_active = ImGui::IsItemActive();
-
-			//if (node_moving_active && ImGui::IsMouseDragging(0))
-			//	NodePos = NodePos + ImGui::GetIO().MouseDelta;
-
-
-			////this values need to be relevant to the zooming, for now everything will be fixed
-			//drawList->AddRectFilled(NodePos + NodeViewPos, NodePos + NodeViewPos+ NodeSize, ImColor(40, 40, 40),10.0);
-			//drawList->AddRectFilled(NodePos + NodeViewPos, NodePos + NodeViewPos + ImVec2(NodeSize.x, titleBoxHeight), ImColor(150, 50, 150), 10, ImDrawCornerFlags_Top);
-			//drawList->AddRect(NodePos + NodeViewPos, NodePos + NodeViewPos + NodeSize, ImColor(255,255,255),10.0);
-			//drawList->AddLine(NodePos + NodeViewPos + ImVec2(NodeSize.x *3/4, titleBoxHeight), NodePos + NodeViewPos + ImVec2(NodeSize.x * 3 / 4, NodeSize.y), ImColor(255, 255, 255));
-			//
-			//
-
-			////Title text
-			//ImGui::SetCursorScreenPos(NodePos + NodeViewPos+ titlePads);
-			//ImGui::Text( "Constant :  ID - %d", NodeID);
-
-			////Main Body
-			////ImGui::Spacing();
-			//ImGui::SetCursorScreenPos(NodePos + NodeViewPos + ImVec2(contentPaddingX,titleBoxHeight+contentPaddingY));
-			//ImGui::BeginGroup(); // Lock horizontal position
-			//ImGui::Text("Float :");
-			//ImGui::SameLine();
-			//ImGui::PushItemWidth(50);
-			//ImGui::InputFloat("", &NodeValue,  0.0f,  0.0f, 3, 0);
-
-			//drawList->AddCircleFilled(ImVec2(NodeViewPos.x+NodePos.x+NodeSize.x ,NodeViewPos.y+NodePos.y+NodeSize.y*0.6) , 5, ImColor(255,255,255),12);
-			//ImGui::EndGroup();
-
-			// output button(s)
-
-			
-			//drawList->AddLine(NodePos + NodeViewPos +ImVec2(0,titlePadding), NodePos + NodeViewPos + ImVec2(NodeSize.x,titlePadding),ImColor(255, 255, 255));
-			//ImVec2 NodePos1(1000, 400);
-			//	
-			//	ImGui::Text("Node ID:  %d", NodeID);
-			//	//List of node's constant values outputs.
-			//	// For now only one
-
-			//	ImGui::Spacing();
-			//	ImGui::Text("Node Value:");
-			//	ImGui::SameLine();
-			//	ImGui::InputFloat("", &NodeValue );
-			//	
-			//
-
-			////	drawList->ChannelsSetCurrent(0); // Background
-
-			//	//ImGui::SetCursorScreenPos(NodePos);
-			//	ImVec2 test(1250, 450);
-			//	ImVec2 test1(1400, 550);
-			//	ImVec2 OutputPos(NodePos.x + NodeSize.x, NodePos.y + NodeSize.y / 2);
-			//	OutputPos = test;
-
-			//	ImVec2 OutputPos1(NodePos1.x + NodeSize.x, NodePos1.y + NodeSize.y / 2);
-			//	OutputPos1 = test1;
-
-
-			//	//SLOT 1 
-
-			//	//circle filled = input/output with invisible button on top
-			//	// we can add that to the draw list at a specific location
-			//	drawList->AddCircleFilled(OutputPos, 10.0f, ImColor(75.0f, 75.0f, 75.0f, 1.0f), 12);
-			//	//for the invisible button i have to change the cursor location and then 
-			//	//create the button  with specific dimensions
-			//	ImGui::SetCursorScreenPos(ImVec2(OutputPos.x-10.0f,OutputPos.y-10));
-			//	if (ImGui::InvisibleButton("Button",ImVec2(20.0f,20.0f))) {
-			//		//std::cout << "Button Clicked" << std::endl;
-			//		//drawingLine = true;
-			//		
-			//	}
-			//	//if the last button is held down
-			//	if (ImGui::IsItemActive() && !drawingLine) {
-			//		//drawHermite(drawList, OutputPos, ImGui::GetMousePos(), 20);
-			//		drawingLine = true;
-			//		initPos = OutputPos;
-			//	}
-
-			//	//if you release the mouse while drawing a line on top of this button
-			//	if (ImGui::IsItemHovered() && drawingLine && ImGui::IsMouseReleased(0)) {
-			//		// create a permanent connection between them 
-			//		// add to the list of permanent connections
-
-			//		//for now we only make this theendPos for the drawing part
-			//		//NEED TO CHECK HERE IF IT IS THE SAME AS THE STARTING POSITION
-			//		endPos = OutputPos;
-			//		drawingLine = false;
-			//		drawPermant = true;
-
-			//	}
-
-			//	
-
-			//	// SLOT 2
-
-			//	//circle filled = input/output with invisible button on top
-			//	// we can add that to the draw list at a specific location
-			//	drawList->AddCircleFilled(OutputPos1, 10.0f, ImColor(75.0f, 75.0f, 75.0f, 1.0f), 12);
-			//	//for the invisible button i have to change the cursor location and then 
-			//	//create the button  with specific dimensions
-			//	ImGui::SetCursorScreenPos(ImVec2(OutputPos1.x - 10.0f, OutputPos1.y - 10));
-			//	if (ImGui::InvisibleButton("Button1", ImVec2(20.0f, 20.0f))) {
-			//		std::cout << "Button1 Clicked" << std::endl;
-			//		//mouseDrag = true;
-			//	}
-			//	//if the last button is held down
-			//	if (ImGui::IsItemActive() && !drawingLine) {
-			//		//drawHermite(drawList, OutputPos, ImGui::GetMousePos(), 20);
-			//		drawingLine = true;
-			//		initPos = OutputPos1;
-			//	}
-
-			//	//if you release the mouse while drawing a line on top of this button
-			//	if (ImGui::IsItemHovered() && drawingLine && ImGui::IsMouseReleased(0)) {
-			//		// create a permanent connection between them 
-			//		// add to the list of permanent connections
-
-			//		//for now we only make this theendPos for the drawing part
-			//		//NEED TO CHECK HERE IF IT IS THE SAME AS THE STARTING POSITION
-			//		endPos = OutputPos1;
-			//		drawingLine = false;
-			//		drawPermant = true;
-
-			//	}
-
-
-
-			//	//DRAWING
-
-			//	//releasing the mouse not when ontop of a slot
-			//	if (ImGui::IsMouseReleased(0) && drawingLine) {
-			//		drawingLine = false;
-
-			//		//std::cout << "MouseReleased" << std::endl;
-			//	}
-
-			//	//draw the visual trace of a line
-			//	if (drawingLine) {
-			//		drawHermite(drawList, initPos, ImGui::GetMousePos(), 20);
-			//	}
-
-			//	//draw a permanent connection
-			//	if (drawPermant) {
-			//		drawHermite(drawList, initPos,endPos, 20);
-			//	}
-
-			//	drawList->ChannelsMerge();
-			//	
-
-			//	//ImGui::ArrowButton("Button");
-			//	//ImGui::NewLine();
-
-			//ImGui::End();
-
-
-
-			/*float wrap_width = 100;
-			ImGui::Text("Test paragraph 1:");
-			ImVec2 pos = ImGui::GetCursorScreenPos();
-			ImGui::GetWindowDrawList()->AddRectFilled(ImVec2(pos.x+ wrap_width, pos.y), ImVec2(pos.x  + 10, pos.y + ImGui::GetTextLineHeight()), IM_COL32(255, 0, 255, 255));
-			ImGui::PushTextWrapPos(ImGui::GetCursorPos().x+ wrap_width);
-			ImGui::Text("The lazy dog is a good dog. This paragraph is made to fit within %.0f pixels. Testing a 1 character word. The quick brown fox jumps over the lazy dog.", wrap_width);
-			ImGui::GetWindowDrawList()->AddRect(ImGui::GetItemRectMin(), ImGui::GetItemRectMax(), IM_COL32(255, 255, 0, 255));
-			ImGui::PopTextWrapPos();*/
-
-
-			//static bool inited = false;
-			//static ImVec2 scrolling = ImVec2(0.0f, 0.0f);
-			//static bool show_grid = true;
-			//static int node_selected = -1;
-			//glm::vec2 NodePos(300.0, 300.0);
-			//float value = 2.0f;
-			//ImDrawList* draw_list = ImGui::GetWindowDrawList();
-
-			//ImGui::PushID(2);
-			//ImVec2 node_rect_min = ImVec2(NodePos.x, NodePos.y); //node pos = mouse pos on creation -> pass it initially from constructor
-			//ImVec2 node_rect_max = ImVec2(node_rect_min.x + 100, node_rect_min.y + 100);
-			//// Display node contents first
-			//draw_list->ChannelsSetCurrent(1); // Foreground
-			//bool old_any_active = ImGui::IsAnyItemActive();
-			////ImGui::SetCursorScreenPos(node_rect_min + NODE_WINDOW_PADDING);
-
-			//ImGui::BeginGroup(); // Lock horizontal position
-			//ImGui::Text("%s", "TestNode"); // display name 
-			//ImGui::SliderFloat("##value", &value, 0.0f, 1.0f, "Value: %.2f"); //display value of the node
-			//																  //ImGui::ColorEdit3("##color", &node->Color.x);
-			//ImGui::EndGroup();
-
-			//// Save the size of what we have emitted and whether any of the widgets are being used
-			//bool node_widgets_active = (!old_any_active && ImGui::IsAnyItemActive());
-			////node->Size = ImGui::GetItemRectSize() + NODE_WINDOW_PADDING + NODE_WINDOW_PADDING;
-			////ImVec2 node_rect_max = node_rect_min + node->Size;
-
-			//// Display node box
-			//draw_list->ChannelsSetCurrent(0); // Background
-			//ImGui::SetCursorScreenPos(node_rect_min);
-			////ImGui::InvisibleButton("node", node->Size);
-
-			//bool node_moving_active = ImGui::IsItemActive();
-			//if (node_widgets_active || node_moving_active)
-			//	node_selected = 1;
-			//if (node_moving_active && ImGui::IsMouseDragging(0))
-			//	//node->Pos = node->Pos + ImGui::GetIO().MouseDelta;*/
-
-			//	//ImU32 node_bg_color = (node_hovered_in_list == node->ID || node_hovered_in_scene == node->ID || (node_hovered_in_list == -1 && node_selected == node->ID)) ? IM_COL32(75, 75, 75, 255) : IM_COL32(60, 60, 60, 255);
-			//	draw_list->AddRectFilled(node_rect_min, node_rect_min, IM_COL32(75, 75, 75, 255), 4.0f);
-			//draw_list->AddRect(node_rect_min, node_rect_max, IM_COL32(100, 100, 100, 255), 4.0f);
-			///*for (int slot_idx = 0; slot_idx < node->InputsCount; slot_idx++)
-			//draw_list->AddCircleFilled(offset + node->GetInputSlotPos(slot_idx), NODE_SLOT_RADIUS, IM_COL32(150, 150, 150, 150));
-			//for (int slot_idx = 0; slot_idx < node->OutputsCount; slot_idx++)
-			//draw_list->AddCircleFilled(offset + node->GetOutputSlotPos(slot_idx), NODE_SLOT_RADIUS, IM_COL32(150, 150, 150, 150));
-			//*/
-			//ImGui::PopID();
-
-			//draw_list->ChannelsMerge();
-
-
-
-			// render
+			// OpenGL Rendering in scene
 			// ------
 			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 			//glClear(GL_COLOR_BUFFER_BIT);
@@ -831,7 +587,7 @@ int main()
 			// glBindVertexArray(0); // no need to unbind it every time 
 
 
-			GUI.RenderCall();
+			GUI->RenderCall();
 			//ImGui::Render();
 			//ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 

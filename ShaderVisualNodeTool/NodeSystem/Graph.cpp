@@ -23,7 +23,7 @@ Graph * Graph::getInstance()
 
 
 
-bool Graph::CreateConnectionOutIn(Node* from, Node* to, int FromIndex, int ToIndex)
+bool Graph::CreateConnectionOutIn(std::shared_ptr<Node> from, std::shared_ptr<Node> to, int FromIndex, int ToIndex)
 {
 	int i = from->UniqueID;
 	int j = to->UniqueID;
@@ -60,7 +60,7 @@ bool Graph::CreateConnectionOutIn(Node* from, Node* to, int FromIndex, int ToInd
 	
 }
 
-bool Graph::CreateConnectionInOut(Node* from, Node* to, int FromIndex, int ToIndex)
+bool Graph::CreateConnectionInOut(std::shared_ptr<Node> from, std::shared_ptr<Node> to, int FromIndex, int ToIndex)
 {
 	int i = from->UniqueID; 
 	int j = to->UniqueID; 
@@ -99,26 +99,29 @@ bool Graph::CreateConnectionInOut(Node* from, Node* to, int FromIndex, int ToInd
 
 int Graph::AssignID()
 {
-	//A new node has been assigned. 
-	//Expand the adjacency list size
+	//A new node has been assigned. Add it in the list
+	//NodeList.push_back(CreatedNode);
 
-
+	//Expand the adjacency list size , a new node is available for connections
 	AdjacencyList.push_back(std::vector<int>());
+
+
+	//return new unique ID
 	return ID++;
 }
 
-void Graph::AddConstant(Node* node) {
-	constantNodes.push_back(node);
+void Graph::AddNode(std::shared_ptr<Node> node) {
+	NodeList.push_back(node);
 }
 
-void Graph::CompileGraph(Node * CurrentNode , std::string* ShaderCode)
+void Graph::CompileGraph(std::shared_ptr<Node> CurrentNode , std::string* ShaderCode)
 {
 	//Traverse all the Inputs list of this node
 	for (std::vector<Connection>::iterator it = CurrentNode->Input.begin(); it != CurrentNode->Input.end(); ++it) {
 
 		//if the connected node's inputs are empty 
 		//it means that it is an input node only
-
+		
 		if (it->ConnectedNode->Input.empty() && !it->ConnectedNode->HasCompiled) {
 			//if that node hasn't been compiled, compile it and continue to this node's next input
 			it->ConnectedNode->Compile(ShaderCode);
@@ -134,10 +137,3 @@ void Graph::CompileGraph(Node * CurrentNode , std::string* ShaderCode)
 	CurrentNode->Compile(ShaderCode);
 }
 
-void Graph::DrawConstantNodes() {
-	
-	for (std::vector<Node*>::iterator it = constantNodes.begin(); it != constantNodes.end(); ++it) {
-
-		(*it)->DrawNode(true);
-	}
-}

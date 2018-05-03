@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include "Graph.h"
+#include <memory>
 
 
 //maybe temporary includes
@@ -15,6 +16,7 @@
 //forward declaration of Node for connection struct
 class Node;
 
+//typedef std::shared_ptr<Node> NodePointer;
 
 enum NodeType{
 	
@@ -36,13 +38,13 @@ enum ValueType {
 };
 
 struct Connection {
-	Node* ConnectedNode;
+	std::shared_ptr<Node> ConnectedNode;
 	int ConnectionIndex;
 	float Value; // This will be Type or Symbol, should it be in the connection though?
 	bool Enabled; //Enabled /disable connection
 };
 
-class Node
+class Node : public std::enable_shared_from_this<Node>
 {
 
 public: 
@@ -58,11 +60,11 @@ public:
 
 	//methods
 	virtual void Compile(std::string *ShaderCode) = 0; 
-	virtual void DrawNode(bool active) = 0;
+	//irtual void DrawNode(bool active) = 0;
 
 	//output to input
 	//maybe this shouldn't be in the parent base class since it might differ 
-	void ConnectNode(Node* ConnectedNode, int ConnectedIndex, int OutputIndex);
+	void ConnectNode(std::shared_ptr<Node> ConnectedNode, int ConnectedIndex, int OutputIndex);
 	
 	
 	/* std::string GetNodeName();

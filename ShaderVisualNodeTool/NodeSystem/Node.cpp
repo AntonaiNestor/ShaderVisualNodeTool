@@ -2,7 +2,7 @@
 #include <iostream>
 
 
-void Node::ConnectNode(Node* ConnectedNode, int ConnectedIndex, int OutputIndex) {
+void Node::ConnectNode(std::shared_ptr<Node> ConnectedNode, int ConnectedIndex, int OutputIndex) {
 	
 	
 	//Try for out of range exception 
@@ -16,7 +16,7 @@ void Node::ConnectNode(Node* ConnectedNode, int ConnectedIndex, int OutputIndex)
 
 		//connect ConnectedNode's input index slot with this node's output slot
 		
-		ConnectedNode->Input.at(ConnectedIndex).ConnectedNode = this;
+		ConnectedNode->Input.at(ConnectedIndex).ConnectedNode = shared_from_this();
 		ConnectedNode->Input.at(ConnectedIndex).ConnectionIndex = OutputIndex;
 
 		//we dont need to assign the value, it is handled in the compile function 
