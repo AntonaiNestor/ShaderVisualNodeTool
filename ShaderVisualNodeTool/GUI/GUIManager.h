@@ -19,9 +19,17 @@ enum NodeSlotType{
 struct ConnectionVCoords {
 
 	ImVec2 Start;
+	VisualNode* SNP;
 	ImVec2 End;
+	VisualNode* ENP;
 
-	ConnectionVCoords(ImVec2 x, ImVec2 y) { Start = x; End = y; }
+	ConnectionVCoords(ImVec2 x, ImVec2 y, VisualNode* st, VisualNode* end) { Start = x; End = y; SNP= st; ENP = end; }
+	
+	/*void UpdateConnection(){
+		
+	}*/
+
+
 };
 
 class GUIManager
@@ -44,9 +52,16 @@ public:
 
 	bool IsDrawing=false;
 	bool DrawPermanent = false;
+	//Drawing Connections
+
+	//Coordinates
 	ImVec2 InitDrawingPos;
 	ImVec2 EndDrawingPos;
+	//Types for matching inputs to outputs
 	NodeSlotType StartSlotType,EndSlotType;
+	VisualNode* StartNode;
+	VisualNode* EndNode;
+	//Structure of the final thing
 	std::vector<ConnectionVCoords> PermanentLines;
 	int StartIndex, EndIndex;
 
@@ -69,9 +84,12 @@ public:
 	void SetupGUI(GLFWwindow* window);
 	void RenderGUI();
 	void RenderCall();
-
 	void DrawHermite(ImDrawList* drawList, ImVec2 p1, ImVec2 p2, int steps);
 	void ResetGUITempInfo();
+	void ResetVNodeDifs();
+
+	void UpdateConnection(ConnectionVCoords* connection);
+	void ResetConnection(ConnectionVCoords* connection);
 
 private:
 	static GUIManager* Instance;

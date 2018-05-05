@@ -20,6 +20,7 @@ VisualNode::VisualNode(std::shared_ptr<Node> Gnode, ImVec2 position )
 	//THE SIZE SHOULD BE VARIABLE OR AT LEAST TAKEN FROM A LOOKUP TABLE
 	VNodeSize = ImVec2(200, 75);
 	GNode = Gnode;
+	PosDif = ImVec2(0, 0);
 
 }
 
@@ -53,8 +54,12 @@ void VisualNode::DisplayNode(ImDrawList * drawList,ImVec2 offset)
 	}
 	bool node_moving_active = ImGui::IsItemActive();
 
-	if (node_moving_active && ImGui::IsMouseDragging(0))
+	if (node_moving_active && ImGui::IsMouseDragging(0)) {
+		PosDif = ImGui::GetIO().MouseDelta;
 		VNodePos = VNodePos + ImGui::GetIO().MouseDelta;
+
+	}
+		
 
 
 	//this values need to be relevant to the zooming, for now everything will be fixed
@@ -101,6 +106,7 @@ void VisualNode::DisplayNode(ImDrawList * drawList,ImVec2 offset)
 		Manager->IsDrawing = true;
 		Manager->InitDrawingPos = InputPos;
 		Manager->StartSlotType = Input;
+		Manager->StartNode = this;
 		Manager->StartIndex = 0;
 	}
 
@@ -110,6 +116,7 @@ void VisualNode::DisplayNode(ImDrawList * drawList,ImVec2 offset)
 		//Manager->IsDrawing = true;
 		Manager->EndDrawingPos = InputPos;
 		//Manager->DrawPermanent = true;
+		Manager->EndNode = this;
 		Manager->EndSlotType = Input;
 		Manager->EndIndex = 0;
 	}
@@ -133,6 +140,7 @@ void VisualNode::DisplayNode(ImDrawList * drawList,ImVec2 offset)
 		Manager->IsDrawing = true;
 		Manager->InitDrawingPos = OutputPos;
 		Manager->StartSlotType = Output;
+		Manager->StartNode = this;
 		Manager->StartIndex = 0;
 	}
 
@@ -144,6 +152,7 @@ void VisualNode::DisplayNode(ImDrawList * drawList,ImVec2 offset)
 		Manager->DrawPermanent = true;
 		Manager->EndSlotType = Output;
 		Manager->EndIndex = 0;
+		Manager->EndNode = this;
 	}
 
 

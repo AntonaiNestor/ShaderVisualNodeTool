@@ -12,10 +12,10 @@
 
 class GUIManager;
 
+
+
 class VisualNode
 {
-
-
 
 public:
 
@@ -26,7 +26,7 @@ public:
 	GUIManager* Manager;
 	ImVec2 VNodePos;
 	ImVec2 VNodeSize;
-
+	ImVec2 PosDif;
 	
 	//methods
 
