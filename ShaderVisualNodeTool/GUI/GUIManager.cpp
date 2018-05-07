@@ -91,7 +91,7 @@ void GUIManager::RenderDrawing(ImDrawList* drawlist)
 		 //go through all the Vnode that are connected to something 
 		 // and reset the difference
 		 //This can be optimized more prolly
-		// ResetVNodeDifs();
+		 ResetVNodeDifs();
 		
 	 }
 
@@ -179,9 +179,10 @@ void GUIManager::ResetGUITempInfo()
 
 void GUIManager::ResetVNodeDifs()
 {
-	for (std::vector<ConnectionVCoords>::iterator it = PermanentLines.begin(); it != PermanentLines.end(); ++it) {
-		//it->StartNode->PosDif;
-		ResetConnection(&(*it));
+	//for (std::vector<ConnectionVCoords>::iterator it = PermanentLines.begin(); it != PermanentLines.end(); ++it) {
+	for (auto & it : PermanentLines){
+	//it->StartNode->PosDif;
+		ResetConnection(&it);
 	}
 }
 

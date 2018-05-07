@@ -8,7 +8,7 @@
 #include "Imgui/imconfig.h"
 #include "VisualNode.h"
 
-class VisualNode;
+class VisualNode; 
 
 enum NodeSlotType{
 	Default,
