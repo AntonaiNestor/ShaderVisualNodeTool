@@ -50,6 +50,8 @@ public:
 	bool CreateConnectionOutIn(std::shared_ptr<Node> from, std::shared_ptr<Node> to, int FromIndex, int ToIndex);
 	bool CreateConnectionInOut(std::shared_ptr<Node> from, std::shared_ptr<Node> to, int FromIndex, int ToIndex);
 
+	bool RemoveConnection(std::shared_ptr<Node> from, std::shared_ptr<Node> to, int FromIndex, int ToIndex);
+
 	//Assigns unique ID to newly created nodes
 	int AssignID();
 

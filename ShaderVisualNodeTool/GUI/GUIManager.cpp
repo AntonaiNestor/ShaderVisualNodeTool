@@ -63,10 +63,23 @@ void GUIManager::RenderDrawing(ImDrawList* drawlist)
 		 if ((StartSlotType == Input && EndSlotType == Output) ||
 			 (StartSlotType == Output && EndSlotType == Input)) {
 			
-			 
+			 //update the 2 nodes 
+			 //both VNode and gNode connections
 
+			 if (StartSlotType == Input) {
+				 StartNode->vInputs.at(StartIndex).SetCoords(InitDrawingPos,&EndNode->vOutputs.at(EndIndex));
+				 EndNode->vOutputs.at(EndIndex).SetCoords(EndDrawingPos,&StartNode->vInputs.at(StartIndex));
+				 EndNode->GNode->ConnectNode(StartNode->GNode->shared_from_this(),StartIndex,EndIndex);
+			 }
+			 else {
+				 StartNode->vOutputs.at(StartIndex).SetCoords(InitDrawingPos, &EndNode->vInputs.at(EndIndex));
+				 EndNode->vInputs.at(EndIndex).SetCoords(EndDrawingPos, &StartNode->vOutputs.at(StartIndex));
+				 StartNode->GNode->ConnectNode(EndNode->GNode->shared_from_this(), EndIndex, StartIndex);
+			 }
+			
+			 
 			//add visual coordinates in permanentLines
-			 PermanentLines.push_back(ConnectionVCoords(InitDrawingPos, EndDrawingPos,StartNode,EndNode));
+			// PermanentLines.push_back(ConnectionVCoords(InitDrawingPos, EndDrawingPos,StartNode,EndNode));
 			 ResetGUITempInfo();
 		 
 			 //create graph connection between Nodes
@@ -76,24 +89,24 @@ void GUIManager::RenderDrawing(ImDrawList* drawlist)
 	 }
 
 	 //draw all permanent lines - if there are 
-	 if (!PermanentLines.empty()) {
+	/* if (!PermanentLines.empty()) {
 
 		 
 		 for (std::vector<ConnectionVCoords>::iterator it = PermanentLines.begin(); it != PermanentLines.end(); ++it) {
 
-			//update coordinates of the connection in case the visual node changed
+			update coordinates of the connection in case the visual node changed
 
 			 UpdateConnection(&(*it));
 
-			 //draw the connection
+			 draw the connection
 			 DrawHermite(drawlist, it->Start,it->End, 20);
 		 }
-		 //go through all the Vnode that are connected to something 
-		 // and reset the difference
-		 //This can be optimized more prolly
+		 go through all the Vnode that are connected to something 
+		  and reset the difference
+		 This can be optimized more prolly
 		 ResetVNodeDifs();
 		
-	 }
+	 }*/
 
 }
 
@@ -177,30 +190,30 @@ void GUIManager::ResetGUITempInfo()
 	
 }
 
-void GUIManager::ResetVNodeDifs()
-{
-	//for (std::vector<ConnectionVCoords>::iterator it = PermanentLines.begin(); it != PermanentLines.end(); ++it) {
-	for (auto & it : PermanentLines){
-	//it->StartNode->PosDif;
-		ResetConnection(&it);
-	}
-}
-
-void GUIManager::UpdateConnection(ConnectionVCoords* connection)
-{
-	if (connection->SNP != nullptr && connection->ENP != nullptr) {
-
-
-		connection->Start = ImVec2(connection->Start.x + (connection->SNP->PosDif).x, connection->Start.y + (connection->SNP->PosDif).y);
-		connection->End = ImVec2(connection->End.x + (connection->ENP->PosDif).x, connection->End.y + (connection->ENP->PosDif).y);
-	}
-}
-
-void GUIManager::ResetConnection(ConnectionVCoords* connection)
-{
-	 connection->SNP->PosDif = ImVec2();
-	 connection->ENP->PosDif = ImVec2();
-
-}
+//void GUIManager::ResetVNodeDifs()
+//{
+//	//for (std::vector<ConnectionVCoords>::iterator it = PermanentLines.begin(); it != PermanentLines.end(); ++it) {
+//	for (auto & it : PermanentLines){
+//	//it->StartNode->PosDif;
+//		ResetConnection(&it);
+//	}
+//}
+//
+//void GUIManager::UpdateConnection(ConnectionVCoords* connection)
+//{
+//	if (connection->SNP != nullptr && connection->ENP != nullptr) {
+//
+//
+//		connection->Start = ImVec2(connection->Start.x + (connection->SNP->PosDif).x, connection->Start.y + (connection->SNP->PosDif).y);
+//		connection->End = ImVec2(connection->End.x + (connection->ENP->PosDif).x, connection->End.y + (connection->ENP->PosDif).y);
+//	}
+//}
+//
+//void GUIManager::ResetConnection(ConnectionVCoords* connection)
+//{
+//	 connection->SNP->PosDif = ImVec2();
+//	 connection->ENP->PosDif = ImVec2();
+//
+//}
 
 

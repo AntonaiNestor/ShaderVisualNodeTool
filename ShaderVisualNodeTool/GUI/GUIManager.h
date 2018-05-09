@@ -16,21 +16,7 @@ enum NodeSlotType{
 	Output
 };
 
-struct ConnectionVCoords {
 
-	ImVec2 Start;
-	VisualNode* SNP;
-	ImVec2 End;
-	VisualNode* ENP;
-
-	ConnectionVCoords(ImVec2 x, ImVec2 y, VisualNode* st, VisualNode* end) { Start = x; End = y; SNP= st; ENP = end; }
-	
-	/*void UpdateConnection(){
-		
-	}*/
-
-
-};
 
 class GUIManager
 {
@@ -61,9 +47,10 @@ public:
 	NodeSlotType StartSlotType,EndSlotType;
 	VisualNode* StartNode;
 	VisualNode* EndNode;
-	//Structure of the final thing
-	std::vector<ConnectionVCoords> PermanentLines;
 	int StartIndex, EndIndex;
+	//Structure of the final thing
+	//std::vector<ConnectionVCoords> PermanentLines;
+	
 
 	//Keep a list with all the visual nodes. Essentially we keep double the information. 
 	std::vector<std::shared_ptr<VisualNode>> VNodeList;
@@ -88,8 +75,8 @@ public:
 	void ResetGUITempInfo();
 	void ResetVNodeDifs();
 
-	void UpdateConnection(ConnectionVCoords* connection);
-	void ResetConnection(ConnectionVCoords* connection);
+	//void UpdateConnection(ConnectionVCoords* connection);
+	//void ResetConnection(ConnectionVCoords* connection);
 
 private:
 	static GUIManager* Instance;

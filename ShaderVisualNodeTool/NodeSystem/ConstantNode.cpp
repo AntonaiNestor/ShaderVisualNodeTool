@@ -15,12 +15,12 @@ ConstantNode::ConstantNode()
 
 	//output struct creation
 	Connection connect;
-	connect.ConnectedNode = nullptr;
-	connect.ConnectionIndex = -1;
+	
 	connect.Value = value;
-	connect.Enabled = true;
+	
 
 	Output.push_back(connect);
+	Input.push_back(connect);
 
 
 }

@@ -97,6 +97,14 @@ bool Graph::CreateConnectionInOut(std::shared_ptr<Node> from, std::shared_ptr<No
 	return false;
 }
 
+bool Graph::RemoveConnection(std::shared_ptr<Node> from, std::shared_ptr<Node> to, int FromIndex, int ToIndex)
+{
+	
+
+
+	return false;
+}
+
 int Graph::AssignID()
 {
 	//A new node has been assigned. Add it in the list
