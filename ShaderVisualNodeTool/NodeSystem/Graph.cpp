@@ -33,13 +33,28 @@ bool Graph::CreateConnectionOutIn(std::shared_ptr<Node> from, std::shared_ptr<No
 		return false;
 	}
 
+	//
+	
+
 	//if both nodes have valid IDs
 	if (i < AdjacencyList.size() && j < AdjacencyList.size()) {
+
+
+		//create the connection between slots
+		
+		//if the input slot that we are  connecting to was already connected with something
+		//delete that connection correctly
+		if (to->Input.at(ToIndex).ConnectedNode != nullptr) {
+			RemoveConnection(to->Input.at(ToIndex).ConnectedNode, to, to->Input.at(ToIndex).ConnectionIndex, ToIndex);
+		}
+
+		from->ConnectNode(to, ToIndex, FromIndex);
+
 
 		auto x = find(AdjacencyList.at(i).begin(), AdjacencyList.at(i).end(), j);
 		//if i and j are not already connected
 		if (AdjacencyList.at(i).empty()||
-				x!= AdjacencyList.at(i).end() ){
+				x== AdjacencyList.at(i).end() ){
 
 				//create connection i - > j ,  directed graph so only one way
 				AdjacencyList.at(i).push_back(j);
@@ -49,11 +64,11 @@ bool Graph::CreateConnectionOutIn(std::shared_ptr<Node> from, std::shared_ptr<No
 				
 				
 				//We need to notify Node from that it is now connecteed to j as well.
-				from->ConnectNode(to, ToIndex, FromIndex );
+				
 
 				return true;		
-			 }
 		}
+	}
 
 	//connection was not created
 	return false;
@@ -70,13 +85,24 @@ bool Graph::CreateConnectionInOut(std::shared_ptr<Node> from, std::shared_ptr<No
 		return false;
 	}
 
+	//no need to remove the connection from the output slot of TO this time
+	//I will do it for now because i think i do not allow connection between multiple slots 
+	//at the moment
+
+	if (to->Output.at(ToIndex).ConnectedNode != nullptr) {
+		RemoveConnection(to,to->Output.at(ToIndex).ConnectedNode, ToIndex, to->Output.at(ToIndex).ConnectionIndex);
+	}
+
+	to->ConnectNode(from, FromIndex, ToIndex);
+
+
 	//if both nodes have valid IDs
 	if (i < AdjacencyList.size() && j < AdjacencyList.size()) {
 		//search for the connection in an opposite direction
 		auto x = find(AdjacencyList.at(j).begin(), AdjacencyList.at(j).end(), i);
 		//if i and j are not already connected
 		if (AdjacencyList.at(j).empty() ||
-			x != AdjacencyList.at(j).end()) {
+			x == AdjacencyList.at(j).end()) {
 
 			//create connection to - > from since we are connecting an input to an 
 			//output
@@ -97,12 +123,43 @@ bool Graph::CreateConnectionInOut(std::shared_ptr<Node> from, std::shared_ptr<No
 	return false;
 }
 
+//returns false if by removing the connection we also detach 2 nodes.
+//returns true if even when removing a specific connection the nodes are still attached
 bool Graph::RemoveConnection(std::shared_ptr<Node> from, std::shared_ptr<Node> to, int FromIndex, int ToIndex)
 {
-	
 
+	from->Output.at(FromIndex).ResetConnection();
+	to->Input.at(ToIndex).ResetConnection();
 
-	return false;
+	//here we need to check (as in the replace function ) if by removing this connection we 
+	// lose a connection between nodes for the adjacency list.
+
+	//to do that check after the rest if there still and output that points to that node.
+	//If there isn't, find and delete the node from the list.
+	bool StillConnected = false;
+	for (auto it : from->Output) {
+		if (it.ConnectedNode == to) {
+			StillConnected = true;
+			break;
+		}
+	}
+	if (!StillConnected) {
+
+		int toID = to->UniqueID;
+		int fromID = from->UniqueID;
+
+		for (std::vector<int>::iterator it = AdjacencyList.at(toID).begin(); it != AdjacencyList.at(toID).end(); ++it)
+		{
+			if (*it == fromID)
+			{
+				AdjacencyList.at(toID).erase(it);
+				break;
+
+			}
+		}
+		return false;
+	}
+	return true;
 }
 
 int Graph::AssignID()

@@ -45,12 +45,13 @@ public:
 	ImVec2 EndDrawingPos;
 	//Types for matching inputs to outputs
 	NodeSlotType StartSlotType,EndSlotType;
+//	ConnectionVCoords mouse;
 	VisualNode* StartNode;
 	VisualNode* EndNode;
 	int StartIndex, EndIndex;
 	//Structure of the final thing
 	//std::vector<ConnectionVCoords> PermanentLines;
-	
+	bool ItemsHovered = false;
 
 	//Keep a list with all the visual nodes. Essentially we keep double the information. 
 	std::vector<std::shared_ptr<VisualNode>> VNodeList;
@@ -72,6 +73,7 @@ public:
 	void RenderGUI();
 	void RenderCall();
 	void DrawHermite(ImDrawList* drawList, ImVec2 p1, ImVec2 p2, int steps);
+	//bool ConnectVisualNodes(VisualNode* start,VisualNode* end, );
 	void ResetGUITempInfo();
 	void ResetVNodeDifs();
 

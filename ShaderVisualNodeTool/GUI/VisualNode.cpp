@@ -5,7 +5,7 @@
 //struct implementations
 ConnectionVCoords::ConnectionVCoords()
 {
-	SlotCoords = ImVec2(); connected = false; drawn = false; 
+	SlotCoords = ImVec2(); conn = nullptr; connected = false; drawn = false;
 }
 
 void ConnectionVCoords::SetCoords(ImVec2 slot,ConnectionVCoords* conNode)
@@ -189,7 +189,9 @@ void VisualNode::DisplayNode(ImDrawList * drawList,ImVec2 offset)
 		Manager->EndNode = this;
 		Manager->EndSlotType = Input;
 		Manager->EndIndex = 0;
+		Manager->ItemsHovered = true;
 	}
+	
 
 
 
@@ -223,6 +225,7 @@ void VisualNode::DisplayNode(ImDrawList * drawList,ImVec2 offset)
 		Manager->EndSlotType = Output;
 		Manager->EndIndex = 0;
 		Manager->EndNode = this;
+		Manager->ItemsHovered = true;
 	}
 
 

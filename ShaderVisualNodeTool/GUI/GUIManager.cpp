@@ -50,63 +50,98 @@ void GUIManager::CreateNode(ImVec2 pos)
 
 void GUIManager::RenderDrawing(ImDrawList* drawlist)
 {
+
+	
 	//temporary drawing of a one way line
    	if (IsDrawing) {
-			DrawHermite(drawlist, InitDrawingPos, ImGui::GetMousePos(), 20);
+		DrawHermite(drawlist, InitDrawingPos, ImGui::GetMousePos(), 20);
+
+		/*if (StartSlotType == Input) {
+			mouse.SetCoords(ImGui::GetMousePos(),&(StartNode->vInputs.at(StartIndex)) );
+			StartNode->vInputs.at(StartIndex).SetCoords(InitDrawingPos, &mouse);
+		}
+		else if (StartSlotType == Output) {
+			mouse.SetCoords(ImGui::GetMousePos(), &(StartNode->vOutputs.at(StartIndex)));
+			StartNode->vOutputs.at(StartIndex).SetCoords(InitDrawingPos, &mouse);
+		}*/
      }
 	
 	//Mouse release will stp drawing temporary line and will decide if a permanent connection needs to be added to the list 
 	 if (ImGui::IsMouseReleased(0) && IsDrawing) {
 		
 		 IsDrawing = false;
-		 //if valid new connection
-		 if ((StartSlotType == Input && EndSlotType == Output) ||
-			 (StartSlotType == Output && EndSlotType == Input)) {
+		 //if valid new connection --
+		 // input -> output
+		 // output -> input
+		 //
+			
+		 if ( ( (StartSlotType == Input && EndSlotType == Output) ||
+			 (StartSlotType == Output && EndSlotType == Input) ) && StartNode->GNode->UniqueID != EndNode->GNode->UniqueID  ) {
 			
 			 //update the 2 nodes 
 			 //both VNode and gNode connections
 
+			 //REPLACE THE CONNECTION HERE LIKE YOU DO WITH THE GRAPH
 			 if (StartSlotType == Input) {
+
+				 //visual connection
+
+				 //first remove whatever connection existed already in both old slots
+				 
+				 if (StartNode->vInputs.at(StartIndex).conn != nullptr) {
+					 StartNode->vInputs.at(StartIndex).conn->ResetConnection();
+				 }
+				 
+				 //and then put the new connection
+
 				 StartNode->vInputs.at(StartIndex).SetCoords(InitDrawingPos,&EndNode->vOutputs.at(EndIndex));
 				 EndNode->vOutputs.at(EndIndex).SetCoords(EndDrawingPos,&StartNode->vInputs.at(StartIndex));
-				 EndNode->GNode->ConnectNode(StartNode->GNode->shared_from_this(),StartIndex,EndIndex);
+
+
+				 //Graph Node
+				 Graph::getInstance()->CreateConnectionInOut(StartNode->GNode->shared_from_this(),EndNode->GNode,StartIndex,EndIndex);
+				 //EndNode->GNode->ConnectNode(StartNode->GNode->shared_from_this(),StartIndex,EndIndex);
 			 }
 			 else {
+
+
+				 //TODO HERE : i have to allow for a list for output -> input
+				 if (EndNode->vInputs.at(EndIndex).conn != nullptr) {
+					 EndNode->vInputs.at(EndIndex).conn->ResetConnection();
+				 }
 				 StartNode->vOutputs.at(StartIndex).SetCoords(InitDrawingPos, &EndNode->vInputs.at(EndIndex));
 				 EndNode->vInputs.at(EndIndex).SetCoords(EndDrawingPos, &StartNode->vOutputs.at(StartIndex));
-				 StartNode->GNode->ConnectNode(EndNode->GNode->shared_from_this(), EndIndex, StartIndex);
+			//	 StartNode->GNode->ConnectNode(EndNode->GNode->shared_from_this(), EndIndex, StartIndex);
+				 Graph::getInstance()->CreateConnectionOutIn(StartNode->GNode->shared_from_this(), EndNode->GNode, StartIndex, EndIndex);
 			 }
 			
 			 
-			//add visual coordinates in permanentLines
-			// PermanentLines.push_back(ConnectionVCoords(InitDrawingPos, EndDrawingPos,StartNode,EndNode));
-			 ResetGUITempInfo();
-		 
-			 //create graph connection between Nodes
-
-
+		
+		
 		 }
+		 //if the mouse is released when drawing a temporary line then remove the line from the initial point 
+		 else if( ItemsHovered==false){
+
+
+			 if (StartSlotType == Input) {
+				 if (StartNode->vInputs.at(StartIndex).connected) {
+					 StartNode->vInputs.at(StartIndex).conn->ResetConnection();
+					 StartNode->vInputs.at(StartIndex).ResetConnection();
+				 }
+			 }
+			 else if (StartSlotType == Output) {
+				 if (StartNode->vOutputs.at(StartIndex).connected){
+					 StartNode->vOutputs.at(StartIndex).conn->ResetConnection();
+					 StartNode->vOutputs.at(StartIndex).ResetConnection();
+				 }
+			 }
+				
+		 }
+		 ResetGUITempInfo();
+		
 	 }
 
-	 //draw all permanent lines - if there are 
-	/* if (!PermanentLines.empty()) {
-
-		 
-		 for (std::vector<ConnectionVCoords>::iterator it = PermanentLines.begin(); it != PermanentLines.end(); ++it) {
-
-			update coordinates of the connection in case the visual node changed
-
-			 UpdateConnection(&(*it));
-
-			 draw the connection
-			 DrawHermite(drawlist, it->Start,it->End, 20);
-		 }
-		 go through all the Vnode that are connected to something 
-		  and reset the difference
-		 This can be optimized more prolly
-		 ResetVNodeDifs();
-		
-	 }*/
+	
 
 }
 
@@ -140,6 +175,7 @@ void GUIManager::RenderGUI() {
 	//the drawlist in the main GUI Manager for the node view
 	ImDrawList* drawList = ImGui::GetWindowDrawList();
 
+	
 
 	//TRAVERSE GRAPH HERE for nodes
 //	vnode->DisplayNode(drawList, ImVec2(0, 0));
@@ -150,6 +186,8 @@ void GUIManager::RenderGUI() {
 
 
 	RenderDrawing(drawList);
+
+	ItemsHovered = false;
 
 	ImGui::End();
 }
@@ -184,7 +222,7 @@ void GUIManager::DrawHermite(ImDrawList * drawList, ImVec2 p1, ImVec2 p2, int st
 void GUIManager::ResetGUITempInfo()
 {
 	StartSlotType = EndSlotType = Default;
-	InitDrawingPos = EndDrawingPos = ImVec2(-1000, -1000);
+	//InitDrawingPos = EndDrawingPos = ImVec2(-1000, -1000);
 	StartNode = nullptr;
 	EndNode = nullptr;
 	
