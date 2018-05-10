@@ -9,6 +9,7 @@
 
 
 
+
 class Node;
 
 //typedef std::shared_ptr<Node> NodePointer;
@@ -57,6 +58,8 @@ public:
 
 	//Depth first backwards traversal and compilation of the nodes
 	void CompileGraph(std::shared_ptr<Node> CurrentNode , std::string* ShaderCode);
+
+	void PrintConnections();
 
 	//TODO 
 	// Implement function that checks if the graph contains any circles 

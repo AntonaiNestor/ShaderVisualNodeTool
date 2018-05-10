@@ -92,6 +92,9 @@ void GUIManager::RenderDrawing(ImDrawList* drawlist)
 					 StartNode->vInputs.at(StartIndex).conn->ResetConnection();
 				 }
 				 
+				 if (EndNode->vOutputs.at(EndIndex).conn != nullptr) {
+					 EndNode->vOutputs.at(EndIndex).conn->ResetConnection();
+				 }
 				 //and then put the new connection
 
 				 StartNode->vInputs.at(StartIndex).SetCoords(InitDrawingPos,&EndNode->vOutputs.at(EndIndex));
@@ -109,13 +112,17 @@ void GUIManager::RenderDrawing(ImDrawList* drawlist)
 				 if (EndNode->vInputs.at(EndIndex).conn != nullptr) {
 					 EndNode->vInputs.at(EndIndex).conn->ResetConnection();
 				 }
+				 if (StartNode->vOutputs.at(StartIndex).conn != nullptr) {
+					 StartNode->vOutputs.at(StartIndex).conn->ResetConnection();
+				 }
+
 				 StartNode->vOutputs.at(StartIndex).SetCoords(InitDrawingPos, &EndNode->vInputs.at(EndIndex));
 				 EndNode->vInputs.at(EndIndex).SetCoords(EndDrawingPos, &StartNode->vOutputs.at(StartIndex));
 			//	 StartNode->GNode->ConnectNode(EndNode->GNode->shared_from_this(), EndIndex, StartIndex);
 				 Graph::getInstance()->CreateConnectionOutIn(StartNode->GNode->shared_from_this(), EndNode->GNode, StartIndex, EndIndex);
 			 }
 			
-			 
+			
 		
 		
 		 }
@@ -125,20 +132,34 @@ void GUIManager::RenderDrawing(ImDrawList* drawlist)
 
 			 if (StartSlotType == Input) {
 				 if (StartNode->vInputs.at(StartIndex).connected) {
+
+					 auto x = StartNode->GNode->Input.at(StartIndex);
+					 std::shared_ptr<Node> previousEndNode = x.ConnectedNode;
+					 int previousEndIndex = x.ConnectionIndex;
+					
+					 Graph::getInstance()->RemoveConnection(previousEndNode,StartNode->GNode,StartIndex,previousEndIndex);
 					 StartNode->vInputs.at(StartIndex).conn->ResetConnection();
 					 StartNode->vInputs.at(StartIndex).ResetConnection();
+					 
 				 }
 			 }
 			 else if (StartSlotType == Output) {
 				 if (StartNode->vOutputs.at(StartIndex).connected){
+
+					 auto x = StartNode->GNode->Output.at(StartIndex);
+					 std::shared_ptr<Node> previousEndNode = x.ConnectedNode;
+					 int previousEndIndex = x.ConnectionIndex;
+
+					 Graph::getInstance()->RemoveConnection(StartNode->GNode,previousEndNode, StartIndex, previousEndIndex);
+
 					 StartNode->vOutputs.at(StartIndex).conn->ResetConnection();
 					 StartNode->vOutputs.at(StartIndex).ResetConnection();
 				 }
 			 }
-				
+			// Graph::getInstance()->PrintConnections();
 		 }
 		 ResetGUITempInfo();
-		
+		 Graph::getInstance()->PrintConnections();
 	 }
 
 	

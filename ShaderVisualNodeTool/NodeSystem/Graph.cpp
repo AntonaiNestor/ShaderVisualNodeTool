@@ -1,5 +1,5 @@
 #include "Graph.h"
-
+#include <iostream>
 
 
 Graph::Graph()
@@ -48,6 +48,14 @@ bool Graph::CreateConnectionOutIn(std::shared_ptr<Node> from, std::shared_ptr<No
 			RemoveConnection(to->Input.at(ToIndex).ConnectedNode, to, to->Input.at(ToIndex).ConnectionIndex, ToIndex);
 		}
 
+		//same goes for this output slot as well. We need to update whatever the node this slot was connected to if there 
+		//was one. 
+
+		//TODO THIS SHOULD BE REMOVED WHEN I MAKE INPUTS TO BE PASSED TO MORE OUTPUTS
+		if (from->Output.at(FromIndex).ConnectedNode != nullptr) {
+			RemoveConnection(from,from->Output.at(FromIndex).ConnectedNode,FromIndex , from->Output.at(FromIndex).ConnectionIndex);
+		}
+
 		from->ConnectNode(to, ToIndex, FromIndex);
 
 
@@ -89,8 +97,13 @@ bool Graph::CreateConnectionInOut(std::shared_ptr<Node> from, std::shared_ptr<No
 	//I will do it for now because i think i do not allow connection between multiple slots 
 	//at the moment
 
+	//TODO REMOVE THIS FIRST ONE IF YOU WANT TO HAVE MULTIPLE OUTPUTS
 	if (to->Output.at(ToIndex).ConnectedNode != nullptr) {
 		RemoveConnection(to,to->Output.at(ToIndex).ConnectedNode, ToIndex, to->Output.at(ToIndex).ConnectionIndex);
+	}
+
+	if (from->Input.at(FromIndex).ConnectedNode != nullptr) {
+		RemoveConnection(from->Input.at(FromIndex).ConnectedNode,from, from->Input.at(FromIndex).ConnectionIndex,FromIndex);
 	}
 
 	to->ConnectNode(from, FromIndex, ToIndex);
@@ -200,5 +213,21 @@ void Graph::CompileGraph(std::shared_ptr<Node> CurrentNode , std::string* Shader
 	}
 
 	CurrentNode->Compile(ShaderCode);
+}
+
+void Graph::PrintConnections()
+{
+	for (auto node : NodeList) {
+		std::cout << " Node : " << node->UniqueID << " is connected with :" << std::endl;
+		int counter = 0;
+		for (auto in : node->Output) {
+
+			if (in.ConnectedNode != nullptr){
+				std::cout << "Node :" << in.ConnectedNode->UniqueID << " From slot -> "<< counter++<< " To slot -> " << in.ConnectionIndex << std::endl;
+			}
+		}
+		std::cout << "------------------------------------------------------" << std::endl;
+	}
+
 }
 
