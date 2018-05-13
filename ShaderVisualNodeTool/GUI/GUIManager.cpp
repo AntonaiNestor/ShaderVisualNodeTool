@@ -55,16 +55,7 @@ void GUIManager::RenderDrawing(ImDrawList* drawlist)
 	//temporary drawing of a one way line
    	if (IsDrawing) {
 		DrawHermite(drawlist, InitDrawingPos, ImGui::GetMousePos(), 20);
-
-		/*if (StartSlotType == Input) {
-			mouse.SetCoords(ImGui::GetMousePos(),&(StartNode->vInputs.at(StartIndex)) );
-			StartNode->vInputs.at(StartIndex).SetCoords(InitDrawingPos, &mouse);
-		}
-		else if (StartSlotType == Output) {
-			mouse.SetCoords(ImGui::GetMousePos(), &(StartNode->vOutputs.at(StartIndex)));
-			StartNode->vOutputs.at(StartIndex).SetCoords(InitDrawingPos, &mouse);
-		}*/
-     }
+    }
 	
 	//Mouse release will stp drawing temporary line and will decide if a permanent connection needs to be added to the list 
 	 if (ImGui::IsMouseReleased(0) && IsDrawing) {
@@ -200,8 +191,12 @@ void GUIManager::RenderGUI() {
 
 	//TRAVERSE GRAPH HERE for nodes
 //	vnode->DisplayNode(drawList, ImVec2(0, 0));
+
+	//DRAWING ORDER 
+	
 	for (std::vector<std::shared_ptr<VisualNode>>::iterator it = VNodeList.begin(); it != VNodeList.end(); ++it) {
-		
+	//for (int i=VNodeList.size()-1; i>=0 ; i--){
+		//VNodeList.at(i)->DisplayNode(drawList, ImVec2(0, 0));
 		(*it)->DisplayNode(drawList, ImVec2(0, 0));
 	}
 

@@ -217,17 +217,19 @@ void Graph::CompileGraph(std::shared_ptr<Node> CurrentNode , std::string* Shader
 
 void Graph::PrintConnections()
 {
+	std::cout << "-------------------Print Graph Start -----------------" << std::endl;
 	for (auto node : NodeList) {
 		std::cout << " Node : " << node->UniqueID << " is connected with :" << std::endl;
 		int counter = 0;
 		for (auto in : node->Output) {
 
 			if (in.ConnectedNode != nullptr){
-				std::cout << "Node :" << in.ConnectedNode->UniqueID << " From slot -> "<< counter++<< " To slot -> " << in.ConnectionIndex << std::endl;
+				std::cout << "-- Node : " << in.ConnectedNode->UniqueID << " From slot -> "<< counter++<< " To slot -> " << in.ConnectionIndex << std::endl;
 			}
 		}
 		std::cout << "------------------------------------------------------" << std::endl;
 	}
 
+	std::cout << "-------------------Print End -----------------" << std::endl;
 }
 
