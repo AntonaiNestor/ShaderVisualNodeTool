@@ -199,7 +199,7 @@ void Graph::CompileGraph(std::shared_ptr<Node> CurrentNode , std::string* Shader
 
 		//if the connected node's inputs are empty 
 		//it means that it is an input node only
-		
+		if (it->ConnectedNode == nullptr) { continue; }
 		if (it->ConnectedNode->Input.empty() && !it->ConnectedNode->HasCompiled) {
 			//if that node hasn't been compiled, compile it and continue to this node's next input
 			it->ConnectedNode->Compile(ShaderCode);
@@ -231,5 +231,12 @@ void Graph::PrintConnections()
 	}
 
 	std::cout << "-------------------Print End -----------------" << std::endl;
+}
+
+void Graph::ResetCompile()
+{
+	for (auto &node : NodeList) {
+		node->HasCompiled = false;
+	}
 }
 

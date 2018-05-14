@@ -23,8 +23,13 @@ enum NodeType{
 	InputNode,
 	OutputNode,
 	ShaderNode,
-	FunctionNode
+	FunctionNode,
+	AdditionNode,
+	MultNode,
+	PowNode
 };
+
+
 
 enum ValueType {
 	Float,

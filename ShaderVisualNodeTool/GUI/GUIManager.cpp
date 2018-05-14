@@ -1,6 +1,7 @@
 #include "GUIManager.h"
 #include "../NodeSystem/ConstantNode.h"
-
+#include "../NodeSystem/AddNode.h"
+#include <iostream>
 
 
 
@@ -32,13 +33,27 @@ GUIManager::GUIManager()
 //}
 
 
-void GUIManager::CreateNode(ImVec2 pos)
+void GUIManager::CreateNode(ImVec2 pos, NodeType type)
 {
 	// 1) Create Graph Node   
 	// Creation of the object in the heap, using make shared. The pointer is local in the stack but 
 	// since we push the object in the graph's list then a reference is kept.
 	
-	std::shared_ptr<Node> newGraphNode = std::make_shared<ConstantNode>();
+	std::shared_ptr<Node> newGraphNode;
+	switch (type) {
+	
+	case (OutputNode):
+		newGraphNode = std::make_shared<ConstantNode>();
+		break;
+	case (AdditionNode):
+		newGraphNode = std::make_shared<AddNode>();
+		break;
+	default :
+		break;
+	}
+
+
+	
 	Graph::getInstance()->AddNode(newGraphNode);
 	// 2) Create Visual Node at pos - same logic as above, object is in the heap but pointer is in the stack
 
@@ -95,6 +110,7 @@ void GUIManager::RenderDrawing(ImDrawList* drawlist)
 				 //Graph Node
 				 Graph::getInstance()->CreateConnectionInOut(StartNode->GNode->shared_from_this(),EndNode->GNode,StartIndex,EndIndex);
 				 //EndNode->GNode->ConnectNode(StartNode->GNode->shared_from_this(),StartIndex,EndIndex);
+				 std::cout << "asdf" << std::endl;
 			 }
 			 else {
 
@@ -150,7 +166,12 @@ void GUIManager::RenderDrawing(ImDrawList* drawlist)
 			// Graph::getInstance()->PrintConnections();
 		 }
 		 ResetGUITempInfo();
-		 Graph::getInstance()->PrintConnections();
+
+		 auto graph = Graph::getInstance();
+		 graph->PrintConnections();
+		/* graph->CompileGraph(graph->root,graph->ShaderCode);
+		 graph->ResetCompile();*/
+
 	 }
 
 	
@@ -203,6 +224,10 @@ void GUIManager::RenderGUI() {
 
 	RenderDrawing(drawList);
 
+	/*if (ImGui::IsAnyItemHovered() ){
+		std::cout << "Is anything hovered?" << std::endl;
+
+	}*/
 	ItemsHovered = false;
 
 	ImGui::End();

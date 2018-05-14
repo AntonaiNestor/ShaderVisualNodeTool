@@ -485,10 +485,12 @@ int main()
 
 	GUI->SetupGUI(window);
 
-	GUI->CreateNode(ImVec2(100,100));
-	GUI->CreateNode(ImVec2(400, 100));
-	GUI->CreateNode(ImVec2(100, 300));
-	GUI->CreateNode(ImVec2(400, 300));
+	GUI->CreateNode(ImVec2(100,100),OutputNode);
+	GUI->CreateNode(ImVec2(400, 100),OutputNode);
+	GUI->CreateNode(ImVec2(100, 300),AdditionNode);
+	GUI->CreateNode(ImVec2(400, 300),AdditionNode);
+
+	graph->root = graph->NodeList.at(3);
 	
 	/*
 	VisualNode Visual1(&a, ImVec2(100, 100));

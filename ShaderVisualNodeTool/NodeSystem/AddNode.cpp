@@ -46,9 +46,9 @@ void AddNode::Compile(std::string *ShaderCode)
 	HasCompiled = true;
 }
 
-void AddNode::DrawNode(bool active)
-{
-}
+//void AddNode::DrawNode(bool active)
+//{
+//}
 
 float AddNode::CalculateValue()
 {

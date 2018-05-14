@@ -32,6 +32,7 @@ public:
 	
 	//Root of the graph
 	std::shared_ptr<Node> root;
+	std::string* ShaderCode = new std::string("");
 
 	//Global map for variable name convertion
 	std::map <std::string, std::string> SlotToVariableMap;
@@ -60,6 +61,7 @@ public:
 	void CompileGraph(std::shared_ptr<Node> CurrentNode , std::string* ShaderCode);
 
 	void PrintConnections();
+	void ResetCompile();
 
 	//TODO 
 	// Implement function that checks if the graph contains any circles 

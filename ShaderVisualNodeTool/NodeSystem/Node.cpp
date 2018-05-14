@@ -20,7 +20,7 @@ void Node::ConnectNode(std::shared_ptr<Node> ConnectedNode, int ConnectedIndex, 
 		ConnectedNode->Input.at(ConnectedIndex).ConnectionIndex = OutputIndex;
 
 		//we dont need to assign the value, it is handled in the compile function 
-		//ConnectedNode->Input.at(ConnectedIndex).Value = Output.at(OutputIndex).Value;
+		ConnectedNode->Input.at(ConnectedIndex).Value = Output.at(OutputIndex).Value;
 	}
 	catch (const std::out_of_range& oor) {
 		//TODO send to debugger -- or return false

@@ -139,43 +139,37 @@ void VisualNode::DisplayNode(ImDrawList * drawList,ImVec2 offset)
 
 	//Title text
 	ImGui::SetCursorScreenPos(NodeRelevantPos + TitlePadding);
-	ImGui::Text("Constant :  ID - %d", GNode->UniqueID);
+	std::string NodeName = GNode->Name;
+	auto TitleText = (NodeName.append( " : ID - ") ).append( std::to_string(GNode->UniqueID)).c_str();
+	ImGui::Text(TitleText);
 
 	//Main Body
-
-	//TODO this shouldn't be a float necessarily
-	//ImGui::Spacing();
-	ImGui::SetCursorScreenPos(NodeRelevantPos + ImVec2(PADDING_X, TITLE_BOX_HEIGHT + PADDING_Y));
-	ImGui::BeginGroup(); // Lock horizontal position
-	ImGui::Text("Float :");
-	ImGui::SameLine();
-	ImGui::PushItemWidth(50);
-	ImGui::InputFloat("",&(GNode->Output[0].Value), 0.0f, 0.0f, 3, 0);
-
-	//position of slot and button 
-
-	//x = starting , y = variant
+	
 
 	float InputMargin = ((NodeRelevantPos.y + VNodeSize.y) - (NodeRelevantPos.y + TITLE_BOX_HEIGHT)) / (vInputs.size()+1);
 	float OutputMargin = ((NodeRelevantPos.y + VNodeSize.y) - (NodeRelevantPos.y + TITLE_BOX_HEIGHT)) / (vOutputs.size() + 1);
 
+	//
+	////Display all Input buttons and circles 
+
 	
-	//Display all Input buttons and circles 
 	for (int i = 0; i < vInputs.size(); i++) {
+
+		
+
 		ImVec2 InputPos(ImVec2(NodeRelevantPos.x, NodeRelevantPos.y + TITLE_BOX_HEIGHT + InputMargin * (i+1) ));
-		//drawList->AddCircleFilled(InputPos, 5, ImColor(255, 255, 255), 12);
+		drawList->AddCircleFilled(InputPos, 5, ImColor(255, 255, 255), 12);
 
 		//add the Input invisible button on top of the slot
 		ImGui::SetCursorScreenPos(ImVec2(InputPos.x - 10, InputPos.y - 10));
 		auto ButtonName = NodeUniqueNameID.append(" Input " + std::to_string(i)).c_str();
 		
-		if (ImGui::Button(ButtonName, ImVec2(20.0f, 20.0f))) {
+		if (ImGui::InvisibleButton(ButtonName, ImVec2(20.0f, 20.0f))) {
 			//std::cout << "Button Clicked" << std::endl;
 		}
 		if (ImGui::IsItemActive() && !(Manager->IsDrawing)) {
 
 			//start drawing from this slot 
-
 			
 			Manager->IsDrawing = true;
 			Manager->InitDrawingPos = InputPos;
@@ -183,12 +177,12 @@ void VisualNode::DisplayNode(ImDrawList * drawList,ImVec2 offset)
 			Manager->StartNode = this;
 			Manager->StartIndex = i;
 
-			std::cout << "Started drawing from " << Manager->StartSlotType << " slot : " << std::to_string(Manager->StartIndex) << std::endl;
+			//std::cout << "Started drawing from " << Manager->StartSlotType << " slot : " << std::to_string(Manager->StartIndex) << std::endl;
 		}
-
-		if (ImGui::IsItemHovered() && (Manager->IsDrawing)) {
+		
+		if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem) && Manager->IsDrawing ) {
 			//end drawing to this slot
-			std::cout << "INPUT IS HOVERED!!!!!!" << std::endl;
+			
 			Manager->EndDrawingPos = InputPos;
 			Manager->EndNode = this;
 			Manager->EndSlotType = Input;
@@ -196,6 +190,21 @@ void VisualNode::DisplayNode(ImDrawList * drawList,ImVec2 offset)
 			Manager->ItemsHovered = true;
 			//std::cout << "Ending drawing from " << Manager->EndSlotType << " slot : " << std::to_string(Manager->EndIndex) << std::endl;
 		}
+
+
+		ImVec2 InputValPos = ImVec2(InputPos.x + PADDING_X, InputPos.y - PADDING_Y);
+		ImGui::SetCursorScreenPos(InputValPos);
+
+
+		ImGui::BeginGroup(); // Lock horizontal position
+		//Input Var NameX	
+		ImGui::Text("Float :");
+		ImGui::SameLine();
+		ImGui::PushItemWidth(50);
+		//Input Current value -- This probably needs to be type 
+		ImGui::InputFloat("",&(GNode->Input[i].Value), 0.0f, 1.0f, 3, 0);
+		ImGui::EndGroup();
+
 
 	}
 	
@@ -206,6 +215,13 @@ void VisualNode::DisplayNode(ImDrawList * drawList,ImVec2 offset)
 		ImVec2 OutputPos(ImVec2(NodeRelevantPos.x + VNodeSize.x, NodeRelevantPos.y + TITLE_BOX_HEIGHT + OutputMargin * (i + 1)));
 		drawList->AddCircleFilled(OutputPos, 5, ImColor(255, 255, 255), 12);
 
+
+		ImVec2 OutputValPos = ImVec2(OutputPos.x - 1.5*PADDING_X, OutputPos.y - PADDING_Y);
+		ImGui::SetCursorScreenPos(OutputValPos);
+		//Output Var Name + type prolly 	
+		ImGui::Text("Out");
+		
+
 		//add the OutPut invisible button on top of the slot 
 		ImGui::SetCursorScreenPos(ImVec2(OutputPos.x - 10.0f, OutputPos.y - 10));
 		auto ButtonName = NodeUniqueNameID.append(" Output " + std::to_string(i)).c_str();
@@ -214,7 +230,7 @@ void VisualNode::DisplayNode(ImDrawList * drawList,ImVec2 offset)
 			//std::cout << "Button Clicked" << std::endl;
 			
 		}
-		if (ImGui::IsItemActive() && !(Manager->IsDrawing)) {
+		if (ImGui::IsItemActive() && !(Manager->IsDrawing) ) {
 
 			//start drawing from this slot 
 			Manager->IsDrawing = true;
@@ -224,7 +240,7 @@ void VisualNode::DisplayNode(ImDrawList * drawList,ImVec2 offset)
 			Manager->StartIndex = i;
 		}
 
-		if (ImGui::IsItemHovered() && (Manager->IsDrawing)) {
+		if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem) && Manager->IsDrawing) {
 
 
 			//Manager->IsDrawing = true;
@@ -237,11 +253,6 @@ void VisualNode::DisplayNode(ImDrawList * drawList,ImVec2 offset)
 		}
 
 	}
-
-
-
-	ImGui::EndGroup();
-
 
 	//--------Drawing connections 
 

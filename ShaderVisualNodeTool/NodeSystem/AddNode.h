@@ -23,7 +23,7 @@ public:
 	
 	//methods -- Do i need to pass shadercode by reference?
 	void Compile(std::string *ShaderCode);
-	void DrawNode(bool active);
+	//void DrawNode(bool active);
 
 	//this is a method for all different numerical function nodes, it will implement the
 	// function of the node / output , according to the inputs
