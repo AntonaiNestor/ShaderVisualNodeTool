@@ -3,7 +3,7 @@
 #include "Node.h"
 #include <map>
 //
-// Node that only has outputs. Base class as well 
+// Node that only has outputs. Base class as well
 //
 class InputNode : public Node
 {

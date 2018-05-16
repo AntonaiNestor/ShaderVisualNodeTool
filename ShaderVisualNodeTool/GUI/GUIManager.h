@@ -77,6 +77,8 @@ public:
 	void ResetGUITempInfo();
 	void ResetVNodeDifs();
 
+	std::string GetSlotValueName(std::string Name, ValueType type);
+
 	//void UpdateConnection(ConnectionVCoords* connection);
 	//void ResetConnection(ConnectionVCoords* connection);
 

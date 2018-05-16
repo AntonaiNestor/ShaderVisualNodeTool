@@ -1,6 +1,8 @@
 #include "GUIManager.h"
 #include "../NodeSystem/ConstantNode.h"
 #include "../NodeSystem/AddNode.h"
+#include "../NodeSystem/OutputNode.h"
+#include "../NodeSystem/FunctionNode.h"
 #include <iostream>
 
 
@@ -42,12 +44,18 @@ void GUIManager::CreateNode(ImVec2 pos, BaseNodeType type)
 	std::shared_ptr<Node> newGraphNode;
 	switch (type) {
 	
-	case (OutputNode):
+	case (InputNode):
 		newGraphNode = std::make_shared<ConstantNode>();
 		break;
-	case (AdditionNode):
-		newGraphNode = std::make_shared<AddNode>();
+
+	case (OutputNode):
+		newGraphNode = std::make_shared<class::OutputNode>();
 		break;
+	case (FunctionNode):{
+		std::string code = "$c = $a + $b";
+		newGraphNode = std::make_shared<class::FunctionNode>("Add",2,code);
+		break;
+	}
 	default :
 		break;
 	}
@@ -169,8 +177,8 @@ void GUIManager::RenderDrawing(ImDrawList* drawlist)
 
 		 auto graph = Graph::getInstance();
 		 graph->PrintConnections();
-		/* graph->CompileGraph(graph->root,graph->ShaderCode);
-		 graph->ResetCompile();*/
+		 graph->CompileGraph(graph->root,graph->ShaderCode);
+		 graph->ResetCompile();
 
 	 }
 
@@ -218,7 +226,7 @@ void GUIManager::RenderGUI() {
 	for (std::vector<std::shared_ptr<VisualNode>>::iterator it = VNodeList.begin(); it != VNodeList.end(); ++it) {
 	//for (int i=VNodeList.size()-1; i>=0 ; i--){
 		//VNodeList.at(i)->DisplayNode(drawList, ImVec2(0, 0));
-		(*it)->DisplayNode(drawList, ImVec2(0, 0), (*it)->GNode->Type);
+		(*it)->DisplayNode(drawList, ImVec2(0, 0));
 	}
 
 
@@ -232,9 +240,6 @@ void GUIManager::RenderGUI() {
 
 	ImGui::End();
 }
-
-
-
 
 void GUIManager::RenderCall() {
 
@@ -267,6 +272,41 @@ void GUIManager::ResetGUITempInfo()
 	StartNode = nullptr;
 	EndNode = nullptr;
 	
+}
+
+std::string GUIManager::GetSlotValueName(std::string Name, ValueType type)
+{
+
+	switch (type){
+		case (Float):
+			return (Name.append(" (Float)"));
+			break;
+		case (Int):
+			return (Name.append(" (Int)"));
+			break;
+		case (Vec2):
+			return (Name.append(" (Vec2)"));
+			break;
+		case (Vec3):
+			return (Name.append(" (Vec3)"));
+			break;
+		case (Vec4):
+			return (Name.append(" (Vec4)"));
+			break;
+		case (Mat4):
+			return (Name.append(" (Mat4)"));
+			break;
+		case (Sampler2D):
+			return (Name.append(" (Sample2D)"));
+			break;
+		case(SamplerCube):
+			return (Name.append(" (SamplerCube)"));
+			break;
+		
+		default :
+			return (Name.append(" (Default)"));
+			break;
+	}
 }
 
 //void GUIManager::ResetVNodeDifs()

@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="NodeSystem\FunctionNode.h" />
     <ClInclude Include="GUI\GUIManager.h" />
     <ClInclude Include="GUI\Imgui\imconfig.h" />
     <ClInclude Include="GUI\Imgui\imgui.h" />
@@ -36,6 +37,7 @@
     <ClInclude Include="NodeSystem\Node.h" />
     <ClInclude Include="NodeSystem\NodeManager.h" />
     <ClInclude Include="NodeSystem\PowNode.h" />
+    <ClInclude Include="NodeSystem\OutputNode.h" />
     <ClInclude Include="Rendering\Camera.h" />
     <ClInclude Include="Rendering\Light.h" />
     <ClInclude Include="Rendering\Mesh.h" />
@@ -46,6 +48,7 @@
     <ClInclude Include="Utility.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="NodeSystem\FunctionNode.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="GUI\GUIManager.cpp" />
     <ClCompile Include="GUI\Imgui\imgui.cpp" />
@@ -62,6 +65,7 @@
     <ClCompile Include="NodeSystem\Node.cpp" />
     <ClCompile Include="NodeSystem\NodeManager.cpp" />
     <ClCompile Include="NodeSystem\PowNode.cpp" />
+    <ClCompile Include="NodeSystem\OutputNode.cpp" />
     <ClCompile Include="Rendering\Camera.cpp" />
     <ClCompile Include="Rendering\Light.cpp" />
     <ClCompile Include="Rendering\Mesh.cpp" />

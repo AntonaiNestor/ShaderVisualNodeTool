@@ -62,6 +62,7 @@ public:
 
 	void PrintConnections();
 	void ResetCompile();
+	
 
 	//TODO 
 	// Implement function that checks if the graph contains any circles 

@@ -1,7 +1,6 @@
 #pragma once
 #include "Node.h"
-#include "glm/glm.hpp"
-#include "../GUI/Imgui/imgui.h"
+
 
 
 class ConstantNode : public Node
@@ -12,9 +11,9 @@ public:
 	~ConstantNode();
 
 	//attributes
-	float value;
+	//float value;
 	float DefaultValue = 1.0;
-	std::string varName;
+	//std::string varName;
 
 	//visual attributes
 	

@@ -4,23 +4,24 @@
 ConstantNode::ConstantNode()
 {
 	//general node attributes
-	Name = "Constant";
+	Name = "Input Float";
 	Type = BaseNodeType::InputNode;
 	UniqueID = Graph::getInstance()->AssignID();
 	//varname might be important to check before assigning
-	varName = "ConstantFloat";
-	value = DefaultValue;
+	//varName = "ConstantFloat";
+	//value = DefaultValue;
 	HasCompiled = false;
 
 
 	//output struct creation
 	Connection connect;
 	
-	connect.Value = value;
-	
+	connect.Value = DefaultValue;
+	connect.DataType = Float;
+	connect.Name = "Constant Value";
 
 	Output.push_back(connect);
-	Input.push_back(connect);
+	//Input.push_back(connect);
 
 
 }
@@ -32,8 +33,8 @@ ConstantNode::ConstantNode(float a)
 	Type = BaseNodeType::InputNode;
 	UniqueID = Graph::getInstance()->AssignID();
 	//varname might be important to check before assigning
-	varName = "ConstantFloat";
-	value = a;
+	//varName = "ConstantFloat";
+	//value = a;
 	HasCompiled = false;
 	
 
@@ -42,6 +43,8 @@ ConstantNode::ConstantNode(float a)
 	connect.ConnectedNode = nullptr;
 	connect.ConnectionIndex = -1;
 	connect.Value = a;
+	connect.DataType = Float;
+	connect.Name = "Constant Value";
 	connect.Enabled = true;
 
 	Output.push_back(connect);
@@ -60,12 +63,14 @@ ConstantNode::~ConstantNode()
 void ConstantNode::Compile(std::string	*ShaderCode) {
 	ShaderCode->append("\n" + CodeString());
 	HasCompiled = true;
-	//DrawNode(true);
+	
 }
 
 std::string ConstantNode::CodeString()
 {
-	return "$" + varName + " = " + std::to_string(value) + ";";
+	// TODO this probably needs to check if there are more than one outputs and append that much text
+	// Also for now we do not add the "$"
+	return Output.at(0).Name + " = " + std::to_string(Output.at(0).Value) + ";";
 }
 
 

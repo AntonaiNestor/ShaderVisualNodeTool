@@ -194,12 +194,18 @@ void Graph::AddNode(std::shared_ptr<Node> node) {
 
 void Graph::CompileGraph(std::shared_ptr<Node> CurrentNode , std::string* ShaderCode)
 {
+	ShaderCode->clear();
+
 	//Traverse all the Inputs list of this node
 	for (std::vector<Connection>::iterator it = CurrentNode->Input.begin(); it != CurrentNode->Input.end(); ++it) {
 
+
+		//if the connection 
+		if (it->ConnectedNode == nullptr) { continue; }
+
 		//if the connected node's inputs are empty 
 		//it means that it is an input node only
-		if (it->ConnectedNode == nullptr) { continue; }
+		
 		if (it->ConnectedNode->Input.empty() && !it->ConnectedNode->HasCompiled) {
 			//if that node hasn't been compiled, compile it and continue to this node's next input
 			it->ConnectedNode->Compile(ShaderCode);
@@ -238,5 +244,7 @@ void Graph::ResetCompile()
 	for (auto &node : NodeList) {
 		node->HasCompiled = false;
 	}
+
+	
 }
 

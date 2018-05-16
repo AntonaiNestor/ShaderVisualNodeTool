@@ -25,10 +25,7 @@ enum BaseNodeType{
 	InputNode,
 	OutputNode,
 	ShaderNode,
-	FunctionNode,
-	AdditionNode,
-	MultNode,
-	PowNode
+	FunctionNode
 };
 
 
@@ -52,17 +49,23 @@ enum ValueType {
 	SamplerCube
 };
 
+
 struct Connection {
 	std::shared_ptr<Node> ConnectedNode;
 	int ConnectionIndex;
+	ValueType DataType;
+	std::string Name;
 	float Value; // This will be Type or Symbol, should it be in the connection though?
 	bool Enabled; //Enabled /disable connection
-
+	
 	//there is an issue with this in regards to initialising or reseting the  default value
 	// Node class doesn't node the default
-	Connection() { ConnectedNode = nullptr; ConnectionIndex = -1; Enabled = true; }
+	Connection() { ConnectedNode = nullptr; ConnectionIndex = -1; Enabled = true;  }
+	//Connection(std::string name , ValueTyPE)
 	void ResetConnection() { ConnectedNode = nullptr; ConnectionIndex = -1; Enabled = true; }
 };
+
+
 
 class Node : public std::enable_shared_from_this<Node>
 {
