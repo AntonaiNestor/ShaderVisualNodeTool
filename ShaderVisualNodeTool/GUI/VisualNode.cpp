@@ -96,13 +96,48 @@ void VisualNode::UpdateAllConnections(ImVec2 PosDif)
 	}
 }
 
-void VisualNode::DisplayNode(ImDrawList * drawList,ImVec2 offset)
+void VisualNode::DisplayNode(ImDrawList * drawList,ImVec2 offset, BaseNodeType type)
+{
+	DrawConstantNode(drawList, offset);
+	switch (type)
+	{
+	case (OutputNode):
+
+		
+		break;
+	default:
+		break;
+	}
+
+	//--------Drawing connections 
+
+	//Output
+	for (int i = 0; i < vOutputs.size(); i++) {
+		//if there is a connection in the graph then draw a line
+		//but i could just check the visual node contents as well. DOUBLE INFORMATION ANTONY
+		if (vOutputs.at(i).connected ) {
+			DrawHermite(drawList,vOutputs.at(i).SlotCoords, vOutputs.at(i).conn->SlotCoords,20);
+		}
+	}
+
+	//Input - Currently not used
+
+	//for (int i = 0; i <vInputs.size(); i++) {
+	//	//if there is a connection in the graph then draw a line
+	//	if (vInputs.at(i).connected) {
+	//		DrawHermite(drawList, vInputs.at(i).SlotCoords, vInputs.at(i).conn->SlotCoords, 20);
+	//	}
+	//}
+
+}
+
+void VisualNode::DrawConstantNode(ImDrawList * drawList, ImVec2 offset)
 {
 	//var initialisations
-	
+
 	ImVec2 NodeViewPos = Manager->NodeViewPos;
 	ImVec2 NodeRelevantPos = NodeViewPos + VNodePos + offset;
-	ImVec2 TitlePadding(TITLE_PADDING_X,TITLE_PADDING_Y);
+	ImVec2 TitlePadding(TITLE_PADDING_X, TITLE_PADDING_Y);
 	std::string NodeUniqueNameID = "Node " + std::to_string(GNode->UniqueID);
 
 
@@ -111,7 +146,7 @@ void VisualNode::DisplayNode(ImDrawList * drawList,ImVec2 offset)
 	ImGui::SetCursorScreenPos(VNodePos + NodeViewPos);
 
 	//Moveable node by title 
-	
+
 	//THIS ISN;T CORRECT I FEEL - MOVABLE SHOULD NOT BE INSIDE  DISPLAY BUT OUTSIDE AND JUST SEND THE OFFSET
 	ImGui::InvisibleButton(NodeUniqueNameID.c_str(), ImVec2(VNodeSize.x, TITLE_BOX_HEIGHT));
 	if (ImGui::IsItemHovered())
@@ -129,7 +164,7 @@ void VisualNode::DisplayNode(ImDrawList * drawList,ImVec2 offset)
 		UpdateAllConnections(PosDif);
 
 	}
-		
+
 	//this values need to be relevant to the zooming, for now everything will be fixed
 	drawList->AddRectFilled(NodeRelevantPos, NodeRelevantPos + VNodeSize, ImColor(40, 40, 40), 10.0); //Background rect
 	drawList->AddRectFilled(NodeRelevantPos, NodeRelevantPos + ImVec2(VNodeSize.x, TITLE_BOX_HEIGHT), ImColor(150, 50, 150), 10, ImDrawCornerFlags_Top); //Title rect 
@@ -137,40 +172,40 @@ void VisualNode::DisplayNode(ImDrawList * drawList,ImVec2 offset)
 	drawList->AddLine(NodeRelevantPos + ImVec2(VNodeSize.x * 3 / 4, TITLE_BOX_HEIGHT), VNodePos + NodeViewPos + ImVec2(VNodeSize.x * 3 / 4, VNodeSize.y), ImColor(255, 255, 255)); // Output Divine Line
 
 
-	//Title text
+																																												   //Title text
 	ImGui::SetCursorScreenPos(NodeRelevantPos + TitlePadding);
 	std::string NodeName = GNode->Name;
-	auto TitleText = (NodeName.append( " : ID - ") ).append( std::to_string(GNode->UniqueID)).c_str();
+	auto TitleText = (NodeName.append(" : ID - ")).append(std::to_string(GNode->UniqueID)).c_str();
 	ImGui::Text(TitleText);
 
 	//Main Body
-	
 
-	float InputMargin = ((NodeRelevantPos.y + VNodeSize.y) - (NodeRelevantPos.y + TITLE_BOX_HEIGHT)) / (vInputs.size()+1);
+
+	float InputMargin = ((NodeRelevantPos.y + VNodeSize.y) - (NodeRelevantPos.y + TITLE_BOX_HEIGHT)) / (vInputs.size() + 1);
 	float OutputMargin = ((NodeRelevantPos.y + VNodeSize.y) - (NodeRelevantPos.y + TITLE_BOX_HEIGHT)) / (vOutputs.size() + 1);
 
 	//
 	////Display all Input buttons and circles 
 
-	
+
 	for (int i = 0; i < vInputs.size(); i++) {
 
-		
 
-		ImVec2 InputPos(ImVec2(NodeRelevantPos.x, NodeRelevantPos.y + TITLE_BOX_HEIGHT + InputMargin * (i+1) ));
+
+		ImVec2 InputPos(ImVec2(NodeRelevantPos.x, NodeRelevantPos.y + TITLE_BOX_HEIGHT + InputMargin * (i + 1)));
 		drawList->AddCircleFilled(InputPos, 5, ImColor(255, 255, 255), 12);
 
 		//add the Input invisible button on top of the slot
 		ImGui::SetCursorScreenPos(ImVec2(InputPos.x - 10, InputPos.y - 10));
 		auto ButtonName = NodeUniqueNameID.append(" Input " + std::to_string(i)).c_str();
-		
+
 		if (ImGui::InvisibleButton(ButtonName, ImVec2(20.0f, 20.0f))) {
 			//std::cout << "Button Clicked" << std::endl;
 		}
 		if (ImGui::IsItemActive() && !(Manager->IsDrawing)) {
 
 			//start drawing from this slot 
-			
+
 			Manager->IsDrawing = true;
 			Manager->InitDrawingPos = InputPos;
 			Manager->StartSlotType = Input;
@@ -179,10 +214,10 @@ void VisualNode::DisplayNode(ImDrawList * drawList,ImVec2 offset)
 
 			//std::cout << "Started drawing from " << Manager->StartSlotType << " slot : " << std::to_string(Manager->StartIndex) << std::endl;
 		}
-		
-		if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem) && Manager->IsDrawing ) {
+
+		if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem) && Manager->IsDrawing) {
 			//end drawing to this slot
-			
+
 			Manager->EndDrawingPos = InputPos;
 			Manager->EndNode = this;
 			Manager->EndSlotType = Input;
@@ -197,17 +232,17 @@ void VisualNode::DisplayNode(ImDrawList * drawList,ImVec2 offset)
 
 
 		ImGui::BeginGroup(); // Lock horizontal position
-		//Input Var NameX	
+							 //Input Var NameX	
 		ImGui::Text("Float :");
 		ImGui::SameLine();
 		ImGui::PushItemWidth(50);
 		//Input Current value -- This probably needs to be type 
-		ImGui::InputFloat("",&(GNode->Input[i].Value), 0.0f, 1.0f, 3, 0);
+		ImGui::InputFloat("", &(GNode->Input[i].Value), 0.0f, 1.0f, 3, 0);
 		ImGui::EndGroup();
 
 
 	}
-	
+
 
 	//Display all Output buttons and circles 
 	for (int i = 0; i < vOutputs.size(); i++) {
@@ -220,7 +255,7 @@ void VisualNode::DisplayNode(ImDrawList * drawList,ImVec2 offset)
 		ImGui::SetCursorScreenPos(OutputValPos);
 		//Output Var Name + type prolly 	
 		ImGui::Text("Out");
-		
+
 
 		//add the OutPut invisible button on top of the slot 
 		ImGui::SetCursorScreenPos(ImVec2(OutputPos.x - 10.0f, OutputPos.y - 10));
@@ -228,9 +263,9 @@ void VisualNode::DisplayNode(ImDrawList * drawList,ImVec2 offset)
 
 		if (ImGui::InvisibleButton(ButtonName, ImVec2(20.0f, 20.0f))) {
 			//std::cout << "Button Clicked" << std::endl;
-			
+
 		}
-		if (ImGui::IsItemActive() && !(Manager->IsDrawing) ) {
+		if (ImGui::IsItemActive() && !(Manager->IsDrawing)) {
 
 			//start drawing from this slot 
 			Manager->IsDrawing = true;
@@ -254,24 +289,8 @@ void VisualNode::DisplayNode(ImDrawList * drawList,ImVec2 offset)
 
 	}
 
-	//--------Drawing connections 
+}
 
-	//Output
-	for (int i = 0; i < vOutputs.size(); i++) {
-		//if there is a connection in the graph then draw a line
-		//but i could just check the visual node contents as well. DOUBLE INFORMATION ANTONY
-		if (vOutputs.at(i).connected ) {
-			DrawHermite(drawList,vOutputs.at(i).SlotCoords, vOutputs.at(i).conn->SlotCoords,20);
-		}
-	}
-
-	//Input - Currently not used
-
-	//for (int i = 0; i <vInputs.size(); i++) {
-	//	//if there is a connection in the graph then draw a line
-	//	if (vInputs.at(i).connected) {
-	//		DrawHermite(drawList, vInputs.at(i).SlotCoords, vInputs.at(i).conn->SlotCoords, 20);
-	//	}
-	//}
-
+void VisualNode::DrawFunctionNode(ImDrawList * drawlist, ImVec2 offset)
+{
 }

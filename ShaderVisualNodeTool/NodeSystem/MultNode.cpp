@@ -6,7 +6,7 @@ MultNode::MultNode()
 {
 	//general node attributes
 	Name = "Multiplication Node";
-	Type = NodeType::FunctionNode;
+	Type = BaseNodeType::FunctionNode;
 	UniqueID = Graph::getInstance()->AssignID();
 	HasCompiled = false;
 	MaxNoInputs = 2;

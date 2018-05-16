@@ -33,7 +33,7 @@ GUIManager::GUIManager()
 //}
 
 
-void GUIManager::CreateNode(ImVec2 pos, NodeType type)
+void GUIManager::CreateNode(ImVec2 pos, BaseNodeType type)
 {
 	// 1) Create Graph Node   
 	// Creation of the object in the heap, using make shared. The pointer is local in the stack but 
@@ -218,7 +218,7 @@ void GUIManager::RenderGUI() {
 	for (std::vector<std::shared_ptr<VisualNode>>::iterator it = VNodeList.begin(); it != VNodeList.end(); ++it) {
 	//for (int i=VNodeList.size()-1; i>=0 ; i--){
 		//VNodeList.at(i)->DisplayNode(drawList, ImVec2(0, 0));
-		(*it)->DisplayNode(drawList, ImVec2(0, 0));
+		(*it)->DisplayNode(drawList, ImVec2(0, 0), (*it)->GNode->Type);
 	}
 
 

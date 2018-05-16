@@ -65,7 +65,7 @@ public:
 	//Node creation methods
 
 	//create node - NEEDS TO PAY ATTENTION TO THE TYPE AND CREATE ACCORDINGLY
-	void CreateNode(ImVec2 pos, NodeType type);
+	void CreateNode(ImVec2 pos, BaseNodeType type);
 
 	//General GUI manager 
 	void RenderDrawing(ImDrawList* drawlist);

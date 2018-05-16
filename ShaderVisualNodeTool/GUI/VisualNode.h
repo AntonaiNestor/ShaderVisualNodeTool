@@ -55,6 +55,8 @@ public:
 
 	void SaveConnection(ImVec2 Coords,int slot,bool array);//nvm this for now
 	void UpdateAllConnections(ImVec2 PosDif); //update connection coordinates when we move node
-	void DisplayNode(ImDrawList* drawList,ImVec2 offset);
+	void DisplayNode(ImDrawList* drawList,ImVec2 offset, BaseNodeType type);
+	void DrawConstantNode(ImDrawList* drawList , ImVec2 offset);
+	void DrawFunctionNode(ImDrawList* drawList, ImVec2 offset);
 };
 

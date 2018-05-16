@@ -18,7 +18,9 @@ class Node;
 
 //typedef std::shared_ptr<Node> NodePointer;
 
-enum NodeType{
+
+
+enum BaseNodeType{
 	
 	InputNode,
 	OutputNode,
@@ -30,6 +32,14 @@ enum NodeType{
 };
 
 
+
+enum Operations {
+
+	Add,
+	Mult,
+	Power2,
+	SquareWeird
+};
 
 enum ValueType {
 	Float,
@@ -62,7 +72,7 @@ public:
 
 	//Attributes
 	std::string Name;
-	NodeType Type;
+	BaseNodeType Type;
 	int UniqueID;
 	bool HasCompiled;
 	

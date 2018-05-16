@@ -5,7 +5,7 @@ ConstantNode::ConstantNode()
 {
 	//general node attributes
 	Name = "Constant";
-	Type = NodeType::InputNode;
+	Type = BaseNodeType::InputNode;
 	UniqueID = Graph::getInstance()->AssignID();
 	//varname might be important to check before assigning
 	varName = "ConstantFloat";
@@ -29,7 +29,7 @@ ConstantNode::ConstantNode(float a)
 {
 	//general node attributes
 	Name = "Constant";
-	Type = NodeType::InputNode;
+	Type = BaseNodeType::InputNode;
 	UniqueID = Graph::getInstance()->AssignID();
 	//varname might be important to check before assigning
 	varName = "ConstantFloat";

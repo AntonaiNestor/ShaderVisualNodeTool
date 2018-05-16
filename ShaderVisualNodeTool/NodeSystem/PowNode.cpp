@@ -6,7 +6,7 @@ PowNode::PowNode()
 {
 	//general node attributes
 	Name = "Power Node";
-	Type = NodeType::FunctionNode;
+	Type = BaseNodeType::FunctionNode;
 	UniqueID = Graph::getInstance()->AssignID();
 	HasCompiled = false;
 	MaxNoInputs = 2;

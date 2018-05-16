@@ -6,7 +6,7 @@ AddNode::AddNode()
 {
 	//general node attributes
 	Name = "Add Node";
-	Type = NodeType::FunctionNode;
+	Type = BaseNodeType::FunctionNode;
 	UniqueID = Graph::getInstance()->AssignID();
 	HasCompiled = false;
 	MaxNoInputs = 2;
