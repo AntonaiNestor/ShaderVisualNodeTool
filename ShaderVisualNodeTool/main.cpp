@@ -493,6 +493,13 @@ int main()
 
 	graph->root = graph->NodeList.at(3);
 
+
+
+
+	std::string codeTest = "$c = $a + $b; $x = mix($a,$c,0.5); ";
+	std::cout << codeTest << std::endl;
+	codeTest = graph->ReplaceVarNames(codeTest, "$a", "AddResult1");
+	std::cout << codeTest << std::endl;
 	//graph->root = graph->NodeList.at(3);
 	
 	/*

@@ -282,7 +282,9 @@ void VisualNode::DrawInputNode(ImDrawList * drawList, ImVec2 offset)
 		//Input Current value -- This probably needs to be type 
 		auto ValName =  std::to_string(GNode->UniqueID);
 		//ValName.c_str()
-		ImGui::InputFloat("", &(GNode->Output[i].Value), 0.0f, 1.0f, 3, 0);
+		if (ImGui::InputFloat("", &(GNode->Output[i].Value), 0.0f, 1.0f, 3, 0)) {
+			Manager->ValueChanged = true;
+		}
 		ImGui::EndGroup();
 		
 
@@ -436,7 +438,9 @@ void VisualNode::DrawFunctionNode(ImDrawList * drawList, ImVec2 offset)
 		ImGui::SameLine();
 		ImGui::PushItemWidth(50);
 		//Input Current value -- This probably needs to be type 
-		ImGui::InputFloat("", &(GNode->Input[i].Value), 0.0f, 1.0f, 3, 0);
+		if (ImGui::InputFloat("", &(GNode->Input[i].Value), 0.0f, 1.0f, 3, 0)) {
+			Manager->ValueChanged = true;
+		}
 		ImGui::EndGroup();
 
 		ImGui::PopID();

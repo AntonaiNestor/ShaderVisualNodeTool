@@ -27,6 +27,8 @@ public:
 
 	// -- Variables
 
+	int NameCounter;
+
 	//adjacency list for nodes
 	std::vector<std::vector<int>> AdjacencyList;
 	
@@ -36,6 +38,7 @@ public:
 
 	//Global map for variable name convertion
 	std::map <std::string, std::string> SlotToVariableMap;
+	std::map <std::string, std::string> VarToSlotMap;
 
 	//List of all the nodes in the graph - order is not important, just access to all of them
 	std::vector<std::shared_ptr<Node>> NodeList;
@@ -56,13 +59,17 @@ public:
 
 	//Assigns unique ID to newly created nodes
 	int AssignID();
+	std::string GiveName();
+
+	void ResetNameCounter();
 
 	//Depth first backwards traversal and compilation of the nodes
 	void CompileGraph(std::shared_ptr<Node> CurrentNode , std::string* ShaderCode);
 
 	void PrintConnections();
-	void ResetCompile();
+	void ResetGraph();
 	
+	std::string ReplaceVarNames(std::string code, std::string oldName, std::string newName);
 
 	//TODO 
 	// Implement function that checks if the graph contains any circles 

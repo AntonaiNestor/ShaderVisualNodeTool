@@ -52,7 +52,7 @@ public:
 	//Structure of the final thing
 	//std::vector<ConnectionVCoords> PermanentLines;
 	bool ItemsHovered = false;
-
+	bool ValueChanged = false;
 	//Keep a list with all the visual nodes. Essentially we keep double the information. 
 	std::vector<std::shared_ptr<VisualNode>> VNodeList;
 

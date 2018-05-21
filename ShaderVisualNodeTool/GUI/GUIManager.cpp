@@ -52,7 +52,7 @@ void GUIManager::CreateNode(ImVec2 pos, BaseNodeType type)
 		newGraphNode = std::make_shared<class::OutputNode>();
 		break;
 	case (FunctionNode):{
-		std::string code = "$c = $a + $b";
+		std::string code = "float $AddResult = $a + $b ;";
 		newGraphNode = std::make_shared<class::FunctionNode>("Add",2,code);
 		break;
 	}
@@ -178,7 +178,8 @@ void GUIManager::RenderDrawing(ImDrawList* drawlist)
 		 auto graph = Graph::getInstance();
 		 graph->PrintConnections();
 		 graph->CompileGraph(graph->root,graph->ShaderCode);
-		 graph->ResetCompile();
+		 graph->ResetGraph();
+		 std::cout << ValueChanged << std::endl;
 
 	 }
 
@@ -232,12 +233,16 @@ void GUIManager::RenderGUI() {
 
 	RenderDrawing(drawList);
 
-	/*if (ImGui::IsAnyItemHovered() ){
-		std::cout << "Is anything hovered?" << std::endl;
-
-	}*/
+	if (ValueChanged) {
+		auto graph = Graph::getInstance();
+		graph->PrintConnections();
+		graph->CompileGraph(graph->root, graph->ShaderCode);
+		graph->ResetGraph();
+		std::cout << ValueChanged << std::endl;
+	
+	}
 	ItemsHovered = false;
-
+	ValueChanged = false;
 	ImGui::End();
 }
 

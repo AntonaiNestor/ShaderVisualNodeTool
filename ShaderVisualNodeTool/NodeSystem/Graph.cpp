@@ -5,6 +5,7 @@
 Graph::Graph()
 {
 	ID = 0;
+	NameCounter = 0;
 }
 
 
@@ -188,6 +189,16 @@ int Graph::AssignID()
 	return ID++;
 }
 
+std::string Graph::GiveName()
+{
+	return std::to_string(NameCounter++);
+}
+
+void Graph::ResetNameCounter()
+{
+	NameCounter = 0;
+}
+
 void Graph::AddNode(std::shared_ptr<Node> node) {
 	NodeList.push_back(node);
 }
@@ -239,12 +250,28 @@ void Graph::PrintConnections()
 	std::cout << "-------------------Print End -----------------" << std::endl;
 }
 
-void Graph::ResetCompile()
+void Graph::ResetGraph()
 {
 	for (auto &node : NodeList) {
 		node->HasCompiled = false;
 	}
-
+	ResetNameCounter();
+	SlotToVariableMap.clear();
+	VarToSlotMap.clear();
 	
+}
+
+std::string Graph::ReplaceVarNames(std::string code, std::string oldName, std::string newName)
+{
+
+	if (oldName.empty())
+		return "";
+	size_t start_pos = 0;
+	while ((start_pos = code.find(oldName, start_pos)) != std::string::npos) {
+		code.replace(start_pos, oldName.length(), "");
+		code.insert(start_pos, newName);
+		start_pos += newName.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
+	}
+	return code;
 }
 
