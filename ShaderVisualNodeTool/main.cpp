@@ -97,8 +97,8 @@ int main()
 	//OpenGL version
 	std::cout << glGetString(GL_VERSION) << std::endl;
 
-	Shader shader("Shaders/SimpleVertexShader.vert", "Shaders/SimpleFragmentShader.fs");
-	Shader otherShader("Shaders/SimpleVertexShader.vert","Shaders/SimpleFragmentShader.fs");
+
+	//Shader otherShader("Shaders/SimpleVertexShader.vert","Shaders/SimpleFragmentShader.fs");
 	//Shader shader("SimpleVertexShader.vs", "SimpleFragmentShader.fs","TrianglesToPoints.gs");
 	//Shader shader("SimpleVertexShader.vs", "SimpleFragmentShader.fs", "TrianglesToPoints.gs", "SimpleTesControl.tcs", "SimpleTesEval.tes");
 
@@ -292,8 +292,8 @@ int main()
 
 	// LOAD MODEL
 	//Make Path relevant
-	char path[] = "D:/GithubProjects/ShaderNodeTool/ShaderNodeTool/Resources/Models/Suzanne.obj";
-	
+	char path[] = "D:/Graphics Libraries/Resources/Suzanne.obj";
+	Shader shader("Shaders/SimpleVertexShader.vert", "Shaders/SimpleFragmentShader.fs");
 
 	//// return a mesh object created from the extracted mesh data
 	// Mesh test1(vertices, indices);
@@ -308,6 +308,7 @@ int main()
 
 	 // create transformations
 	
+
 	 glm::mat4 view;
 	 glm::mat4 projection;
 
@@ -336,45 +337,31 @@ int main()
 	 
 
 
-	 // Testing graph and nodes
+	 //first shader
+	 shader.Use();
 
-	 //Graph graph;
+	 glm::mat4 model;
+	 unsigned int modelLoc = glGetUniformLocation(shader.ID, "Model");
+	 glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
-	/* 
-	 ConstantNode a(2.0);
-	 ConstantNode b(3.0);
-	 ConstantNode c(4.0);
-	 ConstantNode d(5.0);*/
-	
-	/* AddNode add;
-	 MultNode mult;
-	 PowNode power;*/
+	 //// retrieve the matrix uniform locations
 
-	 Graph* graph = Graph::getInstance();
-	 std::string code;
+	 //unsigned int viewLoc = glGetUniformLocation(shader.ID, "View");
+	 //unsigned int projLoc = glGetUniformLocation(shader.ID, "Projection");
+	 //// pass them to the shaders (3 different ways)
+
+	 //glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+	 //glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
 
-	 //add 2 and 3
-	//x->CreateConnection(&a, &add, 0 , 0 );
-	// x->CreateConnection(&b, &add, 0 , 1 );
-	
-	 //mult 4 and 5
-	 //x->CreateConnectionOutIn(&c, &mult, 0, 0);
-	 //x->CreateConnectionInOut(&mult, &d, 1, 0);
-	
-	 //// power and add the results from the above outputs
-	 ////x->CreateConnection(&add, &power, 0, 0);
-	 //
-	 //x->CreateConnectionOutIn(&mult, &power, 0, 1);
-	 //x->CreateConnectionInOut(&power, &a, 0, 0);
-	
-	 ////assign current root to graph
-	 //x->root = &power;
-	 ////Traverse and compile graph
-	 //x->CompileGraph(x->root,&code);
+	 float color[] = { 1.0,0.0,0.0,1.0 };
+	 int vertexColorLocation = glGetUniformLocation(shader.ID, "InputCol");
+	 glUniform4f(vertexColorLocation, color[0], color[1], color[2], color[3]);
+	 //shader.setFloat("test",0.5);
+	 shader.SetFloat("TessLevelInner", 1.0);
+	 shader.SetFloat("TessLevelOuter", 1.0);
 
-	 //std::cout << "(2+3)^2 + (4*5)^2= " << power.CalculateValue() << std::endl;
-	 std::cout << code << std::endl;
+	 glUseProgram(0);
 
 
 	//-------------glslang test
@@ -400,47 +387,28 @@ int main()
 
 
 
-	 //first shader
-	shader.Use();
-
-	glm::mat4 model;
 	
-	//// retrieve the matrix uniform locations
-	unsigned int modelLoc = glGetUniformLocation(shader.ID, "Model");
-	//unsigned int viewLoc = glGetUniformLocation(shader.ID, "View");
-	//unsigned int projLoc = glGetUniformLocation(shader.ID, "Projection");
-	//// pass them to the shaders (3 different ways)
-	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model)		);
-	//glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-	//glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
 
-	float color[] = {1.0,0.0,0.0,1.0};
-	int vertexColorLocation = glGetUniformLocation(shader.ID, "InputCol");
-	glUniform4f(vertexColorLocation, color[0], color[1], color[2], color[3]);
-	//shader.setFloat("test",0.5);
-	shader.SetFloat("TessLevelInner", 1.0);
-	shader.SetFloat("TessLevelOuter", 1.0);
-	
-	glUseProgram(0);
-
-	otherShader.Use();
-	// create transformations
-	model = glm::translate(model, glm::vec3(-3.0f, 0.0f, 0.0f));
-	//// retrieve the matrix uniform locations
-	unsigned int model1Loc = glGetUniformLocation(otherShader.ID, "Model");
-	//unsigned int view1Loc = glGetUniformLocation(otherShader.ID, "View");
-	//unsigned int proj1Loc = glGetUniformLocation(otherShader.ID, "Projection");
-	//// pass them to the shaders (3 different ways)
-	glUniformMatrix4fv(model1Loc, 1, GL_FALSE, glm::value_ptr(model));
-	//glUniformMatrix4fv(view1Loc, 1, GL_FALSE, glm::value_ptr(view));
-	//glUniformMatrix4fv(proj1Loc, 1, GL_FALSE, glm::value_ptr(projection));
 
 
-	 float color1[] = { 0.0,1.0,0.0,1.0 };
-	vertexColorLocation = glGetUniformLocation(otherShader.ID, "InputCol");
-	glUniform4f(vertexColorLocation, color1[0], color1[1], color1[2], color1[3]);
-	//shader.setFloat("test",0.5);
+	//otherShader.Use();
+	//// create transformations
+	//model = glm::translate(model, glm::vec3(-3.0f, 0.0f, 0.0f));
+	////// retrieve the matrix uniform locations
+	//unsigned int model1Loc = glGetUniformLocation(otherShader.ID, "Model");
+	////unsigned int view1Loc = glGetUniformLocation(otherShader.ID, "View");
+	////unsigned int proj1Loc = glGetUniformLocation(otherShader.ID, "Projection");
+	////// pass them to the shaders (3 different ways)
+	//glUniformMatrix4fv(model1Loc, 1, GL_FALSE, glm::value_ptr(model));
+	////glUniformMatrix4fv(view1Loc, 1, GL_FALSE, glm::value_ptr(view));
+	////glUniformMatrix4fv(proj1Loc, 1, GL_FALSE, glm::value_ptr(projection));
+
+
+	// float color1[] = { 0.0,1.0,0.0,1.0 };
+	//vertexColorLocation = glGetUniformLocation(otherShader.ID, "InputCol");
+	//glUniform4f(vertexColorLocation, color1[0], color1[1], color1[2], color1[3]);
+	////shader.setFloat("test",0.5);
 	
 	glUseProgram(0);
 
@@ -470,6 +438,9 @@ int main()
 	//ImGui::StyleColorsClassic();
 
 
+	Graph* graph = Graph::getInstance();
+	std::string code;
+
 
 	bool windowOpen = true;
 	
@@ -486,13 +457,15 @@ int main()
 	GUI->SetupGUI(window);
 
 	GUI->CreateNode(ImVec2(100,100),InputNode);
-	GUI->CreateNode(ImVec2(400, 100),InputNode);
-	GUI->CreateNode(ImVec2(100, 300),FunctionNode);
+	GUI->CreateNode(ImVec2(100,200),InputNode);
+	GUI->CreateNode(ImVec2(100,300), InputNode);
+	GUI->CreateNode(ImVec2(100,400), InputNode);
+	GUI->CreateNode(ImVec2(250,200),FunctionNode);
 	//GUI->CreateNode(ImVec2(400, 300),FunctionNode);
-	GUI->CreateNode(ImVec2(400, 500), OutputNode);
+	GUI->CreateNode(ImVec2(400, 300), OutputNode);
 
-	graph->root = graph->NodeList.at(3);
-
+	graph->root = graph->NodeList.at(5);
+	graph->daShader = &shader;
 
 
 
@@ -502,17 +475,9 @@ int main()
 	std::cout << codeTest << std::endl;
 	//graph->root = graph->NodeList.at(3);
 	
-	/*
-	VisualNode Visual1(&a, ImVec2(100, 100));
-	VisualNode Visual2(&b, ImVec2(300, 100));
-	VisualNode Visual3(&c, ImVec2(100, 300));
-	VisualNode Visual4(&d, ImVec2(300, 300));
 
-	GUI->VNodeList.push_back(&Visual1);
-	GUI->VNodeList.push_back(&Visual2);
-	GUI->VNodeList.push_back(&Visual3);
-	GUI->VNodeList.push_back(&Visual4);*/
-	//GUI->vnode = &Visual;
+	
+
 
 
 	bool show_demo_window = true;
@@ -586,14 +551,67 @@ int main()
 			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 			//glClear(GL_COLOR_BUFFER_BIT);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			// draw our first triangle
-			//glUseProgram(shaderProgram);
-			//shader.use();
-			
+		
+
+			//SET UNIFORMS AGAIN
+
+			glm::mat4 view;
+			glm::mat4 projection;
+
+			view = glm::lookAt(glm::vec3(0.0f, 0.0f, 5.0f), //camera pos
+				glm::vec3(0.0f, 0.0f, 0.0f), //camera target
+				glm::vec3(0.0f, 1.0f, 0.0f)); //up
+
+			projection = glm::perspective(glm::radians(60.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 1000.0f);
+
+			unsigned int UBO;
+			glGenBuffers(1, &UBO);
+			glBindBuffer(GL_UNIFORM_BUFFER, UBO);
+			//the actual memory allocation here 
+			glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) * 2, NULL, GL_STATIC_DRAW); // allocate 3xmat4 bytes of memory
+			glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+			//Bind the UBO in binding point 0 
+			//we can set a subset of the buffer object if we want - here it is the whole thing
+			glBindBufferRange(GL_UNIFORM_BUFFER, 0, UBO, 0, 2 * sizeof(glm::mat4));
+
+			//upload data
+			//Buffer View mat
+			glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(view));
+			//Buffer Projection mat
+			glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(projection));
+
+
+
+			//first shader
+			shader.Use();
+
+			glm::mat4 model = glm::mat4()* glm::translate(glm::vec3(2.0f,0.0f,0.0f));
+			unsigned int modelLoc = glGetUniformLocation(shader.ID, "Model");
+			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+			//// retrieve the matrix uniform locations
+
+			//unsigned int viewLoc = glGetUniformLocation(shader.ID, "View");
+			//unsigned int projLoc = glGetUniformLocation(shader.ID, "Projection");
+			//// pass them to the shaders (3 different ways)
+
+			//glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+			//glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
+
+			float color[] = { 1.0,0.0,0.0,1.0 };
+			int vertexColorLocation = glGetUniformLocation(shader.ID, "InputCol");
+			glUniform4f(vertexColorLocation, color[0], color[1], color[2], color[3]);
+			//shader.setFloat("test",0.5);
+			shader.SetFloat("TessLevelInner", 1.0);
+			shader.SetFloat("TessLevelOuter", 1.0);
+
+			glUseProgram(0);
 
 			ourModel.Draw(shader);
 			
-			ourModel.Draw(otherShader);
+			//ourModel.Draw(otherShader);
 			//ourModel.Draw(shader);
 			//test1.Draw(shader);
 			// glBindVertexArray(0); // no need to unbind it every time 

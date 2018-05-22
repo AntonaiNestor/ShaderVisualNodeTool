@@ -232,6 +232,12 @@ void Graph::CompileGraph(std::shared_ptr<Node> CurrentNode , std::string* Shader
 	CurrentNode->Compile(ShaderCode);
 }
 
+void Graph::ChangeShader(Shader* shader)
+{
+
+	shader->EditShader(*ShaderCode, FRAGMENT);
+}
+
 void Graph::PrintConnections()
 {
 	std::cout << "-------------------Print Graph Start -----------------" << std::endl;

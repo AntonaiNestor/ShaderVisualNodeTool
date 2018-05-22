@@ -10,14 +10,15 @@ out vec3 FragPos;
 
 
 //Uniform Buffer Object - Be mindful of the memory layout for different hardware maybe
-//layout (std140, binding = 0) uniform Matrices
-//{
-	
+layout (std140) uniform Matrices
+{
 	uniform mat4 View;
 	uniform mat4 Projection;
-//};
+	
+};
 
 uniform mat4 Model;
+
 float test1;
 int cool;
 vec2 FUN;
@@ -29,7 +30,7 @@ void main()
 	
 	//the current vertex position in view space
 	FragPos= vec3(View*vec4(aPos,1.0)) ;
-    gl_Position = Projection* View* Model* vec4(aPos, 1.0); 
+    gl_Position = Projection * View * Model* vec4(aPos, 1.0); 
 }
 
 

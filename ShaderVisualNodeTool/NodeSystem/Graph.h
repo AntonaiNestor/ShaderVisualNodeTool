@@ -5,7 +5,7 @@
 #include <string>
 #include "Node.h"
 #include <memory>
-
+#include "../Rendering/Shader.h"
 
 
 
@@ -29,6 +29,7 @@ public:
 
 	int NameCounter;
 
+	Shader* daShader;
 	//adjacency list for nodes
 	std::vector<std::vector<int>> AdjacencyList;
 	
@@ -65,7 +66,7 @@ public:
 
 	//Depth first backwards traversal and compilation of the nodes
 	void CompileGraph(std::shared_ptr<Node> CurrentNode , std::string* ShaderCode);
-
+	void ChangeShader(Shader* shader);
 	void PrintConnections();
 	void ResetGraph();
 	

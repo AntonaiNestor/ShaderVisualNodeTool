@@ -600,16 +600,26 @@ void VisualNode::DrawOutputNode(ImDrawList * drawList, ImVec2 offset)
 		ImGui::SetCursorScreenPos(InputValPos);
 		ImGui::PushID(i);
 
-		//ImGui::BeginGroup(); // Lock horizontal position
+		ImGui::BeginGroup(); // Lock horizontal position
 							 //Input Var NameX	
-		ImGui::Text((*(Graph::getInstance()->ShaderCode)).c_str());
-		
-		
+		ImGui::Text((GNode->Input.at(i).Name).c_str());
+		ImGui::SameLine();
+		ImGui::PushItemWidth(50);
+		//Input Current value -- This probably needs to be type 
+		if (ImGui::InputFloat("", &(GNode->Input[i].Value), 0.0f, 1.0f, 3, 0)) {
+			Manager->ValueChanged = true;
+		}
+		ImGui::EndGroup();
 		ImGui::PopID();
+		
 
 
 	}
 	ImGui::PopID();
 
-	
+
 }
+	
+
+	
+

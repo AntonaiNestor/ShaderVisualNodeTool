@@ -41,7 +41,8 @@ public:
 	// Array containing the shader objects currently contained in the program
 	// -1 indicates that there is no shader available in the program yet.
 	int ShaderObjIDs[5];
-
+	std::string fragCode;
+	std::string vertCode;
 
 	// Constructors -- For now all shaders are loaded from files.
 	// This will probably change when we decide to create shaders using abstract
@@ -74,6 +75,8 @@ public:
 	void SetMat4(const std::string &name, glm::mat4 matrix) const;
 
 	void ChangeShaders(const char* vertexPath, const char* fragmentPath);
+
+	void EditShader(std::string newShader , ShaderType type);
 
 	void AddToProgram(const char* shaderPath, ShaderType type);
 

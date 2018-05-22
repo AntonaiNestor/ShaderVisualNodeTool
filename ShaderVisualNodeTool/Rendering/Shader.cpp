@@ -50,7 +50,8 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath) {
 	const char* vShaderCode = vertexCode.c_str();
 	const char* fShaderCode = fragmentCode.c_str();
 
-	
+	fragCode = fragmentCode;
+	vertCode = vertexCode;
 	
 	
 	// 2. compile shaders
@@ -405,6 +406,57 @@ void Shader::ChangeShaders(const char * vertexPath, const char * fragmentPath)
 	//we skip the deletion of the shaders, instead we save them in the array for future use
 	glDeleteShader(vertex);
 	glDeleteShader(fragment);
+}
+
+void Shader::EditShader(std::string newShader, ShaderType type)
+{
+	//this should be more generic, but for now all we do is just 
+
+	std::string tempFrag = fragCode;
+	tempFrag.insert( fragCode.find("$")+1 , "\n"+newShader);
+
+
+	std::cout << tempFrag << std::endl;
+	const char* vShaderCode = vertCode.c_str();
+	const char* fShaderCode = tempFrag.c_str();
+
+
+	// 2. compile shaders
+	unsigned int vertex, fragment;
+	int success;
+	char infoLog[512];
+	// vertex shader
+	vertex = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(vertex, 1, &vShaderCode, NULL);
+	glCompileShader(vertex);
+	CheckCompileErrors(vertex, "VERTEX");
+	// fragment Shader
+	fragment = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(fragment, 1, &fShaderCode, NULL);
+	glCompileShader(fragment);
+	CheckCompileErrors(fragment, "FRAGMENT");
+
+
+	// shader Program creation and shader attachments
+	glDeleteProgram(ID);
+	ID = glCreateProgram();
+	glAttachShader(ID, vertex);
+	glAttachShader(ID, fragment);
+	glLinkProgram(ID);
+	CheckCompileErrors(ID, "PROGRAM");
+	// delete the shaders as they're linked into our program now and no longer necessary
+
+
+	//glDetachShader(ID, vertex);
+	//glDetachShader(ID, fragment);
+	//vertex and fragment, nothing in between
+	//ProgramShaders[0] = vertex;
+	//ProgramShaders[4] = fragment;
+	//we skip the deletion of the shaders, instead we save them in the array for future use
+	//glDeleteShader(vertex);
+	//glDeleteShader(fragment);
+
+
 }
 
 void Shader::AddToProgram(const char * shaderPath, ShaderType type)

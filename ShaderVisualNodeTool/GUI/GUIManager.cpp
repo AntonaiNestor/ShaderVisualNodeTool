@@ -48,9 +48,11 @@ void GUIManager::CreateNode(ImVec2 pos, BaseNodeType type)
 		newGraphNode = std::make_shared<ConstantNode>();
 		break;
 
-	case (OutputNode):
-		newGraphNode = std::make_shared<class::OutputNode>();
+	case (OutputNode):{
+		std::string OutCode = "FragColor = vec4 ($r , $g, $b, $a );"; 
+		newGraphNode = std::make_shared<class::OutputNode>("Fragment Shader",4,OutCode);
 		break;
+	}
 	case (FunctionNode):{
 		std::string code = "float $AddResult = $a + $b ;";
 		newGraphNode = std::make_shared<class::FunctionNode>("Add",2,code);
@@ -178,8 +180,9 @@ void GUIManager::RenderDrawing(ImDrawList* drawlist)
 		 auto graph = Graph::getInstance();
 		 graph->PrintConnections();
 		 graph->CompileGraph(graph->root,graph->ShaderCode);
+		 graph->ChangeShader(graph->daShader);
 		 graph->ResetGraph();
-		 std::cout << ValueChanged << std::endl;
+		// std::cout << ValueChanged << std::endl;
 
 	 }
 
@@ -213,7 +216,7 @@ void GUIManager::RenderGUI() {
 	//Nodeview window setup
 	ImGui::SetNextWindowPos(NodeViewPos, 0, ImVec2(0.0, 0.0)); // set next window position. call before Begin(). use pivot=(0.5f,0.5f) to center on given point, etc.
 	ImGui::SetNextWindowSize(NodeViewSize, 0);    // set next window size. set axis to 0.0f to force an auto-fit on this axis. call before Begin()
-	ImGui::Begin("Node View", &windowOpen, 2);
+	ImGui::Begin("Node View", &windowOpen, 0);
 	//the drawlist in the main GUI Manager for the node view
 	ImDrawList* drawList = ImGui::GetWindowDrawList();
 
