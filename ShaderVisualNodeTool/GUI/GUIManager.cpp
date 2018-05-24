@@ -9,6 +9,7 @@
 
 
 
+
 //null since it will be created on demand
 GUIManager* GUIManager::Instance = 0;
 
@@ -26,7 +27,7 @@ GUIManager::GUIManager()
 {
 	Context = ImGui::CreateContext();
 	io = ImGui::GetIO(); (void)io;
-	StartSlotType = EndSlotType = Default;
+	StartSlotType = EndSlotType = NodeSlotType::DefaultNodeSlotType;
 }
 //
 //
@@ -222,28 +223,81 @@ void GUIManager::RenderGUI() {
 
 	
 
-	//TRAVERSE GRAPH HERE for nodes
-//	vnode->DisplayNode(drawList, ImVec2(0, 0));
-
-	//DRAWING ORDER 
+	//Drawing Visual Nodes
 	
 	for (std::vector<std::shared_ptr<VisualNode>>::iterator it = VNodeList.begin(); it != VNodeList.end(); ++it) {
-	//for (int i=VNodeList.size()-1; i>=0 ; i--){
-		//VNodeList.at(i)->DisplayNode(drawList, ImVec2(0, 0));
+
 		(*it)->DisplayNode(drawList, ImVec2(0, 0));
 	}
 
-
+	//Drawing of connections 
 	RenderDrawing(drawList);
 
+	//if values were updated,recompile
 	if (ValueChanged) {
 		auto graph = Graph::getInstance();
 		graph->PrintConnections();
 		graph->CompileGraph(graph->root, graph->ShaderCode);
 		graph->ResetGraph();
-		std::cout << ValueChanged << std::endl;
+		//std::cout << ValueChanged << std::endl;
 	
 	}
+
+	bool OpenCreationMenu = false;
+	// Open creation menu 
+	if (!ImGui::IsAnyItemHovered() && ImGui::IsMouseHoveringWindow() && ImGui::IsMouseClicked(1))
+	{
+		OpenCreationMenu = true;
+	}
+	if (OpenCreationMenu)
+	{
+		ImGui::OpenPopup("Creation Menu");
+		
+	}
+
+	// Draw context menu
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(8, 8));
+	if (ImGui::BeginPopup("Creation Menu"))
+	{
+
+		//Mouse pos on popup open - the window's coordinates to have the relevant mouse position
+		ImVec2 MousePos = ImGui::GetMousePosOnOpeningCurrentPopup() - NodeViewPos;
+			ImGui::Separator();
+			// Here in each sub menu I should iterate through all types of nodes for each category
+			if (ImGui::BeginMenu("Input Node")) {
+				if (ImGui::MenuItem("Constant Node - Float")) {
+					//std::cout << MousePos.x << "  " << MousePos.y<< std::endl;
+					CreateNode(MousePos,InputNode);
+				}
+
+				ImGui::EndMenu();
+			}
+			if (ImGui::BeginMenu("Function Node")) {
+
+				//-------- Iterate here 
+				ImGui::MenuItem("Addition Node");
+				ImGui::MenuItem("Multiplication Node");
+				//-----------------------------
+
+				ImGui::EndMenu();
+			}
+			if (ImGui::BeginMenu("Output Node")) {
+
+				//-------- Iterate here 
+				ImGui::MenuItem("Fragment Node");
+
+				//-------------
+				ImGui::EndMenu();
+			}
+	
+			
+		
+		ImGui::EndPopup();
+	}
+	ImGui::PopStyleVar();
+
+
+	//Reset stuff
 	ItemsHovered = false;
 	ValueChanged = false;
 	ImGui::End();
@@ -275,14 +329,20 @@ void GUIManager::DrawHermite(ImDrawList * drawList, ImVec2 p1, ImVec2 p2, int st
 
 void GUIManager::ResetGUITempInfo()
 {
-	StartSlotType = EndSlotType = Default;
+	StartSlotType = EndSlotType = NodeSlotType::DefaultNodeSlotType;
 	//InitDrawingPos = EndDrawingPos = ImVec2(-1000, -1000);
 	StartNode = nullptr;
 	EndNode = nullptr;
 	
 }
 
-std::string GUIManager::GetSlotValueName(std::string Name, ValueType type)
+void GUIManager::ShowCreationMenu()
+{
+
+
+}
+
+std::string GUIManager::GetSlotValueName(std::string Name,ValueType type)
 {
 
 	switch (type){

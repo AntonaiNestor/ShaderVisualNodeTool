@@ -1,5 +1,7 @@
 #include "Graph.h"
 #include <iostream>
+#include <fstream>
+#include "../json.hpp"
 
 
 Graph::Graph()
@@ -21,8 +23,6 @@ Graph * Graph::getInstance()
 
 	return Instance;
 }
-
-
 
 bool Graph::CreateConnectionOutIn(std::shared_ptr<Node> from, std::shared_ptr<Node> to, int FromIndex, int ToIndex)
 {
@@ -201,6 +201,43 @@ void Graph::ResetNameCounter()
 
 void Graph::AddNode(std::shared_ptr<Node> node) {
 	NodeList.push_back(node);
+}
+
+void Graph::ReadNodeTypes(std::string FilePath)
+{
+	//Read the json file in a json object
+	using json = nlohmann::json;
+	json j;
+
+	
+
+	std::ifstream ifs(FilePath.c_str(),std::ifstream::in);
+
+	if (!ifs.is_open()) {
+		// Debug Log this and try catch
+		std::cout << "Error with opening Json File" << std::endl;
+	}
+	ifs >> j;
+	ifs.close();
+	//------------------------------------
+
+	//Parsing json information and building nodetypes in graph containers
+
+	if (j.find("NodeTypes") != j.end()) {
+		json info = j["NodeTypes"];
+		
+		auto test =info.at(0);
+		// verify that "name" attribute exists in info
+		if (test.find("NodeType") != test.end()) {
+			std::cout << test["NodeType"] << std::endl;
+		}
+
+	}
+
+
+
+
+
 }
 
 void Graph::CompileGraph(std::shared_ptr<Node> CurrentNode , std::string* ShaderCode)

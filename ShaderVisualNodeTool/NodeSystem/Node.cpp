@@ -2,6 +2,7 @@
 #include <iostream>
 
 
+
 void Node::ConnectNode(std::shared_ptr<Node> ConnectedNode, int ConnectedIndex, int OutputIndex) {
 	
 	

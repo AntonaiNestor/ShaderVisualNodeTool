@@ -1,11 +1,12 @@
 #pragma once
 
 
+
 #include <string>
 #include <vector>
-#include "Graph.h"
 #include <memory>
-
+#include "Graph.h"
+#include "../Utility.h"
 
 //maybe temporary includes
 
@@ -13,42 +14,25 @@
 // Base class for all nodes.
 //
 
-//forward declaration of Node for connection struct
-class Node;
+//early declaration of Node for connection struct
+
 
 //typedef std::shared_ptr<Node> NodePointer;
 
 
 
-enum BaseNodeType{
+
+	enum BaseNodeType{
 	
-	InputNode,
-	OutputNode,
-	ShaderNode,
-	FunctionNode
-};
+		InputNode,
+		OutputNode,
+		ShaderNode,
+		FunctionNode
+	};
 
 
 
-enum Operations {
-
-	Add,
-	Mult,
-	Power2,
-	SquareWeird
-};
-
-enum ValueType {
-	Float,
-	Int,
-	Vec2,
-	Vec3,
-	Vec4,
-	Mat4,
-	Sampler2D,
-	SamplerCube
-};
-
+	class Node;
 
 struct Connection {
 	std::shared_ptr<Node> ConnectedNode;

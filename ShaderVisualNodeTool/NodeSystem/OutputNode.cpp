@@ -20,7 +20,7 @@ OutputNode::OutputNode(std::string name , int NoInputs , std::string functionCod
 	for (int i = 0; i < NoInputs; i++) {
 		Connection DefaultIn;
 		DefaultIn.Name = strArray[i];
-		DefaultIn.DataType = Float;
+		DefaultIn.DataType =Float;
 		DefaultIn.Value = 1; // Not correct, the output will never be actually calculated at this point. The code never runs 
 							 // You have to attach the full code to a shader, that is how you get a value
 							 // But for now keep it

@@ -11,7 +11,7 @@
 class VisualNode; 
 
 enum NodeSlotType{
-	Default,
+	DefaultNodeSlotType,
 	Input,
 	Output
 };
@@ -73,14 +73,12 @@ public:
 	void RenderGUI();
 	void RenderCall();
 	void DrawHermite(ImDrawList* drawList, ImVec2 p1, ImVec2 p2, int steps);
-	//bool ConnectVisualNodes(VisualNode* start,VisualNode* end, );
 	void ResetGUITempInfo();
+	void ShowCreationMenu();
 	void ResetVNodeDifs();
 
 	std::string GetSlotValueName(std::string Name, ValueType type);
 
-	//void UpdateConnection(ConnectionVCoords* connection);
-	//void ResetConnection(ConnectionVCoords* connection);
 
 private:
 	static GUIManager* Instance;

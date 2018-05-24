@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="json.hpp" />
     <ClInclude Include="NodeSystem\FunctionNode.h" />
     <ClInclude Include="GUI\GUIManager.h" />
     <ClInclude Include="GUI\Imgui\imconfig.h" />
@@ -77,6 +78,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="imgui.ini" />
+    <None Include="NodeSystem\NodeTypes\Nodes.json" />
+    <None Include="NodeSystem\NodeTypes\test2.json" />
     <None Include="Shaders\ExtendSides.gs" />
     <None Include="Shaders\GeometryCurves.gs" />
     <None Include="Shaders\GeometryShaderHouses.gs" />

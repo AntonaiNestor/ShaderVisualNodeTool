@@ -96,6 +96,9 @@
     <ClInclude Include="NodeSystem\OutputNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="json.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GUI\Imgui\imgui.cpp">
@@ -189,5 +192,7 @@
     <None Include="Shaders\SimpleTesControl.tcs" />
     <None Include="Shaders\SimpleTesEval.tes" />
     <None Include="Shaders\SimpleVertexShader.vert" />
+    <None Include="NodeSystem\NodeTypes\Nodes.json" />
+    <None Include="NodeSystem\NodeTypes\test2.json" />
   </ItemGroup>
 </Project>

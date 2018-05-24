@@ -34,6 +34,7 @@
 
 //Misc
 #include "Utility.h"
+#include <direct.h> 
 
 
 
@@ -364,32 +365,7 @@ int main()
 	 glUseProgram(0);
 
 
-	//-------------glslang test
-	// glslang::InitializeProcess();
-	// glslang::TShader langShader(EShLangVertex);
-
-	//// //always pass true as the second parameter to check and find the suffix
-	////// FindLanguage("SimpleVertexShader.vert", true);
-	//// //std::cout <<  << std::endl;
-	// std::string filename = "Shaders/SimpleVertexShader.vert";
-	// ShaderCompUnit unit(FindLanguage(filename, true));
-	// char* fileText = ReadFileData(filename.c_str());
-	// EProfile profile= EProfile::ECoreProfile;
-	// unit.addString(filename, fileText);
-	// //langShader.setStrings((const char* const *)"SimpleVertexShader.vert",);
-	// EShMessages messages = EShMsgDefault;
-	// const int defaultVersion = Options & EOptionDefaultDesktop ? 110 : 100;
-	// langShader.setStringsWithLengthsAndNames(unit.text, NULL, unit.fileNameList, unit.count);
-	//bool parseTest=langShader.parse(&Resources, defaultVersion, profile, true,
-	//	 true, messages);
-	 
-
-
-
-
 	
-
-
 
 
 	//otherShader.Use();
@@ -461,18 +437,16 @@ int main()
 	GUI->CreateNode(ImVec2(100,300), InputNode);
 	GUI->CreateNode(ImVec2(100,400), InputNode);
 	GUI->CreateNode(ImVec2(250,200),FunctionNode);
-	//GUI->CreateNode(ImVec2(400, 300),FunctionNode);
 	GUI->CreateNode(ImVec2(400, 300), OutputNode);
 
 	graph->root = graph->NodeList.at(5);
 	graph->daShader = &shader;
 
 
+	//relevant path but still don't like this. it assumes we are in main root of project ask morten
+	graph->ReadNodeTypes("NodeSystem/NodeTypes/Nodes.json");
 
-	std::string codeTest = "$c = $a + $b; $x = mix($a,$c,0.5); ";
-	std::cout << codeTest << std::endl;
-	codeTest = graph->ReplaceVarNames(codeTest, "$a", "AddResult1");
-	std::cout << codeTest << std::endl;
+
 	//graph->root = graph->NodeList.at(3);
 	
 

@@ -1,18 +1,30 @@
 #pragma once
 
 #include <map>
-#include <vector>
-#include <string>
-#include "Node.h"
-#include <memory>
 #include "../Rendering/Shader.h"
-
-
+#include "Node.h"
+#include "../Utility.h"
 
 
 class Node;
 
-//typedef std::shared_ptr<Node> NodePointer;
+struct SlotInformation {
+
+	bool SlotType; // 0 -> Input - 1-> Output
+	std::string Name; // Name of the slot variable 
+	ValueType VarType;
+	//Add custom default value here somehow
+
+
+};
+
+struct FunctionNodeType {
+
+	std::string FilterNodeType; // under which type should this be placed
+	std::string Name; // Name of the node 
+	std::vector<SlotInformation> Slots; // slot information
+	std::string Code; // GLSL code
+};
 
 class Graph
 {
@@ -28,14 +40,19 @@ public:
 	// -- Variables
 
 	int NameCounter;
-
-	Shader* daShader;
+	
+	// The node type information for function ndoes, saved once.
+	// The information from these will be used on creation
+	//Same idea can be extended to everything
+	std::map<std::string,FunctionNodeType> FunctionNodes;
 	//adjacency list for nodes
 	std::vector<std::vector<int>> AdjacencyList;
 	
 	//Root of the graph
 	std::shared_ptr<Node> root;
+	//these two here are probably not correct
 	std::string* ShaderCode = new std::string("");
+	Shader* daShader;
 
 	//Global map for variable name convertion
 	std::map <std::string, std::string> SlotToVariableMap;
@@ -49,6 +66,8 @@ public:
 	//this probably will be part of a GUI Manager
 	//void DrawConstantNodes();
 	void AddNode(std::shared_ptr<Node> node);
+
+	void ReadNodeTypes(std::string FilePath);
 
 	//Create connection between nodes. Either: 
 	//  Output slot -> Input Slot
