@@ -17,5 +17,45 @@ std::vector<Vertex> util::Arrays3ToVec3(std::vector<float> VertexInfo)
 	return VertVector;
 }
 
+bool util::stringToSlotType(std::string strSlotType)
+{
+	if (strSlotType.compare("Input") == 0) {
+		return false;
+	}
+	else return true;
+}
+
+
+ValueType util::stringToValueType(std::string strVal) {
+
+	if (strVal.compare("float") == 0) {
+		return ValueType::Float;
+	}
+	else if (strVal.compare("int") == 0) {
+		return ValueType::Int;
+	}
+	else if (strVal.compare("vec2") == 0) {
+		return ValueType::Vec2;
+	}
+	else if (strVal.compare("vec3") == 0) {
+		return ValueType::Vec3;
+	}
+	else if (strVal.compare("vec4") == 0) {
+		return ValueType::Vec4;
+	}
+	else if (strVal.compare("mat4") == 0) {
+		return ValueType::Mat4;
+	}
+	else if (strVal.compare("Sampler2D") == 0) {
+		return ValueType::Sampler2D;
+	}
+	else if (strVal.compare("SamplerCube") == 0) {
+		return ValueType::SamplerCube;
+	}
+	else {
+		return ValueType::DefaultSlotType;
+	}
+
+}
 
 

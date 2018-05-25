@@ -20,6 +20,7 @@ enum ValueType {
 
 namespace util {
 	
+	
 	std::vector<Vertex> Arrays3ToVec3(std::vector<float> positions);
 	std::vector<Vertex> Arrays3ToVec3Tex(std::vector<float> positions, std::vector<float> texCoords);
 
@@ -28,6 +29,6 @@ namespace util {
 	
 	std::vector<unsigned int> ArraysToUintVec(unsigned int indices[]);
 
-	
-
+	ValueType stringToValueType(std::string strVal);
+	bool stringToSlotType(std::string strSlotType);
 };

@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include "../json.hpp"
+#include "../Utility.h"
 
 
 Graph::Graph()
@@ -226,11 +227,51 @@ void Graph::ReadNodeTypes(std::string FilePath)
 	if (j.find("NodeTypes") != j.end()) {
 		json info = j["NodeTypes"];
 		
-		auto test =info.at(0);
-		// verify that "name" attribute exists in info
-		if (test.find("NodeType") != test.end()) {
-			std::cout << test["NodeType"] << std::endl;
+
+		for (int i = 0; i < info.size(); i++) {
+			
+			FunctionNodeType tempNode;
+			json objectRead = info.at(i);
+
+			std::string type = objectRead["NodeType"];
+			std::string name = objectRead["Name"];
+
+			tempNode.FilterNodeType = type;
+			tempNode.Name = name;
+			
+			//Slots
+			auto slots = objectRead["Slots"];
+			for (auto slot : slots) {
+
+				//temporary slot vars
+				bool stype = util::stringToSlotType(slot["SlotType"]);
+				std::string sname = slot["SlotName"];
+				ValueType vartype = util::stringToValueType(slot["VariableType"]);
+
+				SlotInformation tempSlot;
+				tempSlot.Name = sname;
+				tempSlot.SlotType = stype;
+				tempSlot.VarType = vartype;
+				tempNode.Slots.push_back(tempSlot);
+
+			}
+
+			//code 
+		
+			auto codeArray = objectRead["Code"];
+			std::string codeLines = "";
+			for (std::string codeline : codeArray){
+				
+				codeLines.append(codeline);
+			}
+			
+			tempNode.Code = codeLines;
+
+
+			//ADD TO GRAPH INFO
+			FunctionNodes.insert(std::pair<std::string, FunctionNodeType>(tempNode.Name,tempNode));
 		}
+		
 
 	}
 

@@ -442,7 +442,8 @@ int main()
 	graph->root = graph->NodeList.at(5);
 	graph->daShader = &shader;
 
-
+	std::string test13("Float");
+	auto x =util::stringToValueType(test13);
 	//relevant path but still don't like this. it assumes we are in main root of project ask morten
 	graph->ReadNodeTypes("NodeSystem/NodeTypes/Nodes.json");
 
