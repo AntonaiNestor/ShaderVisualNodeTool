@@ -51,6 +51,7 @@ void OutputNode::Compile(std::string * ShaderCode)
 		if (Input.at(i).ConnectedNode) {
 			auto SlotName = std::to_string(Input.at(i).ConnectedNode->UniqueID) + "->" + std::to_string(Input.at(i).ConnectionIndex);
 			tempCode = Graph::getInstance()->ReplaceVarNames(tempCode, strArray[i], Manager->VarToSlotMap[SlotName]);
+			Input.at(i).Value = Input.at(i).ConnectedNode->Output.at(0).Value;
 			//ShaderCode->append("\n" +Input.at(i).Name + " = " + std::to_string(Input.at(0).Value) + ";");
 		}
 		else {

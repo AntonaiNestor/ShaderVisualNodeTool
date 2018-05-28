@@ -432,14 +432,14 @@ int main()
 
 	GUI->SetupGUI(window);
 
-	GUI->CreateNode(ImVec2(100,100),InputNode);
-	GUI->CreateNode(ImVec2(100,200),InputNode);
-	GUI->CreateNode(ImVec2(100,300), InputNode);
-	GUI->CreateNode(ImVec2(100,400), InputNode);
-	GUI->CreateNode(ImVec2(250,200),FunctionNode);
-	GUI->CreateNode(ImVec2(400, 300), OutputNode);
+	GUI->CreateNode(ImVec2(100,100),InputNode,"InputNode");
+	GUI->CreateNode(ImVec2(100,200),InputNode,"InputNode");
+	GUI->CreateNode(ImVec2(100,300), InputNode,"InputNode");
+	GUI->CreateNode(ImVec2(100,400), InputNode, "InputNode");
+	//GUI->CreateNode(ImVec2(250,200),FunctionNode,"Addition");
+	GUI->CreateNode(ImVec2(400, 300), OutputNode,"OutputNode");
 
-	graph->root = graph->NodeList.at(5);
+	graph->root = graph->NodeList.at(4);
 	graph->daShader = &shader;
 
 	std::string test13("Float");

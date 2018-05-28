@@ -25,6 +25,59 @@ bool util::stringToSlotType(std::string strSlotType)
 	else return true;
 }
 
+std::string util::GetDefaultValue(ValueType type)
+{
+	std::string DefVal;
+	switch (type)  {
+	
+
+	case(Float): {
+		DefVal = "1.0";
+		break;
+	}
+	case(Int): {
+		DefVal = "1.0";
+		break;
+	}
+	case(Vec2): {
+		DefVal = "1.0";
+		break;
+
+	}
+	case(Vec3): {
+		DefVal = "1.0";
+		break;
+
+	}
+	case(Vec4): {
+		DefVal = "1.0";
+		break;
+
+	}
+	case(Mat4): {
+		DefVal = "1.0";
+		break;
+	}
+
+	case(Sampler2D): {
+		DefVal = "1.0";
+		break;
+
+	}
+	case(SamplerCube): {
+		DefVal = "1.0";
+		break;
+
+	}
+	default:
+		
+		break;
+	}
+
+	return DefVal;
+	
+}
+
 
 ValueType util::stringToValueType(std::string strVal) {
 

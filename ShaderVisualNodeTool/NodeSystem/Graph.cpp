@@ -345,6 +345,15 @@ void Graph::ResetGraph()
 	
 }
 
+void Graph::UpdateGraph()
+{
+	PrintConnections();
+	CompileGraph(root, ShaderCode);
+	ChangeShader(daShader);
+	ResetGraph();
+
+}
+
 std::string Graph::ReplaceVarNames(std::string code, std::string oldName, std::string newName)
 {
 

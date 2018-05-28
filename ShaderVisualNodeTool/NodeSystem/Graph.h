@@ -88,6 +88,7 @@ public:
 	void ChangeShader(Shader* shader);
 	void PrintConnections();
 	void ResetGraph();
+	void UpdateGraph();
 	
 	std::string ReplaceVarNames(std::string code, std::string oldName, std::string newName);
 

@@ -61,6 +61,7 @@ ConstantNode::~ConstantNode()
 // Compiling constant nodes means only appending a simple var in the shadercode
 // The actual value of the node is also passed to the children nodes on connection
 void ConstantNode::Compile(std::string	*ShaderCode) {
+	
 	ShaderCode->append("\n" + CodeString());
 	HasCompiled = true;
 	

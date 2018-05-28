@@ -36,7 +36,7 @@ GUIManager::GUIManager()
 //}
 
 
-void GUIManager::CreateNode(ImVec2 pos, BaseNodeType type)
+void GUIManager::CreateNode(ImVec2 pos, BaseNodeType type , std::string Name)
 {
 	// 1) Create Graph Node   
 	// Creation of the object in the heap, using make shared. The pointer is local in the stack but 
@@ -55,8 +55,10 @@ void GUIManager::CreateNode(ImVec2 pos, BaseNodeType type)
 		break;
 	}
 	case (FunctionNode):{
-		std::string code = "float $AddResult = $a + $b ;";
-		newGraphNode = std::make_shared<class::FunctionNode>("Add",2,code);
+		//std::string code = "float $AddResult = $a + $b ;";
+		auto nodeInfo = Graph::getInstance()->FunctionNodes[Name];
+
+		newGraphNode = std::make_shared<class::FunctionNode>(Name,nodeInfo.Slots,nodeInfo.Code);
 		break;
 	}
 	default :
@@ -174,20 +176,16 @@ void GUIManager::RenderDrawing(ImDrawList* drawlist)
 					 StartNode->vOutputs.at(StartIndex).ResetConnection();
 				 }
 			 }
-			// Graph::getInstance()->PrintConnections();
+			
 		 }
 		 ResetGUITempInfo();
 
 		 auto graph = Graph::getInstance();
-		 graph->PrintConnections();
-		 graph->CompileGraph(graph->root,graph->ShaderCode);
-		 graph->ChangeShader(graph->daShader);
-		 graph->ResetGraph();
-		// std::cout << ValueChanged << std::endl;
+		 graph->UpdateGraph();
+		
 
 	 }
 
-	
 
 }
 
@@ -207,7 +205,7 @@ void GUIManager::SetupGUI(GLFWwindow* window)
 void GUIManager::RenderGUI() {
 
 	bool windowOpen = true;
-
+	auto graph = Graph::getInstance();
 	//new frame 
 	ImGui_ImplGlfwGL3_NewFrame();
 
@@ -235,10 +233,8 @@ void GUIManager::RenderGUI() {
 
 	//if values were updated,recompile
 	if (ValueChanged) {
-		auto graph = Graph::getInstance();
-		graph->PrintConnections();
-		graph->CompileGraph(graph->root, graph->ShaderCode);
-		graph->ResetGraph();
+		
+		graph->UpdateGraph();
 		//std::cout << ValueChanged << std::endl;
 	
 	}
@@ -267,16 +263,31 @@ void GUIManager::RenderGUI() {
 			if (ImGui::BeginMenu("Input Node")) {
 				if (ImGui::MenuItem("Constant Node - Float")) {
 					//std::cout << MousePos.x << "  " << MousePos.y<< std::endl;
-					CreateNode(MousePos,InputNode);
+					CreateNode(MousePos,InputNode,"Input");
 				}
 
 				ImGui::EndMenu();
 			}
 			if (ImGui::BeginMenu("Function Node")) {
 
+
+				for (std::map<std::string,FunctionNodeType >::iterator iter = graph->FunctionNodes.begin(); iter != graph->FunctionNodes.end(); ++iter)
+				{
+					
+					//new menu entry
+					if (ImGui::MenuItem((iter->first).c_str())) {
+						
+						//call constructor for function node
+						CreateNode(MousePos,FunctionNode,iter->first);
+					}
+
+					//Key k = iter->first;
+					//ignore value
+					//Value v = iter->second;
+				}
 				//-------- Iterate here 
-				ImGui::MenuItem("Addition Node");
-				ImGui::MenuItem("Multiplication Node");
+			
+				//ImGui::MenuItem("Multiplication Node");
 				//-----------------------------
 
 				ImGui::EndMenu();

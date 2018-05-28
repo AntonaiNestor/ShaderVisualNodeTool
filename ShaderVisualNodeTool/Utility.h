@@ -31,4 +31,5 @@ namespace util {
 
 	ValueType stringToValueType(std::string strVal);
 	bool stringToSlotType(std::string strSlotType);
+	std::string GetDefaultValue(ValueType type);
 };

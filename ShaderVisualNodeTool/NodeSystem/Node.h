@@ -1,7 +1,4 @@
 #pragma once
-
-
-
 #include <string>
 #include <vector>
 #include <memory>
@@ -22,17 +19,17 @@
 
 
 
-	enum BaseNodeType{
+enum BaseNodeType{
 	
 		InputNode,
 		OutputNode,
 		ShaderNode,
 		FunctionNode
-	};
+};
 
 
 
-	class Node;
+class Node;
 
 struct Connection {
 	std::shared_ptr<Node> ConnectedNode;
@@ -65,6 +62,9 @@ public:
 	
 	std::vector<Connection> Input;
 	std::vector<Connection> Output; 
+	//mnot sure yet if this should be here, i have the information already
+	//in the the Input vector
+	//std::vector<std::string> slotNames;
 
 	//methods
 	virtual void Compile(std::string *ShaderCode) = 0; 

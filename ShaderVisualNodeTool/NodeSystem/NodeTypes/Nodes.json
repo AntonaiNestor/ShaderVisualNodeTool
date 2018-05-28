@@ -16,13 +16,13 @@
         },
         {
           "SlotType": "Output",
-          "SlotName": "$AddResult",
+          "SlotName": "AddResult",
           "VariableType": "float"
         }
 
       ],
       "Code": [
-        "float $AddResult = $a + $b ; ",
+        "float AddResult = $a + $b ; ",
         "//Testing Multiple Lines"
       ]
 
@@ -43,13 +43,40 @@
         },
         {
           "SlotType": "Output",
-          "SlotName": "$MultResult",
+          "SlotName": "MultResult",
           "VariableType": "float"
         }
 
       ],
       "Code": [
-        "float $AddResult = $a * $b ; ",
+        "float MultResult = $a * $b ; ",
+        "//Testing Multiple Lines"
+      ]
+
+    },
+    {
+      "NodeType": "Function Node",
+      "Name": "Power",
+      "Slots": [
+        {
+          "SlotType": "Input",
+          "SlotName": "$a",
+          "VariableType": "float"
+        },
+        {
+          "SlotType": "Input",
+          "SlotName": "$b",
+          "VariableType": "float"
+        },
+        {
+          "SlotType": "Output",
+          "SlotName": "$PowResult",
+          "VariableType": "float"
+        }
+
+      ],
+      "Code": [
+        "float PowResult = pow($a , $b) ; ",
         "//Testing Multiple Lines"
       ]
 
