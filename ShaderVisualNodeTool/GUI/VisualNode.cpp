@@ -1,6 +1,6 @@
 #include "VisualNode.h"
 #include <iostream>
-
+#include <algorithm>
 
 //struct implementations
 ConnectionVCoords::ConnectionVCoords()
@@ -63,14 +63,19 @@ VisualNode::VisualNode(std::shared_ptr<Node> Gnode, ImVec2 position )
 	for (auto it : GNode->Output) {
 		vOutputs.push_back(ConnectionVCoords());
 	}
-	if (GNode->Type == OutputNode) {
+
+	int maxSlotSize = std::max(GNode->Input.size(),GNode->Output.size());
+	VNodeSize = ImVec2(200, 50+ 25 * maxSlotSize);
+	/*if (GNode->Type == OutputNode) {
 
 		VNodeSize = ImVec2(200, 200);
 	}
 
 	else {
-		VNodeSize = ImVec2(200, 75);
-	}
+	
+	}*/
+		
+	
 
 }
 
@@ -210,9 +215,6 @@ void VisualNode::DrawInputNode(ImDrawList * drawList, ImVec2 offset)
 
 		ImVec2 OutputPos(ImVec2(NodeRelevantPos.x + VNodeSize.x, NodeRelevantPos.y + TITLE_BOX_HEIGHT + OutputMargin * (i + 1)));
 		drawList->AddCircleFilled(OutputPos, 5, ImColor(255, 255, 255), 12);
-
-
-		
 
 
 		ImGui::PushID(i+GNode->UniqueID);
@@ -401,6 +403,8 @@ void VisualNode::DrawFunctionNode(ImDrawList * drawList, ImVec2 offset)
 		ImVec2 InputPos(ImVec2(NodeRelevantPos.x, NodeRelevantPos.y + TITLE_BOX_HEIGHT + InputMargin * (i + 1)));
 		drawList->AddCircleFilled(InputPos, 5, ImColor(255, 255, 255), 12);
 
+		//TESTING THE BUTTONS
+		
 		//add the Input invisible button on top of the slot
 		ImGui::SetCursorScreenPos(ImVec2(InputPos.x - 10, InputPos.y - 10));
 		auto ButtonName = NodeUniqueNameID.append(" Input " + std::to_string(i)).c_str();
@@ -439,13 +443,24 @@ void VisualNode::DrawFunctionNode(ImDrawList * drawList, ImVec2 offset)
 		
 		ImGui::BeginGroup(); // Lock horizontal position
 							 //Input Var NameX	
-		ImGui::Text((GNode->Input.at(i).Name).c_str());
-		ImGui::SameLine();
-		ImGui::PushItemWidth(50);
-		//Input Current value -- This probably needs to be type 
-		if (ImGui::InputFloat("", &(GNode->Input[i].Value), 0.0f, 1.0f, 3, 0)) {
+		
+
+		if (GNode->Input[i].VariableType == Bool) {
+			
+			ImGui::Checkbox((GNode->Input.at(i).Name).c_str(),&(GNode->Input.at(i).Enabled) );
 			Manager->ValueChanged = true;
+			
 		}
+		else {
+		
+			ImGui::Text((GNode->Input.at(i).Name).c_str());
+		}
+		//ImGui::SameLine();
+		//ImGui::PushItemWidth(50);
+		////Input Current value -- This probably needs to be type 
+		//if (ImGui::InputFloat("", &(GNode->Input[i].Value), 0.0f, 1.0f, 3, 0)) {
+		//	Manager->ValueChanged = true;
+		//}
 		ImGui::EndGroup();
 
 		ImGui::PopID();
@@ -607,13 +622,15 @@ void VisualNode::DrawOutputNode(ImDrawList * drawList, ImVec2 offset)
 
 		ImGui::BeginGroup(); // Lock horizontal position
 							 //Input Var NameX	
-		ImGui::Text((GNode->Input.at(i).Name).c_str());
+		std::string slotname = GNode->Input.at(i).Name;
+		slotname.erase(std::remove(slotname.begin(), slotname.end(), '$'), slotname.end());
+		ImGui::Text(slotname.c_str() );
 		ImGui::SameLine();
-		ImGui::PushItemWidth(50);
+		//ImGui::PushItemWidth(50);
 		//Input Current value -- This probably needs to be type 
-		if (ImGui::InputFloat("", &(GNode->Input[i].Value), 0.0f, 1.0f, 3, 0)) {
+		/*if (ImGui::InputFloat("", &(GNode->Input[i].Value), 0.0f, 1.0f, 3, 0)) {
 			Manager->ValueChanged = true;
-		}
+		}*/
 		ImGui::EndGroup();
 		ImGui::PopID();
 		

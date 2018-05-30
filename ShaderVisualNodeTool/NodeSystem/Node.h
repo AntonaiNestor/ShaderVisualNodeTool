@@ -28,7 +28,7 @@ enum BaseNodeType{
 };
 
 typedef union Datatype {
-
+	bool b_var;
 	float f_var;
 	int i_var;
 	//std::vector<float> vec2;

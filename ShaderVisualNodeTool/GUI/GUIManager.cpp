@@ -50,8 +50,9 @@ void GUIManager::CreateNode(ImVec2 pos, BaseNodeType type , std::string Name)
 		break;
 
 	case (OutputNode):{
-		std::string OutCode = "FragColor = vec4 ($r , $g, $b, $a );"; 
-		newGraphNode = std::make_shared<class::OutputNode>("Fragment Shader",4,OutCode);
+		//std::string OutCode = "FragColor = vec4 ($r , $g, $b, $a );"; 
+		std::string OutCode = "FragColor = $color;";
+		newGraphNode = std::make_shared<class::OutputNode>("Fragment Shader",1,OutCode);
 		break;
 	}
 	case (FunctionNode):{
@@ -95,13 +96,16 @@ void GUIManager::RenderDrawing(ImDrawList* drawlist)
 		 //
 			
 		 if ( ( (StartSlotType == Input && EndSlotType == Output) ||
-			 (StartSlotType == Output && EndSlotType == Input) ) && StartNode->GNode->UniqueID != EndNode->GNode->UniqueID  ) {
+			 (StartSlotType == Output && EndSlotType == Input) ) && 
+			 StartNode->GNode->UniqueID != EndNode->GNode->UniqueID 
+			) {
 			
 			 //update the 2 nodes 
 			 //both VNode and gNode connections
 
 			 //REPLACE THE CONNECTION HERE LIKE YOU DO WITH THE GRAPH
-			 if (StartSlotType == Input) {
+			 if (StartSlotType == Input && 
+				 StartNode->GNode->Input.at(StartIndex).VariableType == EndNode->GNode->Output.at(EndIndex).VariableType) {
 
 				 //visual connection
 
@@ -125,7 +129,8 @@ void GUIManager::RenderDrawing(ImDrawList* drawlist)
 				 //EndNode->GNode->ConnectNode(StartNode->GNode->shared_from_this(),StartIndex,EndIndex);
 				
 			 }
-			 else {
+			 else if (StartSlotType == Output && 
+				 StartNode->GNode->Output.at(StartIndex).VariableType == EndNode->GNode->Input.at(EndIndex).VariableType){
 
 
 				 //TODO HERE : i have to allow for a list for output -> input
@@ -326,6 +331,8 @@ void GUIManager::RenderGUI() {
 
 
 	//Reset stuff
+	
+	EndSlotType = DefaultNodeSlotType;
 	ItemsHovered = false;
 	ValueChanged = false;
 	ImGui::End();

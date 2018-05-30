@@ -8,6 +8,7 @@
 
 enum ValueType {
 	DefaultSlotType,
+	Bool,
 	Float,
 	Int,
 	Vec2,
@@ -39,5 +40,5 @@ namespace util {
 
 	ValueType stringToValueType(std::string strVal);
 	bool stringToSlotType(std::string strSlotType);
-	std::string GetStringValueType(ValueType type);
+	std::string GetStringValueType(ValueType type,bool defaultValue);
 };

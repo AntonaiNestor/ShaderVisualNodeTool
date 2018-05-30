@@ -25,63 +25,130 @@ bool util::stringToSlotType(std::string strSlotType)
 	else return true;
 }
 
-std::string util::GetStringValueType(ValueType type)
+std::string util::GetStringValueType(ValueType type, bool defaultValue)
 {
 	std::string StringVal;
-	switch (type)  {
 	
+	//returns the string name of the variable type
+	if (!defaultValue) {
+	
+		switch (type) {
 
-	case(Float): {
-		StringVal = "float ";
-		break;
-	}
-	case(Int): {
-		StringVal = "int ";
-		break;
-	}
-	case(Vec2): {
-		StringVal = "vec2 ";
-		break;
+		case(Bool): {
+			StringVal = "bool";
+			break;
+		}
 
-	}
-	case(Vec3): {
-		StringVal = "vec3 ";
-		break;
+		case(Float): {
+			StringVal = "float ";
+			break;
+		}
+		case(Int): {
+			StringVal = "int ";
+			break;
+		}
+		case(Vec2): {
+			StringVal = "vec2 ";
+			break;
 
-	}
-	case(Vec4): {
-		StringVal = "vec4 ";
-		break;
+		}
+		case(Vec3): {
+			StringVal = "vec3 ";
+			break;
 
+		}
+		case(Vec4): {
+			StringVal = "vec4 ";
+			break;
+
+		}
+		case(Mat4): {
+			StringVal = "mat4 ";
+			break;
+		}
+
+		case(Sampler2D): {
+			StringVal = "Sampler ";
+			break;
+
+		}
+		case(SamplerCube): {
+			StringVal = "SamplerCube ";
+			break;
+
+		}
+		default:
+
+			break;
+		}
+
+		return StringVal;
 	}
-	case(Mat4): {
-		StringVal = "mat4 ";
-		break;
+	else {
+		switch (type) {
+
+		case(Bool): {
+			StringVal = "false";
+			break;
+		}
+		case(Float): {
+			StringVal = "1.0f ";
+			break;
+		}
+		case(Int): {
+			StringVal = "1";
+			break;
+		}
+		case(Vec2): {
+			StringVal = "vec2(1.0f,1.0f) ";
+			break;
+
+		}
+		case(Vec3): {
+			StringVal = "vec3(1.0f,1.0f,1.0f) ";
+			break;
+
+		}
+		case(Vec4): {
+			StringVal = "vec4(1.0f,1.0f,1.0f,1.0f) ";
+			break;
+
+		}
+		case(Mat4): {
+			StringVal = "mat4 ";
+			break;
+		}
+
+		case(Sampler2D): {
+			StringVal = "Sampler ";
+			break;
+
+		}
+		case(SamplerCube): {
+			StringVal = "SamplerCube ";
+			break;
+
+		}
+		default:
+
+			break;
+		}
+
+		return StringVal;
+	
 	}
 
-	case(Sampler2D): {
-		StringVal = "Sampler ";
-		break;
-
-	}
-	case(SamplerCube): {
-		StringVal = "SamplerCube ";
-		break;
-
-	}
-	default:
-		
-		break;
-	}
-
-	return StringVal;
+	
 	
 }
 
 
 ValueType util::stringToValueType(std::string strVal) {
 	//The comparison feels weird, the upper case and lower case affects a lot
-	if (strVal.compare("float") == 0) {
+	if (strVal.compare("bool") == 0) {
+		return ValueType::Bool;
+	}
+	else if (strVal.compare("float") == 0) {
 		return ValueType::Float;
 	}
 	else if (strVal.compare("int") == 0) {

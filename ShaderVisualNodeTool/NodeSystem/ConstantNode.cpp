@@ -26,31 +26,31 @@ ConstantNode::ConstantNode()
 
 }
 
-ConstantNode::ConstantNode(float a)
-{
-	//general node attributes
-	Name = "Float";
-	Type = BaseNodeType::InputNode;
-	UniqueID = Graph::getInstance()->AssignID();
-	//varname might be important to check before assigning
-	//varName = "ConstantFloat";
-	//value = a;
-	HasCompiled = false;
-	
-
-	//output struct creation
-	Connection connect;
-	connect.ConnectedNode = nullptr;
-	connect.ConnectionIndex = -1;
-	connect.Value = a;
-	connect.VariableType = Float;
-	connect.Name = "FloatVar";
-	connect.Enabled = true;
-
-	Output.push_back(connect);
-	
-
-}
+//ConstantNode::ConstantNode(float a)
+//{
+//	//general node attributes
+//	Name = "Float";
+//	Type = BaseNodeType::InputNode;
+//	UniqueID = Graph::getInstance()->AssignID();
+//	//varname might be important to check before assigning
+//	//varName = "ConstantFloat";
+//	//value = a;
+//	HasCompiled = false;
+//	
+//
+//	//output struct creation
+//	Connection connect;
+//	connect.ConnectedNode = nullptr;
+//	connect.ConnectionIndex = -1;
+//	connect.Value = a;
+//	connect.VariableType = Float;
+//	connect.Name = "FloatVar";
+//	connect.Enabled = true;
+//
+//	Output.push_back(connect);
+//	
+//
+//}
 
 ConstantNode::ConstantNode(std::string string_type)
 {

@@ -19,18 +19,30 @@ layout (std140) uniform Matrices
 
 uniform mat4 Model;
 
-float test1;
-int cool;
-vec2 FUN;
 
 void main()
 {
-	Normal=aNormal;
+	//Normal=aNormal;
+
     TexCoord=aTexCoords;
+
+	//view position 
 	
+
+	//normal passing
+	mat3 normalMatrix = transpose(inverse(mat3(View * Model)));
+    Normal = normalize(normalMatrix * aNormal);
+
 	//the current vertex position in view space
-	FragPos= vec3(View*vec4(aPos,1.0)) ;
+	
+	vec4 vertPos4 = View * Model * vec4(aPos, 1.0);
+    FragPos = vec3(vertPos4) / vertPos4.w;
+
+	//gl position
     gl_Position = Projection * View * Model* vec4(aPos, 1.0); 
+
+
+
 }
 
 

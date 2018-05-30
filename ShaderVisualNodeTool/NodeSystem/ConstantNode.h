@@ -7,7 +7,7 @@ class ConstantNode : public Node
 {
 public:
 	ConstantNode();
-	ConstantNode(float a);
+	
 	ConstantNode(std::string string_type);
 	~ConstantNode();
 

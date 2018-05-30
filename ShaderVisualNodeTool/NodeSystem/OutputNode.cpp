@@ -13,15 +13,15 @@ OutputNode::OutputNode(std::string name , int NoInputs , std::string functionCod
 	finalFragment = functionCode;
 	HasCompiled = false;
 
-	std::string strArray[]{ "$r","$g","$b","$a" };
+	std::string strArray[]{ "$color" };
 	//output struct creation
 
 
 	for (int i = 0; i < NoInputs; i++) {
 		Connection DefaultIn;
 		DefaultIn.Name = strArray[i];
-		DefaultIn.VariableType =Float;
-		DefaultIn.Value = 1; // Not correct, the output will never be actually calculated at this point. The code never runs 
+		DefaultIn.VariableType = Vec4;
+		//DefaultIn.Value = 1; // Not correct, the output will never be actually calculated at this point. The code never runs 
 							 // You have to attach the full code to a shader, that is how you get a value
 							 // But for now keep it
 
@@ -41,7 +41,8 @@ void OutputNode::Compile(std::string * ShaderCode)
 {
 	int counter = 0;
 	std::string tempCode = finalFragment;
-	std::string strArray[]{ "$r","$g","$b","$a" };
+	//std::string strArray[]{ "$r","$g","$b","$a" };
+	std::string strArray[]{ "$color" };
 	auto Manager = Graph::getInstance();
 	int found = 0;
 
@@ -52,16 +53,19 @@ void OutputNode::Compile(std::string * ShaderCode)
 			auto SlotName = std::to_string(Input.at(i).ConnectedNode->UniqueID) + "->" + std::to_string(Input.at(i).ConnectionIndex);
 			tempCode = Graph::getInstance()->ReplaceVarNames(tempCode, strArray[i], Manager->VarToSlotMap[SlotName]);
 			Input.at(i).Value = Input.at(i).ConnectedNode->Output.at(0).Value;
+			ShaderCode->append("\n" + tempCode + CodeString());
 			//ShaderCode->append("\n" +Input.at(i).Name + " = " + std::to_string(Input.at(0).Value) + ";");
 		}
 		else {
-			tempCode = Graph::getInstance()->ReplaceVarNames(tempCode, strArray[i], std::to_string(Input.at(i).Value));
+			//If you are not connected with anything don't append anything
+
+			//tempCode = Graph::getInstance()->ReplaceVarNames(tempCode, strArray[i], "vec4(1.0f,1.0f,1.0f,1.0f)");
 		}
 
 	}
 
 
-	ShaderCode->append("\n" + tempCode + CodeString());
+	//ShaderCode->append("\n" + tempCode + CodeString());
 	std::cout << *ShaderCode << std::endl;
 	HasCompiled = true;
 }

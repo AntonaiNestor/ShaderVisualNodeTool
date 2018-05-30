@@ -9,7 +9,8 @@ FunctionNode::FunctionNode(std::string NodeName,std::vector<SlotInformation> slo
 	//general node attributes
 	Name = NodeName; 
 	Type = BaseNodeType::FunctionNode;
-	UniqueID = Graph::getInstance()->AssignID();
+	auto graph = Graph::getInstance();
+	UniqueID = graph->AssignID();
 	HasCompiled = false;
 	StringCode = functionCode;
 
@@ -25,8 +26,57 @@ FunctionNode::FunctionNode(std::string NodeName,std::vector<SlotInformation> slo
 
 		std::string::size_type sz;     // alias of size_t
 
-		std::string temp = util::GetStringValueType(slot.VarType);
-		newConnection.Value = std::stof(temp);
+		std::string temp = util::GetStringValueType(slot.VarType,false);
+		//newConnection.Value = std::stof(temp);
+		
+
+		/* switch (slot.VarType) {
+
+
+		case(Float): {
+			newConnection.Value = { graph->DefaultFloat };
+			break;
+		}
+		case(Int): {
+			newConnection.Value = { graph->DefaultInt };
+			break;
+		}
+		case(Vec2): {
+			StringVal = "vec2 ";
+			break;
+
+		}
+		case(Vec3): {
+			StringVal = "vec3 ";
+			break;
+
+		}
+		case(Vec4): {
+			StringVal = "vec4 ";
+			break;
+
+		}
+		case(Mat4): {
+			StringVal = "mat4 ";
+			break;
+		}
+
+		case(Sampler2D): {
+			StringVal = "Sampler ";
+			break;
+
+		}
+		case(SamplerCube): {
+			StringVal = "SamplerCube ";
+			break;
+
+		}
+		default:
+
+			break;
+		}*/
+
+
 		//Input slot
 		if (!slot.SlotType) {
 			Input.push_back(newConnection);
@@ -87,12 +137,26 @@ void FunctionNode::Compile(std::string* ShaderCode)
 			//ShaderCode->append("\n" +Input.at(i).Name + " = " + std::to_string(Input.at(0).Value) + ";");
 		}
 		else {
-			tempCode = Graph::getInstance()->ReplaceVarNames(tempCode, Input.at(i).Name, std::to_string(Input.at(i).Value));
+			//TEMPORARY 
+			if (Input[i].VariableType != Bool) {
+				tempCode = Graph::getInstance()->ReplaceVarNames(tempCode, Input.at(i).Name, util::GetStringValueType(Input[i].VariableType, true));
+			}
+			else {
+				// THIS IS BAD CHANGE IT PLEASE FUTURE ANTONY
+
+				if (Input[i].Enabled == true) {
+					tempCode = Graph::getInstance()->ReplaceVarNames(tempCode, Input.at(i).Name, "true");
+				}
+				else {
+					tempCode = Graph::getInstance()->ReplaceVarNames(tempCode, Input.at(i).Name, "false");
+				}
+			}
+			
 		}
 	
 	}
 
-	// PUT THIS THING IN A FUNCTION YOU SILLY GOOSE
+	// PUT THIS UGLY THING IN A FUNCTION YOU SILLY GOOSE
 	auto outName = Output.at(0).Name;
 	auto tempOutName = outName;
 	auto outSlotName = std::to_string(this->UniqueID) + "->0";;

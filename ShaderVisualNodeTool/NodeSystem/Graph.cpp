@@ -262,7 +262,7 @@ void Graph::ReadNodeTypes(std::string FilePath)
 			std::string codeLines = "";
 			for (std::string codeline : codeArray){
 				
-				codeLines.append(codeline);
+				codeLines.append(codeline + "\n");
 			}
 			
 			tempNode.Code = codeLines;
