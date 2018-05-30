@@ -186,7 +186,7 @@ void VisualNode::DrawInputNode(ImDrawList * drawList, ImVec2 offset)
 	drawList->AddRectFilled(NodeRelevantPos, NodeRelevantPos + VNodeSize, ImColor(40, 40, 40), 10.0); //Background rect
 	drawList->AddRectFilled(NodeRelevantPos, NodeRelevantPos + ImVec2(VNodeSize.x, TITLE_BOX_HEIGHT), ImColor(150, 50, 150), 10, ImDrawCornerFlags_Top); //Title rect 
 	drawList->AddRect(NodeRelevantPos, NodeRelevantPos + VNodeSize, ImColor(255, 255, 255), 10.0); // Border
-	drawList->AddLine(NodeRelevantPos + ImVec2(VNodeSize.x * 3 / 4, TITLE_BOX_HEIGHT), VNodePos + NodeViewPos + ImVec2(VNodeSize.x * 3 / 4, VNodeSize.y), ImColor(255, 255, 255)); // Output Divine Line
+	drawList->AddLine(NodeRelevantPos + ImVec2(VNodeSize.x * 3.3 / 4, TITLE_BOX_HEIGHT), VNodePos + NodeViewPos + ImVec2(VNodeSize.x * 3.3 / 4, VNodeSize.y), ImColor(255, 255, 255)); // Output Divine Line
 
 
 																																												   //Title text
@@ -202,63 +202,7 @@ void VisualNode::DrawInputNode(ImDrawList * drawList, ImVec2 offset)
 	float OutputMargin = ((NodeRelevantPos.y + VNodeSize.y) - (NodeRelevantPos.y + TITLE_BOX_HEIGHT)) / (vOutputs.size() + 1);
 
 	//
-	////Display all Input buttons and circles 
-
-
-	//for (int i = 0; i < vInputs.size(); i++) {
-
-
-
-	//	ImVec2 InputPos(ImVec2(NodeRelevantPos.x, NodeRelevantPos.y + TITLE_BOX_HEIGHT + InputMargin * (i + 1)));
-	//	drawList->AddCircleFilled(InputPos, 5, ImColor(255, 255, 255), 12);
-
-	//	//add the Input invisible button on top of the slot
-	//	ImGui::SetCursorScreenPos(ImVec2(InputPos.x - 10, InputPos.y - 10));
-	//	auto ButtonName = NodeUniqueNameID.append(" Input " + std::to_string(i)).c_str();
-
-	//	if (ImGui::InvisibleButton(ButtonName, ImVec2(20.0f, 20.0f))) {
-	//		//std::cout << "Button Clicked" << std::endl;
-	//	}
-	//	if (ImGui::IsItemActive() && !(Manager->IsDrawing)) {
-
-	//		//start drawing from this slot 
-
-	//		Manager->IsDrawing = true;
-	//		Manager->InitDrawingPos = InputPos;
-	//		Manager->StartSlotType = Input;
-	//		Manager->StartNode = this;
-	//		Manager->StartIndex = i;
-
-	//		//std::cout << "Started drawing from " << Manager->StartSlotType << " slot : " << std::to_string(Manager->StartIndex) << std::endl;
-	//	}
-
-	//	if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem) && Manager->IsDrawing) {
-	//		//end drawing to this slot
-
-	//		Manager->EndDrawingPos = InputPos;
-	//		Manager->EndNode = this;
-	//		Manager->EndSlotType = Input;
-	//		Manager->EndIndex = i;
-	//		Manager->ItemsHovered = true;
-	//		//std::cout << "Ending drawing from " << Manager->EndSlotType << " slot : " << std::to_string(Manager->EndIndex) << std::endl;
-	//	}
-
-
-	//	ImVec2 InputValPos = ImVec2(InputPos.x + PADDING_X, InputPos.y - PADDING_Y);
-	//	ImGui::SetCursorScreenPos(InputValPos);
-
-
-	//	ImGui::BeginGroup(); // Lock horizontal position
-	//						 //Input Var NameX	
-	//	ImGui::Text("Float :");
-	//	ImGui::SameLine();
-	//	ImGui::PushItemWidth(50);
-	//	//Input Current value -- This probably needs to be type 
-	//	ImGui::InputFloat("", &(GNode->Input[i].Value), 0.0f, 1.0f, 3, 0);
-	//	ImGui::EndGroup();
-
-
-	//}
+	
 
 
 	//Display all Output buttons and circles 
@@ -268,28 +212,89 @@ void VisualNode::DrawInputNode(ImDrawList * drawList, ImVec2 offset)
 		drawList->AddCircleFilled(OutputPos, 5, ImColor(255, 255, 255), 12);
 
 
-		ImVec2 OutputValPos = ImVec2(NodeRelevantPos.x + PADDING_X, OutputPos.y- 0.25*OutputMargin);
-		ImGui::SetCursorScreenPos(OutputValPos);
+		
 
 
 		ImGui::PushID(i+GNode->UniqueID);
 		ImGui::BeginGroup(); // Lock horizontal position
 							 //Input Var NameX	
-		// TODO HERE this should be custom depending on type of costant node type --------------
-		ImGui::Text("Float :");
-		ImGui::SameLine();
-		ImGui::PushItemWidth(50);
+		
+		//ImGui::Text("Float :");
+		//ImGui::SameLine();
+		
 		//Input Current value -- This probably needs to be type 
 		auto ValName =  std::to_string(GNode->UniqueID);
-		//ValName.c_str()
-		if (ImGui::InputFloat("", &(GNode->Output[i].Value), 0.0f, 1.0f, 3, 0)) {
-			Manager->ValueChanged = true;
+		ImVec2 OutputValPos;
+
+		//Custom inputs fields depending on valuetype
+		switch (GNode->Output[i].VariableType) {
+		case(Float): {
+			OutputValPos = ImVec2(NodeRelevantPos.x + PADDING_X+25, OutputPos.y - 0.25*OutputMargin);
+			ImGui::SetCursorScreenPos(OutputValPos);
+			ImGui::PushItemWidth(40);
+			if (ImGui::InputFloat("", &(GNode->value.f_var), 0.0f, 0.0f, 2)) {
+				Manager->ValueChanged = true;
+			}
+			
+			break;
 		}
+			
+		case(Int): {
+			OutputValPos = ImVec2(NodeRelevantPos.x + PADDING_X + 25, OutputPos.y - 0.25*OutputMargin);
+			ImGui::SetCursorScreenPos(OutputValPos);
+			ImGui::PushItemWidth(40);
+			
+			if (ImGui::InputInt("", &(GNode->value.i_var), 0.0f, 1.0f, 3)) {
+				Manager->ValueChanged = true;
+			}
+			
+			break;
+		}
+		case(Vec2): {
+			OutputValPos = ImVec2(NodeRelevantPos.x + PADDING_X + 15, OutputPos.y - 0.25*OutputMargin);
+			ImGui::SetCursorScreenPos(OutputValPos);
+			
+			ImGui::PushItemWidth(80);
+			
+			if (ImGui::InputFloat2("", &(GNode->value.vec2_var.x), 2)) {
+				Manager->ValueChanged = true;
+			}
+			
+			break;
+		}
+		case(Vec3): {
+			OutputValPos = ImVec2(NodeRelevantPos.x + PADDING_X , OutputPos.y - 0.25*OutputMargin);
+			ImGui::SetCursorScreenPos(OutputValPos);
+			ImGui::PushItemWidth(120);
+			
+			if (ImGui::InputFloat3("", &(GNode->value.vec3_var.x), 2)) {
+				Manager->ValueChanged = true;
+			}
+			
+			break;
+		}
+		case(Vec4): {
+			OutputValPos = ImVec2(NodeRelevantPos.x + 10 , OutputPos.y - 0.25*OutputMargin);
+			ImGui::SetCursorScreenPos(OutputValPos);
+			ImGui::PushItemWidth(150);
+			
+			if (ImGui::InputFloat4("", &(GNode->value.vec4_var.x), 2)) {
+				Manager->ValueChanged = true;
+				
+			}
+			break;
+		}
+
+		default :
+			break;
+		
+		}
+		ImGui::PopItemWidth();
 		ImGui::EndGroup();
 		
 
 		//Output name 
-		ImVec2 OutputTextPos = ImVec2(OutputPos.x - 1.5*PADDING_X, OutputPos.y - PADDING_Y);
+		ImVec2 OutputTextPos = ImVec2(OutputPos.x - 1.5* PADDING_X, OutputPos.y - PADDING_Y);
 		ImGui::SetCursorScreenPos(OutputTextPos);
 		//Output Var Name + type prolly 	
 

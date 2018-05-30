@@ -21,11 +21,11 @@ FunctionNode::FunctionNode(std::string NodeName,std::vector<SlotInformation> slo
 		Connection newConnection;
 
 		newConnection.Name = slot.Name;
-		newConnection.DataType = slot.VarType;
+		newConnection.VariableType = slot.VarType;
 
 		std::string::size_type sz;     // alias of size_t
 
-		std::string temp = util::GetDefaultValue(slot.VarType);
+		std::string temp = util::GetStringValueType(slot.VarType);
 		newConnection.Value = std::stof(temp);
 		//Input slot
 		if (!slot.SlotType) {

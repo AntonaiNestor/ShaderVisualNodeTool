@@ -39,6 +39,16 @@ public:
 
 	// -- Variables
 
+
+
+	//default  variable values
+	float DefaultFloat = 1.0f;
+	int DefaultInt = 1;
+	glm::vec2 DefaultVec2 = glm::vec2(1.0f, 1.0f);
+	glm::vec3 DefaultVec3 = glm::vec3(1.0f, 1.0f, 1.0f);
+	glm::vec4 DefaultVec4 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	glm::mat4 DefaultMat4 = glm::mat4();
+
 	int NameCounter;
 	
 	// The node type information for function ndoes, saved once.

@@ -27,15 +27,30 @@ enum BaseNodeType{
 		FunctionNode
 };
 
+typedef union Datatype {
+
+	float f_var;
+	int i_var;
+	//std::vector<float> vec2;
+	glm::vec2 vec2_var;
+	glm::vec3 vec3_var;
+	glm::vec4 vec4_var;
+	glm::mat4 mat4_var;
+
+	Datatype() { vec2_var = glm::vec2(); vec3_var = glm::vec3(); vec4_var = glm::vec4(); mat4_var = glm::mat4(); };
+
+}Datatype;
 
 
 class Node;
 
+
 struct Connection {
 	std::shared_ptr<Node> ConnectedNode;
 	int ConnectionIndex;
-	ValueType DataType;
+	ValueType VariableType;
 	std::string Name;
+	//template<typename T> value;
 	float Value; // This will be Type or Symbol, should it be in the connection though?
 	bool Enabled; //Enabled /disable connection
 	
@@ -59,7 +74,7 @@ public:
 	BaseNodeType Type;
 	int UniqueID;
 	bool HasCompiled;
-	
+	Datatype value;
 	std::vector<Connection> Input;
 	std::vector<Connection> Output; 
 	//mnot sure yet if this should be here, i have the information already

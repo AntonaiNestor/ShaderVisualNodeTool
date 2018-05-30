@@ -1,6 +1,6 @@
 #include "GUIManager.h"
 #include "../NodeSystem/ConstantNode.h"
-#include "../NodeSystem/AddNode.h"
+
 #include "../NodeSystem/OutputNode.h"
 #include "../NodeSystem/FunctionNode.h"
 #include <iostream>
@@ -46,7 +46,7 @@ void GUIManager::CreateNode(ImVec2 pos, BaseNodeType type , std::string Name)
 	switch (type) {
 	
 	case (InputNode):
-		newGraphNode = std::make_shared<ConstantNode>();
+		newGraphNode = std::make_shared<ConstantNode>(Name);
 		break;
 
 	case (OutputNode):{
@@ -55,7 +55,7 @@ void GUIManager::CreateNode(ImVec2 pos, BaseNodeType type , std::string Name)
 		break;
 	}
 	case (FunctionNode):{
-		//std::string code = "float $AddResult = $a + $b ;";
+		
 		auto nodeInfo = Graph::getInstance()->FunctionNodes[Name];
 
 		newGraphNode = std::make_shared<class::FunctionNode>(Name,nodeInfo.Slots,nodeInfo.Code);
@@ -123,7 +123,7 @@ void GUIManager::RenderDrawing(ImDrawList* drawlist)
 				 //Graph Node
 				 Graph::getInstance()->CreateConnectionInOut(StartNode->GNode->shared_from_this(),EndNode->GNode,StartIndex,EndIndex);
 				 //EndNode->GNode->ConnectNode(StartNode->GNode->shared_from_this(),StartIndex,EndIndex);
-				 std::cout << "asdf" << std::endl;
+				
 			 }
 			 else {
 
@@ -261,9 +261,26 @@ void GUIManager::RenderGUI() {
 			ImGui::Separator();
 			// Here in each sub menu I should iterate through all types of nodes for each category
 			if (ImGui::BeginMenu("Input Node")) {
+
 				if (ImGui::MenuItem("Constant Node - Float")) {
-					//std::cout << MousePos.x << "  " << MousePos.y<< std::endl;
-					CreateNode(MousePos,InputNode,"Input");
+					
+					CreateNode(MousePos,InputNode,"float");
+				}
+				if (ImGui::MenuItem("Constant Node - Int")) {
+					
+					CreateNode(MousePos, InputNode, "int");
+				}
+				if (ImGui::MenuItem("Constant Node - Vec2")) {
+					
+					CreateNode(MousePos, InputNode, "vec2");
+				}
+				if (ImGui::MenuItem("Constant Node - Vec3")) {
+					
+					CreateNode(MousePos, InputNode, "vec3");
+				}
+				if (ImGui::MenuItem("Constant Node - Vec4")) {
+					
+					CreateNode(MousePos, InputNode, "vec4");
 				}
 
 				ImGui::EndMenu();

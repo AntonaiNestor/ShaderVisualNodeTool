@@ -21,7 +21,7 @@ void Node::ConnectNode(std::shared_ptr<Node> ConnectedNode, int ConnectedIndex, 
 		ConnectedNode->Input.at(ConnectedIndex).ConnectionIndex = OutputIndex;
 
 		//we dont need to assign the value, it is handled in the compile function 
-		ConnectedNode->Input.at(ConnectedIndex).Value = Output.at(OutputIndex).Value;
+		//ConnectedNode->Input.at(ConnectedIndex).Value = Output.at(OutputIndex).Value;
 		//ConnectedNode->Input.at(ConnectedIndex).Name = Output.at(OutputIndex).Name;
 	}
 	catch (const std::out_of_range& oor) {
@@ -34,28 +34,3 @@ void Node::ConnectNode(std::shared_ptr<Node> ConnectedNode, int ConnectedIndex, 
 }
 
 
-
-
-//std::string Node::GetNodeName()
-//{
-//	return Name;
-//}
-//
-//NodeType Node::GetNodeType()
-//{
-//	return Type;
-//}
-//
-//void Node::SetName(std::string name)
-//{
-//	Name = name;
-//}
-//
-//void Node::SetID(int ID)
-//{
-//	UniqueID = ID;
-//}
-//
-//int Node::GetNodeID() {
-//	return UniqueID;
-//}

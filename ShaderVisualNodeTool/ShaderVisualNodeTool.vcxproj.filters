@@ -45,9 +45,6 @@
     <ClInclude Include="GUI\VisualNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="NodeSystem\AddNode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="NodeSystem\ConstantNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -57,16 +54,10 @@
     <ClInclude Include="NodeSystem\InputNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="NodeSystem\MultNode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="NodeSystem\Node.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="NodeSystem\NodeManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="NodeSystem\PowNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Rendering\Camera.h">
@@ -119,9 +110,6 @@
     <ClCompile Include="GUI\VisualNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="NodeSystem\AddNode.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="NodeSystem\ConstantNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -131,16 +119,10 @@
     <ClCompile Include="NodeSystem\InputNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="NodeSystem\MultNode.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="NodeSystem\Node.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="NodeSystem\NodeManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="NodeSystem\PowNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Rendering\Camera.cpp">

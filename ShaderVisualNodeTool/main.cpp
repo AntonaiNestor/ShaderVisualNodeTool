@@ -24,9 +24,7 @@
 //Nodes and graph
 #include "NodeSystem/Graph.h"
 #include "NodeSystem/ConstantNode.h"
-#include "NodeSystem/AddNode.h"
-#include "NodeSystem/MultNode.h"
-#include "NodeSystem/PowNode.h"
+
 
 //imgui and UI related
 
@@ -57,6 +55,20 @@ float OuterTesselationLevel = 1.0;
 const char* shaderStageName = nullptr;
 int Options = 0;
 
+
+union utest {
+
+	float f;
+	int i;
+	//glm::vec2 vec_2;
+
+};
+
+//struct Test {
+//	utest un;
+//	
+//	Test() { un.f = 1.0f; };
+//};
 
 int main()
 {
@@ -288,6 +300,17 @@ int main()
 
 	//}; 
 
+//UNION TESTS
+	utest example = {1.0f};
+	utest example1 = {2};
+	
+	std::cout << example1.f << std::endl;
+	std::cout << example.f << std::endl;
+	example1= example;
+	std::cout << example1.f << std::endl;
+	
+//------------------------------------------
+
 	////is it even beneficial to convert to vec3? 
 	//Mesh test(util::Arrays3ToVec3(verts),indices);
 
@@ -432,10 +455,10 @@ int main()
 
 	GUI->SetupGUI(window);
 
-	GUI->CreateNode(ImVec2(100,100),InputNode,"InputNode");
-	GUI->CreateNode(ImVec2(100,200),InputNode,"InputNode");
-	GUI->CreateNode(ImVec2(100,300), InputNode,"InputNode");
-	GUI->CreateNode(ImVec2(100,400), InputNode, "InputNode");
+	GUI->CreateNode(ImVec2(100,100),InputNode,"float");
+	GUI->CreateNode(ImVec2(100,200),InputNode,"float");
+	GUI->CreateNode(ImVec2(100,300), InputNode,"float");
+	GUI->CreateNode(ImVec2(100,400), InputNode, "float");
 	//GUI->CreateNode(ImVec2(250,200),FunctionNode,"Addition");
 	GUI->CreateNode(ImVec2(400, 300), OutputNode,"OutputNode");
 

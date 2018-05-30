@@ -25,47 +25,47 @@ bool util::stringToSlotType(std::string strSlotType)
 	else return true;
 }
 
-std::string util::GetDefaultValue(ValueType type)
+std::string util::GetStringValueType(ValueType type)
 {
-	std::string DefVal;
+	std::string StringVal;
 	switch (type)  {
 	
 
 	case(Float): {
-		DefVal = "1.0";
+		StringVal = "float ";
 		break;
 	}
 	case(Int): {
-		DefVal = "1.0";
+		StringVal = "int ";
 		break;
 	}
 	case(Vec2): {
-		DefVal = "1.0";
+		StringVal = "vec2 ";
 		break;
 
 	}
 	case(Vec3): {
-		DefVal = "1.0";
+		StringVal = "vec3 ";
 		break;
 
 	}
 	case(Vec4): {
-		DefVal = "1.0";
+		StringVal = "vec4 ";
 		break;
 
 	}
 	case(Mat4): {
-		DefVal = "1.0";
+		StringVal = "mat4 ";
 		break;
 	}
 
 	case(Sampler2D): {
-		DefVal = "1.0";
+		StringVal = "Sampler ";
 		break;
 
 	}
 	case(SamplerCube): {
-		DefVal = "1.0";
+		StringVal = "SamplerCube ";
 		break;
 
 	}
@@ -74,13 +74,13 @@ std::string util::GetDefaultValue(ValueType type)
 		break;
 	}
 
-	return DefVal;
+	return StringVal;
 	
 }
 
 
 ValueType util::stringToValueType(std::string strVal) {
-
+	//The comparison feels weird, the upper case and lower case affects a lot
 	if (strVal.compare("float") == 0) {
 		return ValueType::Float;
 	}
