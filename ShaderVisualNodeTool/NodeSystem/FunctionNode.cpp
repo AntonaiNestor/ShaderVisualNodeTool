@@ -8,7 +8,7 @@ FunctionNode::FunctionNode(std::string NodeName,std::vector<SlotInformation> slo
 {
 	//general node attributes
 	Name = NodeName; 
-	Type = BaseNodeType::FunctionNode;
+	Type = BaseNodeType::FunctionnodeT;
 	auto graph = Graph::getInstance();
 	UniqueID = graph->AssignID();
 	HasCompiled = false;
@@ -24,58 +24,50 @@ FunctionNode::FunctionNode(std::string NodeName,std::vector<SlotInformation> slo
 		newConnection.Name = slot.Name;
 		newConnection.VariableType = slot.VarType;
 
-		std::string::size_type sz;     // alias of size_t
+	
 
-		std::string temp = util::GetStringValueType(slot.VarType,false);
-		//newConnection.Value = std::stof(temp);
+		/*std::string temp = util::GetStringValueType(slot.VarType,true);
+		newConnection.Value.f_var = std::stof(temp);*/
 		
 
-		/* switch (slot.VarType) {
+		 switch (slot.VarType) {
 
-
+		 case (Bool): {
+			 newConnection.Value.b_var = graph->DefaultBool;
+			 break;
+		 }
 		case(Float): {
-			newConnection.Value = { graph->DefaultFloat };
+			newConnection.Value.f_var = { graph->DefaultFloat };
 			break;
 		}
 		case(Int): {
-			newConnection.Value = { graph->DefaultInt };
+			newConnection.Value.i_var = { graph->DefaultInt };
 			break;
 		}
 		case(Vec2): {
-			StringVal = "vec2 ";
+			newConnection.Value.vec2_var = { graph->DefaultVec2 };
 			break;
 
 		}
 		case(Vec3): {
-			StringVal = "vec3 ";
+			newConnection.Value.vec3_var = { graph->DefaultVec3 };
 			break;
 
 		}
 		case(Vec4): {
-			StringVal = "vec4 ";
+			newConnection.Value.vec4_var = { graph->DefaultVec4 };
 			break;
 
 		}
 		case(Mat4): {
-			StringVal = "mat4 ";
+			newConnection.Value.mat4_var = { graph->DefaultMat4 };
 			break;
 		}
 
-		case(Sampler2D): {
-			StringVal = "Sampler ";
-			break;
-
-		}
-		case(SamplerCube): {
-			StringVal = "SamplerCube ";
-			break;
-
-		}
 		default:
 
 			break;
-		}*/
-
+		}
 
 		//Input slot
 		if (!slot.SlotType) {
@@ -123,13 +115,14 @@ void FunctionNode::Compile(std::string* ShaderCode)
 
 	int counter = 0;
 	std::string tempCode = StringCode;
-	//std::string strArray[]{ "$AddResult","$a","$b" }; // mockup, this should not be used like this
+
 	auto Manager = Graph::getInstance();
 	int found = 0;
 
 
 	for (int i = 0; i < Input.size();i++) {
 		//if the input isn;t connected to anything , replace name of the variable with default value
+		// Otherwise, replace the name of the variable with the appropriate name of the output it is connected to.
 		if (Input.at(i).ConnectedNode) {
 			auto SlotName = std::to_string(Input.at(i).ConnectedNode->UniqueID) + "->"+ std::to_string(Input.at(i).ConnectionIndex);
 			tempCode = Graph::getInstance()->ReplaceVarNames(tempCode, Input.at(i).Name, Manager->VarToSlotMap[SlotName]);
@@ -137,19 +130,21 @@ void FunctionNode::Compile(std::string* ShaderCode)
 			//ShaderCode->append("\n" +Input.at(i).Name + " = " + std::to_string(Input.at(0).Value) + ";");
 		}
 		else {
-			//TEMPORARY 
+			//bool is a unique case because it needs special replacement if it is not connected to anything 
 			if (Input[i].VariableType != Bool) {
 				tempCode = Graph::getInstance()->ReplaceVarNames(tempCode, Input.at(i).Name, util::GetStringValueType(Input[i].VariableType, true));
 			}
 			else {
-				// THIS IS BAD CHANGE IT PLEASE FUTURE ANTONY
 
-				if (Input[i].Enabled == true) {
-					tempCode = Graph::getInstance()->ReplaceVarNames(tempCode, Input.at(i).Name, "true");
+				if (Input[i].Value.b_var == false) {
+				
+					tempCode = Graph::getInstance()->ReplaceVarNames(tempCode, Input.at(i).Name,"false");
 				}
 				else {
-					tempCode = Graph::getInstance()->ReplaceVarNames(tempCode, Input.at(i).Name, "false");
+					tempCode = Graph::getInstance()->ReplaceVarNames(tempCode, Input.at(i).Name, "true");
+					
 				}
+			
 			}
 			
 		}
@@ -161,26 +156,29 @@ void FunctionNode::Compile(std::string* ShaderCode)
 	auto tempOutName = outName;
 	auto outSlotName = std::to_string(this->UniqueID) + "->0";;
 	//auto ManagerInstance = Graph::getInstance();
-	try {
-		//if the name exists in the map, then create a unique new name and insert that into the map.
-		//Also change slot name to that new name , so that we won't have to do this all the time
-		Manager->SlotToVariableMap.at(outName);
-		//Since we are reseting the namecounter and the map, there is no reason for that
-		//Output.at(0).Name = name + "_"+  Graph::getInstance()->GiveName();
-		outName = outName + "_" + Graph::getInstance()->GiveName();
-		Manager->SlotToVariableMap.insert(std::pair<std::string, std::string>(outName, outSlotName));
-		Manager->VarToSlotMap.insert(std::pair<std::string, std::string>(outSlotName, outName));
 
-	}
-	catch (std::out_of_range) {
-		Manager->SlotToVariableMap.insert(std::pair<std::string, std::string>(outName, outSlotName));
-		Manager->VarToSlotMap.insert(std::pair<std::string, std::string>(outSlotName, outName));
-	}
+	outName = Manager->AssignUniqueName(outName,outSlotName);
+	//try {
+	//	//if the name exists in the map, then create a unique new name and insert that into the map.
+	//	//Also change slot name to that new name , so that we won't have to do this all the time
+	//	Manager->SlotToVariableMap.at(outName);
+	//	//Since we are reseting the namecounter and the map, there is no reason for that
+	//	//Output.at(0).Name = name + "_"+  Graph::getInstance()->GiveName();
+	//	outName = outName + "_" + Graph::getInstance()->GiveName();
+	//	Manager->SlotToVariableMap.insert(std::pair<std::string, std::string>(outName, outSlotName));
+	//	Manager->VarToSlotMap.insert(std::pair<std::string, std::string>(outSlotName, outName));
+
+	//}
+	//catch (std::out_of_range) {
+	//	Manager->SlotToVariableMap.insert(std::pair<std::string, std::string>(outName, outSlotName));
+	//	Manager->VarToSlotMap.insert(std::pair<std::string, std::string>(outSlotName, outName));
+	//}
+
 	tempCode = Graph::getInstance()->ReplaceVarNames(tempCode, tempOutName,outName);
 	
+	Manager->WriteToShaderCode(tempCode,FragMain);
 
-
-	ShaderCode->append("\n" + tempCode);
+	//ShaderCode->append("\n" + tempCode);
 
 	HasCompiled = true;
 

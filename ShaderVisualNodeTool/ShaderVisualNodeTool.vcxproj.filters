@@ -45,13 +45,7 @@
     <ClInclude Include="GUI\VisualNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="NodeSystem\ConstantNode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="NodeSystem\Graph.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="NodeSystem\InputNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="NodeSystem\Node.h">
@@ -90,6 +84,12 @@
     <ClInclude Include="json.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="NodeSystem\InputNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeSystem\TimeNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GUI\Imgui\imgui.cpp">
@@ -110,13 +110,7 @@
     <ClCompile Include="GUI\VisualNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="NodeSystem\ConstantNode.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="NodeSystem\Graph.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="NodeSystem\InputNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="NodeSystem\Node.cpp">
@@ -159,6 +153,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="NodeSystem\OutputNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeSystem\InputNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeSystem\TimeNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

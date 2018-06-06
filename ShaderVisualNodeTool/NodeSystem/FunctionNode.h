@@ -19,7 +19,9 @@ public:
 	void Compile(std::string *ShaderCode);
 	std::string CodeString();
 
-	//this is not correct being here i feel, the output 
+	//can't have these. We do not run the actual code that calculates the output.
+	//The only for this to be functional is to have a compute shader for every 
+	// function Node
 	void CalculateOutput();
 	void UpdateInputs();
 

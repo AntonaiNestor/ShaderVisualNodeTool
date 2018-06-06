@@ -1,53 +1,49 @@
+//$Version$ 
 #version 330 core
 layout( location=0 ) out vec4 FragColor;
 
 //in vec3 fColor;
 
+//Varying-Standard
 in vec3 Normal;
 in vec3 FragPos;
 
-uniform vec4 InputCol;
+//$Varyings$
+
+
+// -$
+
+//Uniforms-Standard
 uniform float test;
-
 uniform mat4 view;
+uniform vec4 InputCol;
 
 
+//$Uniforms$
 
 
+// -$
 
 
+//$Constants$
+
+// -$
 
 void main()
 {
 	
-    
+    //Main - Default
 	float ambientStrength = 0.2;
     vec3 ambient = ambientStrength * InputCol.xyz;
 
 	vec3 result = ambient * vec3(1.0,1.0,1.0);
 	
-	FragColor = vec4(result, 1.00000);
+	FragColor = InputCol;
 
-	//------------------
-	
-	/*const vec3 lightPos = vec3(1.0,1.0,1.0);
-	const vec3 ambientColor = vec3(0.1, 0.0, 0.0);
-	const vec3 diffuseColor = vec3(0.5, 0.0, 0.0);
-	const vec3 specColor = vec3(1.0, 1.0, 1.0);
-	*/
-
-	
-  
-
-  //----------------------------
-
-
-
+	//$Main$
 	
 
-	// $
+	// -$
 	
-
-
 
 }

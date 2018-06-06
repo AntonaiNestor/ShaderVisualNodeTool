@@ -23,7 +23,7 @@
 
 //Nodes and graph
 #include "NodeSystem/Graph.h"
-#include "NodeSystem/ConstantNode.h"
+#include "NodeSystem/InputNode.h"
 
 
 //imgui and UI related
@@ -304,8 +304,12 @@ int main()
 	utest example = {1.0f};
 	utest example1 = {2};
 	
-	std::cout << example1.f << std::endl;
-	std::cout << example.f << std::endl;
+
+	bool testbool = true;
+
+	std::cout << std::to_string(testbool) << std::endl;
+	testbool = false;
+	std::cout << std::to_string(testbool) << std::endl;
 	example1= example;
 	std::cout << example1.f << std::endl;
 	
@@ -455,14 +459,14 @@ int main()
 
 	GUI->SetupGUI(window);
 
-	GUI->CreateNode(ImVec2(100,100),InputNode,"float");
+	/*GUI->CreateNode(ImVec2(100,100),InputNode,"float");
 	GUI->CreateNode(ImVec2(100,200),InputNode,"float");
 	GUI->CreateNode(ImVec2(100,300), InputNode,"float");
-	GUI->CreateNode(ImVec2(100,400), InputNode, "float");
+	GUI->CreateNode(ImVec2(100,400), InputNode, "float");*/
 	//GUI->CreateNode(ImVec2(250,200),FunctionNode,"Addition");
-	GUI->CreateNode(ImVec2(400, 300), OutputNode,"OutputNode");
+	GUI->CreateNode(ImVec2(400, 300), OutputnodeT,"OutputNode");
 
-	graph->root = graph->NodeList.at(4);
+	graph->root = graph->NodeList.at(0);
 	graph->daShader = &shader;
 
 	std::string test13("Float");
@@ -473,10 +477,6 @@ int main()
 
 	//graph->root = graph->NodeList.at(3);
 	
-
-	
-
-
 
 	bool show_demo_window = true;
 	bool show_another_window = false;
@@ -539,10 +539,13 @@ int main()
 			processInput(window,&shader);
 			
 			//new
-
+			graph->time = time ;
+			//std::cout << graph->time << std::endl;
 			//Render GUI
 			GUI->RenderGUI();
-		
+
+			//remove the calls from the visual part probably since this is called everyframe
+			graph->UpdateUniforms();
 
 			// OpenGL Rendering in scene
 			// ------

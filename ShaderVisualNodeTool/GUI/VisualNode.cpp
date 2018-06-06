@@ -1,6 +1,8 @@
 #include "VisualNode.h"
 #include <iostream>
 #include <algorithm>
+#include "../NodeSystem/InputNode.h"
+#include "../NodeSystem/TimeNode.h"
 
 //struct implementations
 ConnectionVCoords::ConnectionVCoords()
@@ -106,15 +108,16 @@ void VisualNode::DisplayNode(ImDrawList * drawList,ImVec2 offset)
 	//DrawConstantNode(drawList, offset);
 	switch (GNode->Type)
 	{
-		case (InputNode):
+		case(InputnodeConst):
+		case (InputnodeUniform):
 			DrawInputNode(drawList, offset);
 
 			break;
-		case(FunctionNode):
+		case(FunctionnodeT):
 			DrawFunctionNode( drawList, offset);
 			break;
 
-		case(OutputNode):
+		case(OutputnodeT):
 			DrawOutputNode( drawList,offset);
 			break;
 
@@ -209,18 +212,88 @@ void VisualNode::DrawInputNode(ImDrawList * drawList, ImVec2 offset)
 	//
 	
 
+	// General BeginCombo() API, you have full control over your selection data and display type.
+	// (your selection data could be an index, a pointer to the object, an id for the object, a flag stored in the object itself, etc.)
 
+	ImGui::PushID(GNode->UniqueID + NodeRelevantPos.x);
+	//const char* items[] = { "Constant", "Uniform" };
+
+	const char* item_current;
+	auto graph = Graph::getInstance();
+	
+	//ARGH STOP THIS, YOU ARE KILLING ME
+	if (typeid(*GNode) != typeid(TimeNode)) {
+	
+		switch (GNode->Type) {
+
+		case (0):
+			item_current = graph->types[0];
+			break;
+		case (1):
+			item_current = graph->types[1];
+			break;
+		case(2):
+			item_current = graph->types[2];
+			break;
+		default:
+			item_current = graph->types[0];
+			break;
+
+		}
+
+
+
+		// Here our selection is a single pointer stored outside the object.
+		ImGui::PushItemWidth(80);
+		ImGui::SetCursorScreenPos(ImVec2(NodeRelevantPos.x, NodeRelevantPos.y + 1 + TITLE_BOX_HEIGHT));
+		if (ImGui::BeginCombo("Type" + GNode->UniqueID, item_current, 1)) // The second parameter is the label previewed before opening the combo.
+		{
+			for (int n = 0; n < 2; n++)
+			{
+				bool is_selected = (GNode->Type == BaseNodeType(n));
+				if (ImGui::Selectable(graph->types[n], is_selected)) {
+					//item_current = graph->types[n];
+					GNode->Type = BaseNodeType(n);
+
+					// EXTREMELY UGLY 
+					if (n == 1) {
+						//dynamic_cast<InputNode&>(*GNode).EditUniform();
+						//std::shared_ptr<InputNode> unif = dynamic_cast<InputNode*>(GNode);
+
+						//REMEMBER TO REMOVE FROM LIST WHEN GOING BACK TO CONSTANT
+						graph->UniformNodes.push_back(GNode);
+
+					}
+
+					Manager->ValueChanged = true;
+
+				}
+
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();   // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
+			}
+			ImGui::EndCombo();
+		}
+
+		
+	
+	}
+	ImGui::PopID();
 	//Display all Output buttons and circles 
 	for (int i = 0; i < vOutputs.size(); i++) {
 
-		ImVec2 OutputPos(ImVec2(NodeRelevantPos.x + VNodeSize.x, NodeRelevantPos.y + TITLE_BOX_HEIGHT + OutputMargin * (i + 1)));
+		ImVec2 OutputPos(ImVec2(NodeRelevantPos.x + VNodeSize.x, NodeRelevantPos.y + TITLE_BOX_HEIGHT + 10 +  OutputMargin * (i + 1)));
 		drawList->AddCircleFilled(OutputPos, 5, ImColor(255, 255, 255), 12);
+
 
 
 		ImGui::PushID(i+GNode->UniqueID);
 		ImGui::BeginGroup(); // Lock horizontal position
 							 //Input Var NameX	
 		
+
+
+
 		//ImGui::Text("Float :");
 		//ImGui::SameLine();
 		
@@ -228,16 +301,27 @@ void VisualNode::DrawInputNode(ImDrawList * drawList, ImVec2 offset)
 		auto ValName =  std::to_string(GNode->UniqueID);
 		ImVec2 OutputValPos;
 
+		
+
+		
+
 		//Custom inputs fields depending on valuetype
 		switch (GNode->Output[i].VariableType) {
 		case(Float): {
-			OutputValPos = ImVec2(NodeRelevantPos.x + PADDING_X+25, OutputPos.y - 0.25*OutputMargin);
-			ImGui::SetCursorScreenPos(OutputValPos);
 			ImGui::PushItemWidth(40);
-			if (ImGui::InputFloat("", &(GNode->value.f_var), 0.0f, 0.0f, 2)) {
-				Manager->ValueChanged = true;
-			}
+			//MORE TIME NODE BULLSHIT
+			if (typeid(*GNode) != typeid(TimeNode)){
+				OutputValPos = ImVec2(NodeRelevantPos.x + PADDING_X+25, OutputPos.y - 0.25*OutputMargin);
+				ImGui::SetCursorScreenPos(OutputValPos);
+				
+				if (ImGui::InputFloat("", &(GNode->value.f_var), 0.0f, 0.0f, 2)) {
+					if (GNode->Type == BaseNodeType::InputnodeUniform) { graph->UpdateUniforms(); }
+					else { Manager->ValueChanged = true; }
+				}
 			
+				
+
+			}
 			break;
 		}
 			
@@ -247,7 +331,8 @@ void VisualNode::DrawInputNode(ImDrawList * drawList, ImVec2 offset)
 			ImGui::PushItemWidth(40);
 			
 			if (ImGui::InputInt("", &(GNode->value.i_var), 0.0f, 1.0f, 3)) {
-				Manager->ValueChanged = true;
+				if (GNode->Type == BaseNodeType::InputnodeUniform) { graph->UpdateUniforms(); }
+				else { Manager->ValueChanged = true; }
 			}
 			
 			break;
@@ -259,7 +344,8 @@ void VisualNode::DrawInputNode(ImDrawList * drawList, ImVec2 offset)
 			ImGui::PushItemWidth(80);
 			
 			if (ImGui::InputFloat2("", &(GNode->value.vec2_var.x), 2)) {
-				Manager->ValueChanged = true;
+				if (GNode->Type == BaseNodeType::InputnodeUniform) { graph->UpdateUniforms(); }
+				else { Manager->ValueChanged = true; }
 			}
 			
 			break;
@@ -270,7 +356,8 @@ void VisualNode::DrawInputNode(ImDrawList * drawList, ImVec2 offset)
 			ImGui::PushItemWidth(120);
 			
 			if (ImGui::InputFloat3("", &(GNode->value.vec3_var.x), 2)) {
-				Manager->ValueChanged = true;
+				if (GNode->Type == BaseNodeType::InputnodeUniform) { graph->UpdateUniforms(); }
+				else { Manager->ValueChanged = true; }
 			}
 			
 			break;
@@ -281,7 +368,10 @@ void VisualNode::DrawInputNode(ImDrawList * drawList, ImVec2 offset)
 			ImGui::PushItemWidth(150);
 			
 			if (ImGui::InputFloat4("", &(GNode->value.vec4_var.x), 2)) {
-				Manager->ValueChanged = true;
+				if (GNode->Type == BaseNodeType::InputnodeUniform ) { 
+					graph->UpdateUniforms(); 
+				}
+				else { Manager->ValueChanged = true; }
 				
 			}
 			break;
@@ -345,7 +435,7 @@ void VisualNode::DrawFunctionNode(ImDrawList * drawList, ImVec2 offset)
 
 	ImVec2 NodeViewPos = Manager->NodeViewPos;
 	ImVec2 NodeRelevantPos = NodeViewPos + VNodePos + offset;
-	ImVec2 TitlePadding(TITLE_PADDING_X, TITLE_PADDING_Y);
+	ImVec2 TitlePadding(10, TITLE_PADDING_Y);
 	std::string NodeUniqueNameID = "Node " + std::to_string(GNode->UniqueID);
 
 
@@ -383,7 +473,7 @@ void VisualNode::DrawFunctionNode(ImDrawList * drawList, ImVec2 offset)
 																																												   //Title text
 	ImGui::SetCursorScreenPos(NodeRelevantPos + TitlePadding);
 	std::string NodeName = GNode->Name;
-	auto TitleText = (NodeName.append(" : ID - ")).append(std::to_string(GNode->UniqueID)).c_str();
+	auto TitleText = (NodeName.append(": ID - ")).append(std::to_string(GNode->UniqueID)).c_str();
 	ImGui::Text(TitleText);
 
 	//Main Body
@@ -447,8 +537,10 @@ void VisualNode::DrawFunctionNode(ImDrawList * drawList, ImVec2 offset)
 
 		if (GNode->Input[i].VariableType == Bool) {
 			
-			ImGui::Checkbox((GNode->Input.at(i).Name).c_str(),&(GNode->Input.at(i).Enabled) );
-			Manager->ValueChanged = true;
+			if (ImGui::Checkbox((GNode->Input.at(i).Name).c_str(), &(GNode->Input.at(i).Value.b_var))) {
+				Manager->ValueChanged = true;
+			}
+			//
 			
 		}
 		else {

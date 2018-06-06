@@ -21,10 +21,13 @@
 
 enum BaseNodeType{
 	
-		InputNode,
-		OutputNode,
-		ShaderNode,
-		FunctionNode
+		//InputnodeT,
+		InputnodeConst,
+		InputnodeUniform,
+		InputnodeGlobal,
+		OutputnodeT,
+		ShadernodeT,
+		FunctionnodeT
 };
 
 typedef union Datatype {
@@ -51,7 +54,7 @@ struct Connection {
 	ValueType VariableType;
 	std::string Name;
 	//template<typename T> value;
-	float Value; // This will be Type or Symbol, should it be in the connection though?
+	Datatype Value; // This will be Type or Symbol, should it be in the connection though?
 	bool Enabled; //Enabled /disable connection
 	
 	//there is an issue with this in regards to initialising or reseting the  default value
@@ -75,6 +78,8 @@ public:
 	int UniqueID;
 	bool HasCompiled;
 	Datatype value;
+	
+
 	std::vector<Connection> Input;
 	std::vector<Connection> Output; 
 	//mnot sure yet if this should be here, i have the information already

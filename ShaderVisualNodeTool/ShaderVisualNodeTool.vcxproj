@@ -30,9 +30,8 @@
     <ClInclude Include="GUI\Imgui\stb_textedit.h" />
     <ClInclude Include="GUI\Imgui\stb_truetype.h" />
     <ClInclude Include="GUI\VisualNode.h" />
-    <ClInclude Include="NodeSystem\ConstantNode.h" />
-    <ClInclude Include="NodeSystem\Graph.h" />
     <ClInclude Include="NodeSystem\InputNode.h" />
+    <ClInclude Include="NodeSystem\Graph.h" />
     <ClInclude Include="NodeSystem\Node.h" />
     <ClInclude Include="NodeSystem\NodeManager.h" />
     <ClInclude Include="NodeSystem\OutputNode.h" />
@@ -43,6 +42,7 @@
     <ClInclude Include="Rendering\Scene.h" />
     <ClInclude Include="Rendering\Shader.h" />
     <ClInclude Include="Rendering\stb_image.h" />
+    <ClInclude Include="NodeSystem\TimeNode.h" />
     <ClInclude Include="Utility.h" />
   </ItemGroup>
   <ItemGroup>
@@ -55,9 +55,8 @@
     <ClCompile Include="GUI\Imgui\imgui_impl_glfw_gl3.cpp" />
     <ClCompile Include="GUI\VisualNode.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="NodeSystem\ConstantNode.cpp" />
-    <ClCompile Include="NodeSystem\Graph.cpp" />
     <ClCompile Include="NodeSystem\InputNode.cpp" />
+    <ClCompile Include="NodeSystem\Graph.cpp" />
     <ClCompile Include="NodeSystem\Node.cpp" />
     <ClCompile Include="NodeSystem\NodeManager.cpp" />
     <ClCompile Include="NodeSystem\OutputNode.cpp" />
@@ -68,6 +67,7 @@
     <ClCompile Include="Rendering\Scene.cpp" />
     <ClCompile Include="Rendering\Shader.cpp" />
     <ClCompile Include="Rendering\stb_image.cpp" />
+    <ClCompile Include="NodeSystem\TimeNode.cpp" />
     <ClCompile Include="Utility.cpp" />
   </ItemGroup>
   <ItemGroup>

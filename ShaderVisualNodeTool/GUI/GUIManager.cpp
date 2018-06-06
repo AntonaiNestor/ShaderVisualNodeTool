@@ -1,8 +1,9 @@
 #include "GUIManager.h"
-#include "../NodeSystem/ConstantNode.h"
+#include "../NodeSystem/InputNode.h"
 
 #include "../NodeSystem/OutputNode.h"
 #include "../NodeSystem/FunctionNode.h"
+#include "../NodeSystem/TimeNode.h"
 #include <iostream>
 
 
@@ -44,18 +45,28 @@ void GUIManager::CreateNode(ImVec2 pos, BaseNodeType type , std::string Name)
 	
 	std::shared_ptr<Node> newGraphNode;
 	switch (type) {
-	
-	case (InputNode):
-		newGraphNode = std::make_shared<ConstantNode>(Name);
-		break;
+	case(InputnodeConst):
+	case (InputnodeUniform):{
 
-	case (OutputNode):{
+		//UGLY AGAIN , WHEN WILL THIS STOP
+		if (Name.compare("time") == 0) {
+			newGraphNode = std::make_shared<TimeNode>();
+			
+		}
+
+		else {
+			newGraphNode = std::make_shared<InputNode>(Name);
+		}
+	
+		break;
+	}
+	case (OutputnodeT):{
 		//std::string OutCode = "FragColor = vec4 ($r , $g, $b, $a );"; 
 		std::string OutCode = "FragColor = $color;";
 		newGraphNode = std::make_shared<class::OutputNode>("Fragment Shader",1,OutCode);
 		break;
 	}
-	case (FunctionNode):{
+	case (FunctionnodeT):{
 		
 		auto nodeInfo = Graph::getInstance()->FunctionNodes[Name];
 
@@ -162,7 +173,7 @@ void GUIManager::RenderDrawing(ImDrawList* drawlist)
 					 std::shared_ptr<Node> previousEndNode = x.ConnectedNode;
 					 int previousEndIndex = x.ConnectionIndex;
 					
-					 Graph::getInstance()->RemoveConnection(previousEndNode,StartNode->GNode,StartIndex,previousEndIndex);
+					 Graph::getInstance()->RemoveConnection(previousEndNode,StartNode->GNode,previousEndIndex, StartIndex);
 					 StartNode->vInputs.at(StartIndex).conn->ResetConnection();
 					 StartNode->vInputs.at(StartIndex).ResetConnection();
 					 
@@ -269,23 +280,26 @@ void GUIManager::RenderGUI() {
 
 				if (ImGui::MenuItem("Constant Node - Float")) {
 					
-					CreateNode(MousePos,InputNode,"float");
+					CreateNode(MousePos,InputnodeConst,"float");
 				}
 				if (ImGui::MenuItem("Constant Node - Int")) {
 					
-					CreateNode(MousePos, InputNode, "int");
+					CreateNode(MousePos, InputnodeConst, "int");
 				}
 				if (ImGui::MenuItem("Constant Node - Vec2")) {
 					
-					CreateNode(MousePos, InputNode, "vec2");
+					CreateNode(MousePos, InputnodeConst, "vec2");
 				}
 				if (ImGui::MenuItem("Constant Node - Vec3")) {
 					
-					CreateNode(MousePos, InputNode, "vec3");
+					CreateNode(MousePos, InputnodeConst, "vec3");
 				}
 				if (ImGui::MenuItem("Constant Node - Vec4")) {
 					
-					CreateNode(MousePos, InputNode, "vec4");
+					CreateNode(MousePos, InputnodeConst, "vec4");
+				}
+				if (ImGui::MenuItem("Time ")) {
+					CreateNode(MousePos, InputnodeUniform, "time");
 				}
 
 				ImGui::EndMenu();
@@ -293,14 +307,14 @@ void GUIManager::RenderGUI() {
 			if (ImGui::BeginMenu("Function Node")) {
 
 
-				for (std::map<std::string,FunctionNodeType >::iterator iter = graph->FunctionNodes.begin(); iter != graph->FunctionNodes.end(); ++iter)
+				for (std::map<std::string,FunctionNodeType>::iterator iter = graph->FunctionNodes.begin(); iter != graph->FunctionNodes.end(); ++iter)
 				{
 					
 					//new menu entry
 					if (ImGui::MenuItem((iter->first).c_str())) {
 						
 						//call constructor for function node
-						CreateNode(MousePos,FunctionNode,iter->first);
+						CreateNode(MousePos,FunctionnodeT,iter->first);
 					}
 
 					//Key k = iter->first;

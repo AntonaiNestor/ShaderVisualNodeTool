@@ -412,11 +412,12 @@ void Shader::EditShader(std::string newShader, ShaderType type)
 {
 	//this should be more generic, but for now all we do is just 
 
-	std::string tempFrag = fragCode;
-	tempFrag.insert( fragCode.find("$")+1 , "\n"+newShader);
+	//std::string tempFrag = fragCode;
+	std::string tempFrag = newShader;
+	//tempFrag.insert(fragCode.find("$") + 1, "\n" + newShader);
 
 
-	std::cout << tempFrag << std::endl;
+	//std::cout << tempFrag << std::endl;
 	const char* vShaderCode = vertCode.c_str();
 	const char* fShaderCode = tempFrag.c_str();
 

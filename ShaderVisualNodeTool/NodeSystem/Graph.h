@@ -3,10 +3,12 @@
 #include <map>
 #include "../Rendering/Shader.h"
 #include "Node.h"
+//#include "InputNode.h"
 #include "../Utility.h"
 
 
 class Node;
+
 
 struct SlotInformation {
 
@@ -26,6 +28,15 @@ struct FunctionNodeType {
 	std::string Code; // GLSL code
 };
 
+enum ShaderSection {
+
+	FragVersion,
+	FragVarying,
+	FragUniform,
+	FragConstant,
+	FragMain
+};
+
 class Graph
 {
 public:
@@ -40,8 +51,9 @@ public:
 	// -- Variables
 
 
-
+	const char* types[3] = { "Constant", "Uniform", "Global" };
 	//default  variable values
+	bool DefaultBool = false;
 	float DefaultFloat = 1.0f;
 	int DefaultInt = 1;
 	glm::vec2 DefaultVec2 = glm::vec2(1.0f, 1.0f);
@@ -50,6 +62,7 @@ public:
 	glm::mat4 DefaultMat4 = glm::mat4();
 
 	int NameCounter;
+	float time;
 	
 	// The node type information for function ndoes, saved once.
 	// The information from these will be used on creation
@@ -62,6 +75,9 @@ public:
 	std::shared_ptr<Node> root;
 	//these two here are probably not correct
 	std::string* ShaderCode = new std::string("");
+	std::vector<std::string> CodeSections;
+	std::string Identifiers[5] = {"$Version$","$Varyings$","$Uniforms$","$Constants$" ,"$Main$" };
+
 	Shader* daShader;
 
 	//Global map for variable name convertion
@@ -70,6 +86,7 @@ public:
 
 	//List of all the nodes in the graph - order is not important, just access to all of them
 	std::vector<std::shared_ptr<Node>> NodeList;
+	std::vector<std::shared_ptr<Node>> UniformNodes;
 
 	// ---- Methods 
 
@@ -99,9 +116,12 @@ public:
 	void PrintConnections();
 	void ResetGraph();
 	void UpdateGraph();
-	
+	std::string AssignUniqueName(std::string initName, std::string slotName);
 	std::string ReplaceVarNames(std::string code, std::string oldName, std::string newName);
-
+	void WriteToShaderCode(std::string code, ShaderSection section);
+	void AssembleShaderCode();
+	void ClearShaderCode();
+	void UpdateUniforms();
 	//TODO 
 	// Implement function that checks if the graph contains any circles 
 	bool CircleInGraph();

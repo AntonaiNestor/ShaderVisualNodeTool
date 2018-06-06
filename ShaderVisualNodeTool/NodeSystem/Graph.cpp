@@ -3,12 +3,19 @@
 #include <fstream>
 #include "../json.hpp"
 #include "../Utility.h"
+#include "InputNode.h"
+#include "TimeNode.h"
 
 
 Graph::Graph()
 {
 	ID = 0;
 	NameCounter = 0;
+
+	//populate the vector of string with 5 empty ones
+	for (int i =0; i < 5 ; i++){
+		CodeSections.push_back("");
+	}
 }
 
 
@@ -202,6 +209,12 @@ void Graph::ResetNameCounter()
 
 void Graph::AddNode(std::shared_ptr<Node> node) {
 	NodeList.push_back(node);
+
+
+	//REMOVE FROM HERE
+	if (typeid(*node) == typeid(TimeNode) ){
+		UniformNodes.push_back(node);
+	}
 }
 
 void Graph::ReadNodeTypes(std::string FilePath)
@@ -253,7 +266,7 @@ void Graph::ReadNodeTypes(std::string FilePath)
 				tempSlot.SlotType = stype;
 				tempSlot.VarType = vartype;
 				tempNode.Slots.push_back(tempSlot);
-
+				
 			}
 
 			//code 
@@ -283,7 +296,8 @@ void Graph::ReadNodeTypes(std::string FilePath)
 
 void Graph::CompileGraph(std::shared_ptr<Node> CurrentNode , std::string* ShaderCode)
 {
-	ShaderCode->clear();
+	
+	ClearShaderCode();
 
 	//Traverse all the Inputs list of this node
 	for (std::vector<Connection>::iterator it = CurrentNode->Input.begin(); it != CurrentNode->Input.end(); ++it) {
@@ -339,9 +353,9 @@ void Graph::ResetGraph()
 	for (auto &node : NodeList) {
 		node->HasCompiled = false;
 	}
-	ResetNameCounter();
-	SlotToVariableMap.clear();
-	VarToSlotMap.clear();
+	//ResetNameCounter();
+	//SlotToVariableMap.clear();
+	//VarToSlotMap.clear();
 	
 }
 
@@ -350,8 +364,48 @@ void Graph::UpdateGraph()
 	PrintConnections();
 	CompileGraph(root, ShaderCode);
 	ChangeShader(daShader);
+	//UpdateUniforms();
 	ResetGraph();
 
+}
+
+std::string Graph::AssignUniqueName(std::string initName, std::string slotName)
+{
+	std::string finalName = initName;
+
+	//if the unique slot name already is in the map then retrieve that name
+	try {
+
+		finalName = VarToSlotMap.at(slotName);
+		
+		////if the name exists in the map, then create a unique new name and insert that into the map.
+		
+		
+
+	}
+	//otherwise check if the name of the variable already exists
+	//if it does generate a new name, otherwise simply push the pair in both maps
+	catch (std::out_of_range) {
+		
+		try {
+			SlotToVariableMap.at(finalName);
+			//Since we are reseting the namecounter and the map, there is no reason for that
+			//Output.at(0).Name = name + "_"+  Graph::getInstance()->GiveName();
+			finalName = initName + "_" + GiveName();
+			SlotToVariableMap.insert(std::pair<std::string, std::string>(finalName, slotName));
+			VarToSlotMap.insert(std::pair<std::string, std::string>(slotName, finalName));
+
+		}
+		catch (std::out_of_range){
+			SlotToVariableMap.insert(std::pair<std::string, std::string>(finalName, slotName));
+			VarToSlotMap.insert(std::pair<std::string, std::string>(slotName, finalName));
+		}
+
+		
+	}
+
+
+	return finalName;
 }
 
 std::string Graph::ReplaceVarNames(std::string code, std::string oldName, std::string newName)
@@ -366,5 +420,81 @@ std::string Graph::ReplaceVarNames(std::string code, std::string oldName, std::s
 		start_pos += newName.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
 	}
 	return code;
+}
+
+void Graph::WriteToShaderCode(std::string code, ShaderSection section)
+{
+	switch (section) {
+		case (FragVersion): {
+			CodeSections[0].append("\n" + code);
+			//(*ShaderCode).insert((*ShaderCode).find("$Version$") + 1, "\n" + code);
+			break;
+		}
+		case (FragVarying): {
+			CodeSections[1].append("\n" + code);
+			//(*ShaderCode).insert((*ShaderCode).find("$Varyings$") + 1, "\n" + code);
+			break;
+		}
+		case (FragUniform): {
+			CodeSections[2].append("\n" + code);
+		//	(*ShaderCode).insert((*ShaderCode).find("$Uniforms$") + 1, "\n" + code);
+			break;
+		}
+		case (FragConstant): {
+			CodeSections[3].append("\n" + code);
+			//(*ShaderCode).insert((*ShaderCode).find("$Constants$") + 1, "\n" + code);
+			break;
+		}
+		case (FragMain): {
+			CodeSections[4].append("\n" + code);
+			//(*ShaderCode).insert((*ShaderCode).find("$Main$") , "\n" + code);
+			break;
+		}
+		default: {
+			CodeSections[4].append("\n" + code);
+			//(*ShaderCode).insert((*ShaderCode).find("$Main$") + 6, "\n" + code);
+			break;
+		}
+
+
+
+
+	}
+
+}
+
+void Graph::AssembleShaderCode()
+{
+	for (int i = 0; i < 5; i++) {
+		(*ShaderCode).insert((*ShaderCode).find(Identifiers[i]) + Identifiers[i].length(), "\n" + CodeSections[i]);
+	}
+
+}
+
+void Graph::ClearShaderCode()
+{
+	//clear shaderCode -- can skip this i think
+	ShaderCode->clear();
+	//clear sections
+	for (int i = 0; i < 5; i++) {
+		CodeSections[i].clear();
+	}
+	//initialize shadercode to skeleton code
+	(*ShaderCode) = daShader->fragCode;
+}
+
+void Graph::UpdateUniforms()
+{
+	for (auto unode : UniformNodes) {
+		if (typeid(*unode) == typeid(InputNode)) {
+			dynamic_cast<InputNode&>(*unode).EditUniform();
+		}
+		else if (typeid(*unode) == typeid(TimeNode)) {
+			dynamic_cast<TimeNode&>(*unode).EditUniform();
+		}
+
+		
+	}
+
 }
 

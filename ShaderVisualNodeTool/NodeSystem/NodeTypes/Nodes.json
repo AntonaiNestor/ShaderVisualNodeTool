@@ -132,7 +132,7 @@
 
     {
       "NodeType": "Function Node",
-      "Name": "Screen Space Normals",
+      "Name": "ScreenSpaceNormals",
       "Slots": [
         {
           "SlotType": "Input",
@@ -171,6 +171,40 @@
         "else{",
         "SSN_Color = vec4($LightColor * light, 1.0);",
         "}"
+
+      ]
+
+    },
+
+    {
+      "NodeType": "Function Node",
+      "Name": "floatTovec4",
+      "Slots": [
+        {
+          "SlotType": "Input",
+          "SlotName": "$r",
+          "VariableType": "float"
+        },
+        {
+          "SlotType": "Input",
+          "SlotName": "$g",
+          "VariableType": "float"
+        },
+        {
+          "SlotType": "Input",
+          "SlotName": "$b",
+          "VariableType": "float"
+        },
+        {
+          "SlotType": "Output",
+          "SlotName": "Color",
+          "VariableType": "vec4"
+        }
+
+
+      ],
+      "Code": [
+        "vec4 Color = vec4($r , $g, $b ,1.0f);"
 
       ]
 

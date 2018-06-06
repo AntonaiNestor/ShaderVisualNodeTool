@@ -7,7 +7,7 @@ OutputNode::OutputNode(std::string name , int NoInputs , std::string functionCod
 
 	//general node attributes
 	Name = name;
-	Type = BaseNodeType::OutputNode;
+	Type = BaseNodeType::OutputnodeT;
 	UniqueID = Graph::getInstance()->AssignID();
 
 	finalFragment = functionCode;
@@ -53,7 +53,11 @@ void OutputNode::Compile(std::string * ShaderCode)
 			auto SlotName = std::to_string(Input.at(i).ConnectedNode->UniqueID) + "->" + std::to_string(Input.at(i).ConnectionIndex);
 			tempCode = Graph::getInstance()->ReplaceVarNames(tempCode, strArray[i], Manager->VarToSlotMap[SlotName]);
 			Input.at(i).Value = Input.at(i).ConnectedNode->Output.at(0).Value;
-			ShaderCode->append("\n" + tempCode + CodeString());
+
+			Manager->WriteToShaderCode(tempCode + CodeString(),FragMain);
+
+			Manager->AssembleShaderCode();
+			//ShaderCode->append("\n" + tempCode + CodeString());
 			//ShaderCode->append("\n" +Input.at(i).Name + " = " + std::to_string(Input.at(0).Value) + ";");
 		}
 		else {
@@ -63,7 +67,7 @@ void OutputNode::Compile(std::string * ShaderCode)
 		}
 
 	}
-
+	
 
 	//ShaderCode->append("\n" + tempCode + CodeString());
 	std::cout << *ShaderCode << std::endl;
