@@ -208,8 +208,67 @@
 
       ]
 
-    }
+    },
+    {
+      "NodeType": "Function Node",
+      "Name": "floatTovec3",
+      "Slots": [
+        {
+          "SlotType": "Input",
+          "SlotName": "$r",
+          "VariableType": "float"
+        },
+        {
+          "SlotType": "Input",
+          "SlotName": "$g",
+          "VariableType": "float"
+        },
+        {
+          "SlotType": "Input",
+          "SlotName": "$b",
+          "VariableType": "float"
+        },
+        {
+          "SlotType": "Output",
+          "SlotName": "Color",
+          "VariableType": "vec3"
+        }
 
+
+      ],
+      "Code": [
+        "vec3 Color = vec3($r , $g, $b );"
+
+      ]
+
+    },
+    {
+      "NodeType": "Function Node",
+      "Name": "PingPong",
+      "Slots": [
+        {
+          "SlotType": "Input",
+          "SlotName": "$t",
+          "VariableType": "float"
+        },
+        {
+          "SlotType": "Input",
+          "SlotName": "$length",
+          "VariableType": "float"
+        },
+        {
+          "SlotType": "Output",
+          "SlotName": "PP",
+          "VariableType": "float"
+        }
+      ],
+      "Code": [
+        "float temp = mod($t, $length * 2.0f);",
+        "float PP = $length - abs(temp - $length);"
+
+      ]
+
+    }
 
 
   ]

@@ -59,9 +59,13 @@ void TimeNode::EditUniform()
 	unsigned int uloc = glGetUniformLocation(program->ID, uniqueOutName.c_str());
 
 	//std::cout << ManagerInstance->time << std::endl;
-	auto value = std::fmod(ManagerInstance->time,1.0f);
+	/*float length = 1.0f;
+	auto value = std::fmod(ManagerInstance->time, length * 2.0f);
+	value = length - std::abs(value - length);*/
+
+
 	
-	glUniform1f(uloc, value);
+	glUniform1f(uloc, ManagerInstance->time);
 		
 
 	glUseProgram(0);

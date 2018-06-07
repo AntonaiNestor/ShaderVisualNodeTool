@@ -297,7 +297,6 @@ void Graph::ReadNodeTypes(std::string FilePath)
 void Graph::CompileGraph(std::shared_ptr<Node> CurrentNode , std::string* ShaderCode)
 {
 	
-	ClearShaderCode();
 
 	//Traverse all the Inputs list of this node
 	for (std::vector<Connection>::iterator it = CurrentNode->Input.begin(); it != CurrentNode->Input.end(); ++it) {
@@ -362,6 +361,8 @@ void Graph::ResetGraph()
 void Graph::UpdateGraph()
 {
 	PrintConnections();
+
+	ClearShaderCode();
 	CompileGraph(root, ShaderCode);
 	ChangeShader(daShader);
 	//UpdateUniforms();
