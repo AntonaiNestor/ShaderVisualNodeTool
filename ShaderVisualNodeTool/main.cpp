@@ -307,7 +307,7 @@ int main()
 
 	bool testbool = true;
 
-	std::cout << std::to_string(testbool) << std::endl;
+	std::cout << std::to_string(example.f) << std::endl;
 	testbool = false;
 	std::cout << std::to_string(testbool) << std::endl;
 	example1= example;
@@ -464,19 +464,16 @@ int main()
 	GUI->CreateNode(ImVec2(100,300), InputNode,"float");
 	GUI->CreateNode(ImVec2(100,400), InputNode, "float");*/
 	//GUI->CreateNode(ImVec2(250,200),FunctionNode,"Addition");
-	GUI->CreateNode(ImVec2(400, 300), OutputnodeT,"OutputNode");
 
+	GUI->CreateNode(ImVec2(400, 300), OutputnodeT,"OutputNode");
+	GUI->CreateNode(ImVec2(200, 300 ) , ShadernodeT,"Vertex");
 	graph->root = graph->NodeList.at(0);
 	graph->daShader = &shader;
 
-	std::string test13("Float");
-	auto x =util::stringToValueType(test13);
-	//relevant path but still don't like this. it assumes we are in main root of project ask morten
-	graph->ReadNodeTypes("NodeSystem/NodeTypes/Nodes.json");
-
-
-	//graph->root = graph->NodeList.at(3);
 	
+	//relevant path but still don't like this. it assumes we are in main root of project ask morten
+	graph->ReadNodeTypes("NodeSystem/NodeTypes");
+
 
 	bool show_demo_window = true;
 	bool show_another_window = false;

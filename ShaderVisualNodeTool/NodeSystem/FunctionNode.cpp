@@ -2,22 +2,24 @@
 
 
 
+//std::string NodeName,std::vector<SlotInformation> slots,std::string functionCode
 
-
-FunctionNode::FunctionNode(std::string NodeName,std::vector<SlotInformation> slots,std::string functionCode)
+FunctionNode::FunctionNode(FunctionNodeInformation nodeInfo)
 {
 	//general node attributes
-	Name = NodeName; 
+	Name = nodeInfo.Name; 
 	Type = BaseNodeType::FunctionnodeT;
 	auto graph = Graph::getInstance();
 	UniqueID = graph->AssignID();
 	HasCompiled = false;
-	StringCode = functionCode;
+	StringCode = nodeInfo.Code;
 
+	AllowedExecShaderTypes = nodeInfo.AllowedExecShaders;
+	CurrShaderType = AllowedExecShaderTypes.back();
 	//parse slots and create necessary information
 	//std::vector<std::string> slotNames;
 
-	for (auto slot : slots) {
+	for (auto slot : nodeInfo.Slots) {
 
 		Connection newConnection;
 

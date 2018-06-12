@@ -72,7 +72,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="imgui.ini" />
-    <None Include="NodeSystem\NodeTypes\Nodes.json" />
+    <None Include="NodeSystem\NodeTypes\FunctionNodes.json" />
+    <None Include="NodeSystem\NodeTypes\InputNodes.json" />
     <None Include="NodeSystem\NodeTypes\test2.json" />
     <None Include="Shaders\ExtendSides.gs" />
     <None Include="Shaders\GeometryCurves.gs" />

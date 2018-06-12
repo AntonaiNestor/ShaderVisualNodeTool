@@ -1,0 +1,67 @@
+{
+  "NodeTypes": [
+    {
+      "NodeType": "Input Node",
+      "Name": "Float",
+      "Slots": [
+        {
+          "SlotName": "FloatVar",
+          "VariableType": "float"
+        }
+      ]
+    },
+    {
+      "NodeType": "Input Node",
+      "Name": "Int",
+      "Slots": [
+        {
+          "SlotName": "IntVar",
+          "VariableType": "int"
+        }
+      ]
+    },
+    {
+      "NodeType": "Input Node",
+      "Name": "Vec2",
+      "Slots": [
+        {
+          "SlotName": "Vec2Var",
+          "VariableType": "vec2"
+        }
+      ]
+    },
+    {
+      "NodeType": "Input Node",
+      "Name": "Vec3",
+      "Slots": [
+        {
+          "SlotName": "Vec3Var",
+          "VariableType": "vec3"
+        }
+      ]
+    },
+    {
+      "NodeType": "Input Node",
+      "Name": "Vec4",
+      "Slots": [
+        {
+          "SlotName": "Vec4Var",
+          "VariableType": "vec4"
+        }
+      ]
+    },
+    {
+      "NodeType": "Input Node",
+      "Name": "Mat4",
+      "Slots": [
+        {
+          "SlotName": "Mat4Var",
+          "VariableType": "mat4"
+        }
+      ]
+    }
+
+
+  ]
+   
+}

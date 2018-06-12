@@ -174,7 +174,8 @@
     <None Include="Shaders\SimpleTesControl.tcs" />
     <None Include="Shaders\SimpleTesEval.tes" />
     <None Include="Shaders\SimpleVertexShader.vert" />
-    <None Include="NodeSystem\NodeTypes\Nodes.json" />
     <None Include="NodeSystem\NodeTypes\test2.json" />
+    <None Include="NodeSystem\NodeTypes\FunctionNodes.json" />
+    <None Include="NodeSystem\NodeTypes\InputNodes.json" />
   </ItemGroup>
 </Project>

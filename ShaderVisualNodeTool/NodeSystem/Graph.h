@@ -20,10 +20,18 @@ struct SlotInformation {
 
 };
 
-struct FunctionNodeType {
+struct InputNodeInformation {
+
+	std::string Name;
+	std::string SlotName;
+	ValueType VarType;
+};
+
+struct FunctionNodeInformation {
 
 	std::string FilterNodeType; // under which type should this be placed
 	std::string Name; // Name of the node 
+	std::vector<int> AllowedExecShaders; // The shader in which the code is can be run in
 	std::vector<SlotInformation> Slots; // slot information
 	std::string Code; // GLSL code
 };
@@ -50,9 +58,9 @@ public:
 
 	// -- Variables
 
-
-	const char* types[3] = { "Constant", "Uniform", "Global" };
-	//default  variable values
+	//default  variable values for initialization
+	const char* VariableTypes[3] = { "Constant", "Uniform", "Global" };
+	const char* ShaderTypes[5] = {"Vertex","Tesselation Control","Tesselation Eval", "Geometry","Fragment"};
 	bool DefaultBool = false;
 	float DefaultFloat = 1.0f;
 	int DefaultInt = 1;
@@ -61,13 +69,23 @@ public:
 	glm::vec4 DefaultVec4 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	glm::mat4 DefaultMat4 = glm::mat4();
 
+	//unique ID for names
 	int NameCounter;
+
+	//application time
 	float time;
 	
+	//Input Node Types
+	std::map <std::string, InputNodeInformation> InputNodes;
+
 	// The node type information for function ndoes, saved once.
 	// The information from these will be used on creation
 	//Same idea can be extended to everything
-	std::map<std::string,FunctionNodeType> FunctionNodes;
+	std::map<std::string,FunctionNodeInformation> FunctionNodes;
+
+
+
+
 	//adjacency list for nodes
 	std::vector<std::vector<int>> AdjacencyList;
 	
@@ -122,6 +140,8 @@ public:
 	void AssembleShaderCode();
 	void ClearShaderCode();
 	void UpdateUniforms();
+
+	//Datatype InitialiseValue(ValueType type);
 	//TODO 
 	// Implement function that checks if the graph contains any circles 
 	bool CircleInGraph();

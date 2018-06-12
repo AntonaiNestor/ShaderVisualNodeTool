@@ -5,8 +5,9 @@
 TimeNode::TimeNode()
 {
 	auto graph = Graph::getInstance();
-	Type = BaseNodeType::InputnodeUniform;
-	//inputType = InputNodeType::ConstantVariable;
+	Type = BaseNodeType::InputnodeT;
+
+	inputType = InputNodeType::UniformVariable;
 	//UniqueID = graph->AssignID();
 	//HasCompiled = false;
 

@@ -219,13 +219,62 @@ void Graph::AddNode(std::shared_ptr<Node> node) {
 
 void Graph::ReadNodeTypes(std::string FilePath)
 {
-	//Read the json file in a json object
 	using json = nlohmann::json;
 	json j;
 
-	
+	//--- Read Input Nodes
 
-	std::ifstream ifs(FilePath.c_str(),std::ifstream::in);
+	std::ifstream inputifs((FilePath + "/InputNodes.json").c_str(), std::ifstream::in);
+
+	if (!inputifs.is_open()) {
+		// Debug Log this and try catch
+		std::cout << "Error with opening Json File" << std::endl;
+	}
+	inputifs >> j;
+	inputifs.close();
+
+
+	//Parsing json information and building nodetypes in graph containers
+
+	if (j.find("NodeTypes") != j.end()) {
+		json info = j["NodeTypes"];
+
+		for (int i = 0; i < info.size(); i++) {
+
+
+			json objectRead = info.at(i);
+			InputNodeInformation tempInput;
+
+			std::string name = objectRead["Name"];
+
+			tempInput.Name = name;
+
+
+			//Slots
+			auto slots = objectRead["Slots"];
+			for (auto slot : slots) {
+
+				//temporary slot vars -- only one slot here but keep it in a loop
+
+				std::string sname = slot["SlotName"];
+
+				tempInput.SlotName = sname;
+				tempInput.VarType = util::stringToValueType(slot["VariableType"]);
+
+
+			}
+
+			InputNodes.insert(std::pair<std::string, InputNodeInformation>(name, tempInput));
+		}
+	}
+	//------------------------------------
+
+
+	//--- Read Function Nodes
+
+	//Read the json file in a json object
+
+	std::ifstream ifs((FilePath + "/FunctionNodes.json").c_str(), std::ifstream::in);
 
 	if (!ifs.is_open()) {
 		// Debug Log this and try catch
@@ -233,7 +282,7 @@ void Graph::ReadNodeTypes(std::string FilePath)
 	}
 	ifs >> j;
 	ifs.close();
-	//------------------------------------
+
 
 	//Parsing json information and building nodetypes in graph containers
 
@@ -243,15 +292,28 @@ void Graph::ReadNodeTypes(std::string FilePath)
 
 		for (int i = 0; i < info.size(); i++) {
 			
-			FunctionNodeType tempNode;
+			FunctionNodeInformation tempNode;
 			json objectRead = info.at(i);
 
 			std::string type = objectRead["NodeType"];
 			std::string name = objectRead["Name"];
-
+			
 			tempNode.FilterNodeType = type;
 			tempNode.Name = name;
+
+			//Allowed execution shaders
+			auto shadertypes = objectRead["AvailableShaders"];
+			for (std::string stype : shadertypes) {
+
+				for (int i = 0; i < 5; i++) {
+					if (stype.compare(ShaderTypes[i]) == 0) {
+						tempNode.AllowedExecShaders.push_back(i);
+					}
+				}
 			
+			}
+			
+			 
 			//Slots
 			auto slots = objectRead["Slots"];
 			for (auto slot : slots) {
@@ -282,7 +344,7 @@ void Graph::ReadNodeTypes(std::string FilePath)
 
 
 			//ADD TO GRAPH INFO
-			FunctionNodes.insert(std::pair<std::string, FunctionNodeType>(tempNode.Name,tempNode));
+			FunctionNodes.insert(std::pair<std::string, FunctionNodeInformation>(tempNode.Name,tempNode));
 		}
 		
 
@@ -498,4 +560,51 @@ void Graph::UpdateUniforms()
 	}
 
 }
+
+//Datatype Graph::InitialiseValue(ValueType type)
+//{
+//
+//	Datatype tempVal;
+//	switch (type) {
+//		case (Float): {
+//			tempVal.f_var = DefaultFloat;
+//			break;
+//		}	 
+//		case (Int): {
+//			tempVal.i_var = DefaultInt;
+//			break;
+//		}
+//		case (Vec2): {
+//			tempVal.vec2_var = DefaultVec2;
+//			break;
+//		}
+//		case (Vec3): {
+//			tempVal.vec3_var =  DefaultVec3;
+//			break;
+//		}
+//		case (Vec4): {
+//			tempVal.vec3_var =DefaultVec4;
+//			break;
+//		}
+//		case (Mat4): {
+//			tempVal.mat4_var = DefaultMat4;
+//			break;
+//		}
+//		case (Sampler2D): {
+//			
+//
+//			break;
+//		}
+//		case(SamplerCube): {
+//			
+//			break;
+//		}
+//		default: {
+//			
+//			break;
+//		}
+//	}
+//
+//	return tempVal;
+//}
 

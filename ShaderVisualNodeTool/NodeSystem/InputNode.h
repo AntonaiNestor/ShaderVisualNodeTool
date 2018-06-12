@@ -16,14 +16,12 @@ class InputNode : public Node
 public:
 	InputNode();
 	
-	InputNode(std::string string_type);
+	InputNode(std::string nodeName , std::string slotName, ValueType vartype);
 	~InputNode();
 	
-	InputNodeType inputType; 
-	
-	
-	//attributes
 
+	//attributes
+	InputNodeType inputType;
 
 	//methods
 	void Compile(std::string *ShaderCode);

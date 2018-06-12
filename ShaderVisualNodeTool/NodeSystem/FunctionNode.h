@@ -9,7 +9,8 @@ class FunctionNode : public Node
 public:
 
 	
-	FunctionNode(std::string NodeName,std::vector<SlotInformation> slots, std::string functionCode);
+	//FunctionNode(std::string NodeName,std::vector<SlotInformation> slots,std::vector<int> AllowedShaders,std::string functionCode);
+	FunctionNode(FunctionNodeInformation nodeInfo);
 	~FunctionNode();
 
 

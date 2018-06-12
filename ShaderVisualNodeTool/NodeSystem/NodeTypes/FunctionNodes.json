@@ -3,6 +3,9 @@
     {
       "NodeType": "Function Node",
       "Name": "Addition",
+      "AvailableShaders": [
+        "Vertex","Fragment"
+      ],
       "Slots": [
         {
           "SlotType": "Input",
@@ -30,6 +33,10 @@
     {
       "NodeType": "Function Node",
       "Name": "Multiplication",
+      "AvailableShaders": [
+        "Vertex",
+        "Fragment"
+      ],
       "Slots": [
         {
           "SlotType": "Input",
@@ -57,6 +64,10 @@
     {
       "NodeType": "Function Node",
       "Name": "Power",
+      "AvailableShaders": [
+        "Vertex",
+        "Fragment"
+      ],
       "Slots": [
         {
           "SlotType": "Input",
@@ -85,6 +96,10 @@
     {
       "NodeType": "Function Node",
       "Name": "Blinn Phong",
+      "AvailableShaders": [
+        "Vertex",
+        "Fragment"
+      ],
       "Slots": [
         {
           "SlotType": "Input",
@@ -133,6 +148,9 @@
     {
       "NodeType": "Function Node",
       "Name": "ScreenSpaceNormals",
+      "AvailableShaders": [
+        "Fragment"
+      ],
       "Slots": [
         {
           "SlotType": "Input",
@@ -179,6 +197,10 @@
     {
       "NodeType": "Function Node",
       "Name": "floatTovec4",
+      "AvailableShaders": [
+        "Vertex",
+        "Fragment"
+      ],
       "Slots": [
         {
           "SlotType": "Input",
@@ -212,6 +234,10 @@
     {
       "NodeType": "Function Node",
       "Name": "floatTovec3",
+      "AvailableShaders": [
+        "Vertex",
+        "Fragment"
+      ],
       "Slots": [
         {
           "SlotType": "Input",
@@ -245,6 +271,10 @@
     {
       "NodeType": "Function Node",
       "Name": "PingPong",
+      "AvailableShaders": [
+        "Vertex",
+        "Fragment"
+      ],
       "Slots": [
         {
           "SlotType": "Input",

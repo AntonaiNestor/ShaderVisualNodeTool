@@ -9,6 +9,7 @@ public:
 	TimeNode();
 	~TimeNode();
 
+	//overwritting edituniform fow now
 	void EditUniform();
 };
 

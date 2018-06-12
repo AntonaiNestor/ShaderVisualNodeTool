@@ -6,7 +6,7 @@ InputNode::InputNode()
 {
 	//general node attributes
 	Name = "Float";
-	Type = BaseNodeType::InputnodeConst;
+	Type = BaseNodeType::InputnodeT;
 	inputType = InputNodeType::ConstantVariable;
 	UniqueID = Graph::getInstance()->AssignID();
 	//varname might be important to check before assigning
@@ -28,107 +28,76 @@ InputNode::InputNode()
 
 }
 
-//ConstantNode::ConstantNode(float a)
-//{
-//	//general node attributes
-//	Name = "Float";
-//	Type = BaseNodeType::InputNode;
-//	UniqueID = Graph::getInstance()->AssignID();
-//	//varname might be important to check before assigning
-//	//varName = "ConstantFloat";
-//	//value = a;
-//	HasCompiled = false;
-//	
-//
-//	//output struct creation
-//	Connection connect;
-//	connect.ConnectedNode = nullptr;
-//	connect.ConnectionIndex = -1;
-//	connect.Value = a;
-//	connect.VariableType = Float;
-//	connect.Name = "FloatVar";
-//	connect.Enabled = true;
-//
-//	Output.push_back(connect);
-//	
-//
-//}
-
 //why am i passing a string instead of the enum?
-InputNode::InputNode(std::string string_type)
+InputNode::InputNode(std::string nodeName, std::string slotName, ValueType vartype)
 {
 
 	auto graph = Graph::getInstance();
-	Type = BaseNodeType::InputnodeConst;
+	Type = BaseNodeType::InputnodeT;
 	inputType = InputNodeType::ConstantVariable;
 	UniqueID = graph->AssignID();
 	HasCompiled = false;
+	Name = nodeName;
+	ValueType type = vartype;
 
-	ValueType type = util::stringToValueType(string_type);
+
 	//output struct creation
 	Connection connect;
 	connect.ConnectedNode = nullptr;
 	connect.ConnectionIndex = -1;
 	connect.VariableType = type;
-	
 	connect.Enabled = true;
-
+	connect.Name = slotName;
 	
 	switch (type) {
 		case (Float):{
-			Name = "Float";
-			connect.Name = "FloatVar";
+		
 			connect.Value.f_var = graph->DefaultFloat;
 			value.f_var = graph->DefaultFloat;
 		}
 			break;
 		case (Int):{
-			Name = "Integer";
-			connect.Name = "IntVar";
+			
 			connect.Value.i_var = graph->DefaultInt;
 			value.i_var = graph->DefaultInt;
 			break;
 		}
 		case (Vec2):{
-			Name = "Vec2";
-			connect.Name = "Vec2Var";
+			
 			connect.Value.vec2_var = graph->DefaultVec2;
 			value.vec2_var = graph->DefaultVec2;
 			break;
 		}
 		case (Vec3):{
-			Name = "Vec3";
-			connect.Name = "Vec3Var";
+			
 			connect.Value.vec3_var = graph->DefaultVec3;
 			value.vec3_var = graph->DefaultVec3;
 			break;
 		}
 		case (Vec4): {
-			Name = "Vec4";
-			connect.Name = "Vec4Var";
+			
 			connect.Value.vec4_var = graph->DefaultVec4;
 
 			value.vec4_var = graph->DefaultVec4;
 			break;
 		}
 		case (Mat4): {
-			Name = "Mat4x4";
-			connect.Name = "Mat4Var";
+			
 			connect.Value.mat4_var = graph->DefaultMat4;
 			value.mat4_var = graph->DefaultMat4;
 			break;
 		}
 		case (Sampler2D):{
-			Name = "Texture";
+			//Name = "Texture";
 		
 			break;
 		}
 		case(SamplerCube):{
-			Name = "SamplerCube";
+			//Name = "SamplerCube";
 			break;
 		}
 		default:{
-			Name = "Float";
+			//Name = "Float";
 			break;
 		}
 	}
@@ -149,7 +118,7 @@ void InputNode::Compile(std::string	*ShaderCode) {
 	//Put cases here for uniforms and whatnot
 	auto Manager = Graph::getInstance();
 
-	if (Type == InputnodeUniform) {
+	if (inputType == UniformVariable) {
 		Manager->WriteToShaderCode(CodeString(),FragUniform);
 		
 	}
@@ -178,7 +147,7 @@ std::string InputNode::CodeString()
 	std::string StringVal;
 
 	//for now just declare them in the main
-	if (Type == InputnodeUniform) {
+	if (inputType == UniformVariable) {
 
 		StringVal += "uniform ";
 		switch (outputType) {
@@ -234,34 +203,36 @@ std::string InputNode::CodeString()
 		
 	}
 	else {
+
+		Datatype val = value;
 		switch (outputType) {
 
 
 		case(Bool): {
-			StringVal += "bool " + name + " = " + std::to_string(value.b_var) + ";";
+			StringVal += "bool " + name + " = " + std::to_string(val.b_var) + ";";
 			break;
 		}
 
 		case(Float): {
-			StringVal += "float " + name + " = " + std::to_string(value.f_var) + ";";
+			StringVal += "float " + name + " = " + std::to_string(val.f_var) + ";";
 			break;
 		}
 		case(Int): {
-			StringVal += "int " + name + " = " + std::to_string(value.i_var) + ";";;
+			StringVal += "int " + name + " = " + std::to_string(val.i_var) + ";";;
 			break;
 		}
 		case(Vec2): {
-			StringVal += "vec2 " + name + " =  vec2(" + std::to_string(value.vec2_var.x) + " , " + std::to_string(value.vec2_var.y) + ") ;";
+			StringVal += "vec2 " + name + " =  vec2(" + std::to_string(val.vec2_var.x) + " , " + std::to_string(val.vec2_var.y) + ") ;";
 			break;
 
 		}
 		case(Vec3): {
-			StringVal += "vec3 " + name + " =  vec3(" + std::to_string(value.vec3_var.x) + " , " + std::to_string(value.vec3_var.y) + " , " + std::to_string(value.vec3_var.z) + ") ;";
+			StringVal += "vec3 " + name + " =  vec3(" + std::to_string(val.vec3_var.x) + " , " + std::to_string(val.vec3_var.y) + " , " + std::to_string(val.vec3_var.z) + ") ;";
 			break;
 
 		}
 		case(Vec4): {
-			StringVal += "vec4 " + name + " =  vec4(" + std::to_string(value.vec4_var.x) + " , " + std::to_string(value.vec4_var.y) + " , " + std::to_string(value.vec4_var.z) + " , " + std::to_string(value.vec4_var.w) + ") ;";
+			StringVal += "vec4 " + name + " =  vec4(" + std::to_string(val.vec4_var.x) + " , " + std::to_string(val.vec4_var.y) + " , " + std::to_string(val.vec4_var.z) + " , " + std::to_string(val.vec4_var.w) + ") ;";
 			break;
 
 		}

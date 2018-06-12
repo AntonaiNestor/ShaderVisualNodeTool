@@ -21,26 +21,25 @@
 
 enum BaseNodeType{
 	
-		//InputnodeT,
-		InputnodeConst,
-		InputnodeUniform,
-		InputnodeGlobal,
+		InputnodeT,
 		OutputnodeT,
 		ShadernodeT,
 		FunctionnodeT
 };
 
+
+
 typedef union Datatype {
 	bool b_var;
 	float f_var;
 	int i_var;
-	//std::vector<float> vec2;
 	glm::vec2 vec2_var;
 	glm::vec3 vec3_var;
 	glm::vec4 vec4_var;
 	glm::mat4 mat4_var;
 
 	Datatype() { vec2_var = glm::vec2(); vec3_var = glm::vec3(); vec4_var = glm::vec4(); mat4_var = glm::mat4(); };
+
 
 }Datatype;
 
@@ -53,6 +52,7 @@ struct Connection {
 	int ConnectionIndex;
 	ValueType VariableType;
 	std::string Name;
+
 	//template<typename T> value;
 	Datatype Value; // This will be Type or Symbol, should it be in the connection though?
 	bool Enabled; //Enabled /disable connection
@@ -78,29 +78,23 @@ public:
 	int UniqueID;
 	bool HasCompiled;
 	Datatype value;
-	
+	int CurrShaderType;
+	std::vector<int> AllowedExecShaderTypes;
 
 	std::vector<Connection> Input;
 	std::vector<Connection> Output; 
-	//mnot sure yet if this should be here, i have the information already
-	//in the the Input vector
-	//std::vector<std::string> slotNames;
 
-	//methods
+
+	//virtual methods
 	virtual void Compile(std::string *ShaderCode) = 0; 
-	//irtual void DrawNode(bool active) = 0;
+	virtual std::string CodeString() = 0;
+	
 
-	//output to input
-	//maybe this shouldn't be in the parent base class since it might differ 
+
+	//output to input connection
 	void ConnectNode(std::shared_ptr<Node> ConnectedNode, int ConnectedIndex, int OutputIndex);
 	
-	
-	/* std::string GetNodeName();
-	 int GetNodeID();
-	 NodeType GetNodeType();
 
-	 void SetName(std::string name);
-	 void SetID(int ID);*/
 
 private:
 	

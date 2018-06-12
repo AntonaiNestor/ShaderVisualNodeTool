@@ -19,6 +19,8 @@ enum ValueType {
 	SamplerCube
 };
 
+
+
 namespace util {
 	
 	/*float DefaultFloat = 1.0f;

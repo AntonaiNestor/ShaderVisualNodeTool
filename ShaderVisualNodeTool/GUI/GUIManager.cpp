@@ -44,10 +44,11 @@ void GUIManager::CreateNode(ImVec2 pos, BaseNodeType type , std::string Name)
 	// since we push the object in the graph's list then a reference is kept.
 	
 	std::shared_ptr<Node> newGraphNode;
-	switch (type) {
-	case(InputnodeConst):
-	case (InputnodeUniform):{
 
+
+	
+	switch (type) {
+	case(InputnodeT):{
 		//UGLY AGAIN , WHEN WILL THIS STOP
 		if (Name.compare("time") == 0) {
 			newGraphNode = std::make_shared<TimeNode>();
@@ -55,7 +56,8 @@ void GUIManager::CreateNode(ImVec2 pos, BaseNodeType type , std::string Name)
 		}
 
 		else {
-			newGraphNode = std::make_shared<InputNode>(Name);
+			auto nodeInfo = Graph::getInstance()->InputNodes[Name];
+			newGraphNode = std::make_shared<InputNode>(Name,nodeInfo.SlotName,nodeInfo.VarType);
 		}
 	
 		break;
@@ -70,7 +72,7 @@ void GUIManager::CreateNode(ImVec2 pos, BaseNodeType type , std::string Name)
 		
 		auto nodeInfo = Graph::getInstance()->FunctionNodes[Name];
 
-		newGraphNode = std::make_shared<class::FunctionNode>(Name,nodeInfo.Slots,nodeInfo.Code);
+		newGraphNode = std::make_shared<class::FunctionNode>(nodeInfo);
 		break;
 	}
 	default :
@@ -275,39 +277,33 @@ void GUIManager::RenderGUI() {
 		//Mouse pos on popup open - the window's coordinates to have the relevant mouse position
 		ImVec2 MousePos = ImGui::GetMousePosOnOpeningCurrentPopup() - NodeViewPos;
 			ImGui::Separator();
-			// Here in each sub menu I should iterate through all types of nodes for each category
+
 			if (ImGui::BeginMenu("Input Node")) {
+				for (std::map<std::string, InputNodeInformation>::iterator iter = graph->InputNodes.begin(); iter != graph->InputNodes.end(); ++iter)
+				{
 
-				if (ImGui::MenuItem("Constant Node - Float")) {
-					
-					CreateNode(MousePos,InputnodeConst,"float");
-				}
-				if (ImGui::MenuItem("Constant Node - Int")) {
-					
-					CreateNode(MousePos, InputnodeConst, "int");
-				}
-				if (ImGui::MenuItem("Constant Node - Vec2")) {
-					
-					CreateNode(MousePos, InputnodeConst, "vec2");
-				}
-				if (ImGui::MenuItem("Constant Node - Vec3")) {
-					
-					CreateNode(MousePos, InputnodeConst, "vec3");
-				}
-				if (ImGui::MenuItem("Constant Node - Vec4")) {
-					
-					CreateNode(MousePos, InputnodeConst, "vec4");
-				}
-				if (ImGui::MenuItem("Time ")) {
-					CreateNode(MousePos, InputnodeUniform, "time");
+					//new menu entry
+					if (ImGui::MenuItem((iter->first).c_str())) {
+						//call constructor for InputNode
+						CreateNode(MousePos, InputnodeT, iter->first);
+					}
+
+					//Key k = iter->first;
+					//ignore value
+					//Value v = iter->second;
 				}
 
+				if (ImGui::MenuItem("Time")) {
+					//call constructor for function node
+					CreateNode(MousePos, InputnodeT,"time");
+				}
 				ImGui::EndMenu();
 			}
+			
 			if (ImGui::BeginMenu("Function Node")) {
 
 
-				for (std::map<std::string,FunctionNodeType>::iterator iter = graph->FunctionNodes.begin(); iter != graph->FunctionNodes.end(); ++iter)
+				for (std::map<std::string,FunctionNodeInformation>::iterator iter = graph->FunctionNodes.begin(); iter != graph->FunctionNodes.end(); ++iter)
 				{
 					
 					//new menu entry
