@@ -23,8 +23,9 @@ struct SlotInformation {
 struct InputNodeInformation {
 
 	std::string Name;
-	std::string SlotName;
-	ValueType VarType;
+	std::vector<std::string> SlotNames;
+	std::vector<ValueType> VarTypes;
+	int InitInputType;
 };
 
 struct FunctionNodeInformation {
@@ -38,11 +39,11 @@ struct FunctionNodeInformation {
 
 enum ShaderSection {
 
-	FragVersion,
-	FragVarying,
-	FragUniform,
-	FragConstant,
-	FragMain
+	VersionSeg,
+	VaryingSeg,
+	UniformSeg,
+	ConstantSeg,
+	MainSeg
 };
 
 class Graph
@@ -59,7 +60,7 @@ public:
 	// -- Variables
 
 	//default  variable values for initialization
-	const char* VariableTypes[3] = { "Constant", "Uniform", "Global" };
+	const char* VariableTypes[4] = { "Constant", "Uniform", "Global","Attribute"};
 	const char* ShaderTypes[5] = {"Vertex","Tesselation Control","Tesselation Eval", "Geometry","Fragment"};
 	bool DefaultBool = false;
 	float DefaultFloat = 1.0f;

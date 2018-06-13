@@ -7,6 +7,7 @@ enum InputNodeType {
 
 	ConstantVariable,
 	UniformVariable,
+	AttributeVariable,
 	GlobalVariable
 };
 
@@ -16,7 +17,8 @@ class InputNode : public Node
 public:
 	InputNode();
 	
-	InputNode(std::string nodeName , std::string slotName, ValueType vartype);
+	//InputNode(std::string nodeName , std::string slotName, ValueType vartype);
+	InputNode(InputNodeInformation nodeInfo);
 	~InputNode();
 	
 

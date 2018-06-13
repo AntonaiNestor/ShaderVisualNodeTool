@@ -2,6 +2,7 @@
   "NodeTypes": [
     {
       "NodeType": "Input Node",
+      "InitVariableType" : "Constant",
       "Name": "Float",
       "Slots": [
         {
@@ -12,6 +13,7 @@
     },
     {
       "NodeType": "Input Node",
+      "InitVariableType": "Constant",
       "Name": "Int",
       "Slots": [
         {
@@ -22,6 +24,7 @@
     },
     {
       "NodeType": "Input Node",
+      "InitVariableType": "Constant",
       "Name": "Vec2",
       "Slots": [
         {
@@ -32,6 +35,7 @@
     },
     {
       "NodeType": "Input Node",
+      "InitVariableType": "Constant",
       "Name": "Vec3",
       "Slots": [
         {
@@ -42,6 +46,7 @@
     },
     {
       "NodeType": "Input Node",
+      "InitVariableType": "Constant",
       "Name": "Vec4",
       "Slots": [
         {
@@ -52,11 +57,31 @@
     },
     {
       "NodeType": "Input Node",
+      "InitVariableType": "Constant",
       "Name": "Mat4",
       "Slots": [
         {
           "SlotName": "Mat4Var",
           "VariableType": "mat4"
+        }
+      ]
+    },
+    {
+      "NodeType": "Input Node",
+      "InitVariableType": "Attribute",
+      "Name": "Attributes",
+      "Slots": [
+        {
+          "SlotName": "aPos",
+          "VariableType": "vec3"
+        },
+        {
+          "SlotName": "aNormal",
+          "VariableType": "vec3"
+        },
+        {
+          "SlotName": "aTexCoords",
+          "VariableType": "vec2"
         }
       ]
     }

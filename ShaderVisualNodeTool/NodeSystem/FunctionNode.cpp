@@ -178,7 +178,7 @@ void FunctionNode::Compile(std::string* ShaderCode)
 
 	tempCode = Graph::getInstance()->ReplaceVarNames(tempCode, tempOutName,outName);
 	
-	Manager->WriteToShaderCode(tempCode,FragMain);
+	Manager->WriteToShaderCode(tempCode,MainSeg);
 
 	//ShaderCode->append("\n" + tempCode);
 

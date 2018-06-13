@@ -466,7 +466,7 @@ int main()
 	//GUI->CreateNode(ImVec2(250,200),FunctionNode,"Addition");
 
 	GUI->CreateNode(ImVec2(400, 300), OutputnodeT,"OutputNode");
-	GUI->CreateNode(ImVec2(200, 300 ) , ShadernodeT,"Vertex");
+	//GUI->CreateNode(ImVec2(200, 300 ) , ShadernodeT,"Vertex");
 	graph->root = graph->NodeList.at(0);
 	graph->daShader = &shader;
 

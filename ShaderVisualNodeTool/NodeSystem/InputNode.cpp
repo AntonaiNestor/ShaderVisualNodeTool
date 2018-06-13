@@ -29,81 +29,160 @@ InputNode::InputNode()
 }
 
 //why am i passing a string instead of the enum?
-InputNode::InputNode(std::string nodeName, std::string slotName, ValueType vartype)
+//InputNode::InputNode(std::string nodeName, std::string slotName, ValueType vartype)
+//{
+//
+//	auto graph = Graph::getInstance();
+//	Type = BaseNodeType::InputnodeT;
+//	inputType = InputNodeType::ConstantVariable;
+//	UniqueID = graph->AssignID();
+//	HasCompiled = false;
+//	Name = nodeName;
+//	ValueType type = vartype;
+//
+//
+//	//output struct creation
+//	Connection connect;
+//	connect.ConnectedNode = nullptr;
+//	connect.ConnectionIndex = -1;
+//	connect.VariableType = type;
+//	connect.Enabled = true;
+//	connect.Name = slotName;
+//	
+//	switch (type) {
+//		case (Float):{
+//		
+//			connect.Value.f_var = graph->DefaultFloat;
+//			value.f_var = graph->DefaultFloat;
+//		}
+//			break;
+//		case (Int):{
+//			
+//			connect.Value.i_var = graph->DefaultInt;
+//			value.i_var = graph->DefaultInt;
+//			break;
+//		}
+//		case (Vec2):{
+//			
+//			connect.Value.vec2_var = graph->DefaultVec2;
+//			value.vec2_var = graph->DefaultVec2;
+//			break;
+//		}
+//		case (Vec3):{
+//			
+//			connect.Value.vec3_var = graph->DefaultVec3;
+//			value.vec3_var = graph->DefaultVec3;
+//			break;
+//		}
+//		case (Vec4): {
+//			
+//			connect.Value.vec4_var = graph->DefaultVec4;
+//
+//			value.vec4_var = graph->DefaultVec4;
+//			break;
+//		}
+//		case (Mat4): {
+//			
+//			connect.Value.mat4_var = graph->DefaultMat4;
+//			value.mat4_var = graph->DefaultMat4;
+//			break;
+//		}
+//		case (Sampler2D):{
+//			//Name = "Texture";
+//		
+//			break;
+//		}
+//		case(SamplerCube):{
+//			//Name = "SamplerCube";
+//			break;
+//		}
+//		default:{
+//			//Name = "Float";
+//			break;
+//		}
+//	}
+//	Output.push_back(connect);
+//
+//}
+
+InputNode::InputNode(InputNodeInformation nodeInfo)
 {
 
 	auto graph = Graph::getInstance();
 	Type = BaseNodeType::InputnodeT;
-	inputType = InputNodeType::ConstantVariable;
+	inputType = InputNodeType(nodeInfo.InitInputType);
 	UniqueID = graph->AssignID();
-	HasCompiled = false;
-	Name = nodeName;
-	ValueType type = vartype;
-
-
-	//output struct creation
-	Connection connect;
-	connect.ConnectedNode = nullptr;
-	connect.ConnectionIndex = -1;
-	connect.VariableType = type;
-	connect.Enabled = true;
-	connect.Name = slotName;
 	
-	switch (type) {
-		case (Float):{
-		
-			connect.Value.f_var = graph->DefaultFloat;
-			value.f_var = graph->DefaultFloat;
-		}
-			break;
-		case (Int):{
-			
-			connect.Value.i_var = graph->DefaultInt;
-			value.i_var = graph->DefaultInt;
-			break;
-		}
-		case (Vec2):{
-			
-			connect.Value.vec2_var = graph->DefaultVec2;
-			value.vec2_var = graph->DefaultVec2;
-			break;
-		}
-		case (Vec3):{
-			
-			connect.Value.vec3_var = graph->DefaultVec3;
-			value.vec3_var = graph->DefaultVec3;
-			break;
-		}
-		case (Vec4): {
-			
-			connect.Value.vec4_var = graph->DefaultVec4;
+	HasCompiled = false;
+	Name = nodeInfo.Name;
+	
+	//output  slots
+	for (int i = 0 ; i<nodeInfo.SlotNames.size();i++){
 
-			value.vec4_var = graph->DefaultVec4;
-			break;
+		//output struct creation
+		Connection connect;
+		connect.ConnectedNode = nullptr;
+		connect.ConnectionIndex = -1;
+		connect.VariableType = nodeInfo.VarTypes[i];
+		connect.Enabled = true;
+		connect.Name = nodeInfo.SlotNames[i];
+
+		switch (connect.VariableType) {
+			case (Float): {
+				connect.Value.f_var = graph->DefaultFloat;
+				value.f_var = graph->DefaultFloat;
+				break;
+			}
+			case (Int): {
+
+				connect.Value.i_var = graph->DefaultInt;
+				value.i_var = graph->DefaultInt;
+				break;
+			}
+			case (Vec2): {
+
+				connect.Value.vec2_var = graph->DefaultVec2;
+				value.vec2_var = graph->DefaultVec2;
+				break;
+			}
+			case (Vec3): {
+
+				connect.Value.vec3_var = graph->DefaultVec3;
+				value.vec3_var = graph->DefaultVec3;
+				break;
+			}
+			case (Vec4): {
+
+				connect.Value.vec4_var = graph->DefaultVec4;
+
+				value.vec4_var = graph->DefaultVec4;
+				break;
+			}
+			case (Mat4): {
+
+				connect.Value.mat4_var = graph->DefaultMat4;
+				value.mat4_var = graph->DefaultMat4;
+				break;
+			}
+			case (Sampler2D): {
+				//Name = "Texture";
+
+				break;
+			}
+			case(SamplerCube): {
+				//Name = "SamplerCube";
+				break;
+			}
+			default: {
+				//Name = "Float";
+				break;
+			}
 		}
-		case (Mat4): {
-			
-			connect.Value.mat4_var = graph->DefaultMat4;
-			value.mat4_var = graph->DefaultMat4;
-			break;
-		}
-		case (Sampler2D):{
-			//Name = "Texture";
-		
-			break;
-		}
-		case(SamplerCube):{
-			//Name = "SamplerCube";
-			break;
-		}
-		default:{
-			//Name = "Float";
-			break;
-		}
+		Output.push_back(connect);
+	
 	}
-	Output.push_back(connect);
-
 }
+
 
 InputNode::~InputNode()
 {
@@ -119,12 +198,16 @@ void InputNode::Compile(std::string	*ShaderCode) {
 	auto Manager = Graph::getInstance();
 
 	if (inputType == UniformVariable) {
-		Manager->WriteToShaderCode(CodeString(),FragUniform);
+		Manager->WriteToShaderCode(CodeString(),UniformSeg);
 		
 	}
+	else if (inputType == AttributeVariable){
+		//do nothing in regards of writing a declaration of the variable
+		
+	
+	}
 	else {
-		Manager->WriteToShaderCode(CodeString(), FragConstant);
-		//ShaderCode->append("\n" + CodeString());
+		Manager->WriteToShaderCode(CodeString(), ConstantSeg);
 	}
 	
 	HasCompiled = true;

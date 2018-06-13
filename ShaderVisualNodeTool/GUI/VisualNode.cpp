@@ -215,14 +215,20 @@ void VisualNode::DrawInputNode(ImDrawList * drawList, ImVec2 offset)
 	// (your selection data could be an index, a pointer to the object, an id for the object, a flag stored in the object itself, etc.)
 
 	ImGui::PushID(GNode->UniqueID + NodeRelevantPos.x);
-	//const char* items[] = { "Constant", "Uniform" };
 
-	const char* item_current;
 	auto graph = Graph::getInstance();
+	bool displayAttribs = false;
+	const char* item_current = graph->VariableTypes[0];
 	
 	//ARGH STOP THIS, YOU ARE KILLING ME
+
+	//if it is not the case of a Time node where we do not want to draw anything (for now)
 	if (typeid(*GNode) != typeid(TimeNode)) {
 	
+
+		//check the current type of inputNode to either update the dropdown list or to draw 
+		//specific contents for the Attributes node
+
 		switch (dynamic_cast<InputNode&>(*GNode).inputType) {
 
 		case (0):
@@ -234,47 +240,56 @@ void VisualNode::DrawInputNode(ImDrawList * drawList, ImVec2 offset)
 		case(2):
 			item_current = graph->VariableTypes[2];
 			break;
+		case(3): {
+			displayAttribs = true;
+			break;
+		}
 		default:
-			item_current = graph->VariableTypes[0];
+			//item_current = graph->VariableTypes[0];
 			break;
 
 		}
 
-		ImGui::PushItemWidth(80);
-		ImGui::SetCursorScreenPos(ImVec2(NodeRelevantPos.x, NodeRelevantPos.y + 1 + TITLE_BOX_HEIGHT));
-		if (ImGui::BeginCombo("Type" + GNode->UniqueID, item_current, 1)) // The second parameter is the label previewed before opening the combo.
-		{
-			
-			for (int n = 0; n < 2; n++)
+		//if this is isn't an attribute node
+		if (!displayAttribs){
+			ImGui::PushItemWidth(80);
+			ImGui::SetCursorScreenPos(ImVec2(NodeRelevantPos.x, NodeRelevantPos.y + 1 + TITLE_BOX_HEIGHT));
+			if (ImGui::BeginCombo("T" + GNode->UniqueID, item_current, 1)) // The second parameter is the label previewed before opening the combo.
 			{
-				bool is_selected = (GNode->Type == BaseNodeType(n));
-				if (ImGui::Selectable(graph->VariableTypes[n], is_selected)) {
+			
+				for (int n = 0; n < 2; n++)
+				{
+					bool is_selected = (GNode->Type == BaseNodeType(n));
+					if (ImGui::Selectable(graph->VariableTypes[n], is_selected)) {
 				
-					dynamic_cast<InputNode&>(*GNode).inputType= InputNodeType(n);
+						dynamic_cast<InputNode&>(*GNode).inputType= InputNodeType(n);
 
-					// EXTREMELY UGLY 
-					if (n == 1) {
-						//dynamic_cast<InputNode&>(*GNode).EditUniform();
-						//std::shared_ptr<InputNode> unif = dynamic_cast<InputNode*>(GNode);
+						// EXTREMELY UGLY 
+						if (n == 1) {
+							//dynamic_cast<InputNode&>(*GNode).EditUniform();
+							//std::shared_ptr<InputNode> unif = dynamic_cast<InputNode*>(GNode);
 
-						//REMEMBER TO REMOVE FROM LIST WHEN GOING BACK TO CONSTANT
-						graph->UniformNodes.push_back(GNode);
+							//REMEMBER TO REMOVE FROM LIST WHEN GOING BACK TO CONSTANT
+							graph->UniformNodes.push_back(GNode);
+
+						}
+
+						Manager->ValueChanged = true;
 
 					}
 
-					Manager->ValueChanged = true;
-
+					if (is_selected)
+						ImGui::SetItemDefaultFocus();   // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
 				}
-
-				if (is_selected)
-					ImGui::SetItemDefaultFocus();   // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
+				ImGui::EndCombo();
 			}
-			ImGui::EndCombo();
 		}
 
 		
 	
 	}
+
+
 	ImGui::PopID();
 	//Display all Output buttons and circles 
 	for (int i = 0; i < vOutputs.size(); i++) {
@@ -285,104 +300,104 @@ void VisualNode::DrawInputNode(ImDrawList * drawList, ImVec2 offset)
 
 
 		ImGui::PushID(i+GNode->UniqueID);
-		ImGui::BeginGroup(); // Lock horizontal position
-							 //Input Var NameX	
-		
-
-
-
-		//ImGui::Text("Float :");
-		//ImGui::SameLine();
+		ImGui::BeginGroup(); // Lock horizontal position		
 		
 		//Input Current value -- This probably needs to be type 
 		auto ValName =  std::to_string(GNode->UniqueID);
 		ImVec2 OutputValPos;
 
-		
 
-		
-
-		//Custom inputs fields depending on valuetype
-		switch (GNode->Output[i].VariableType) {
-		case(Float): {
-			ImGui::PushItemWidth(40);
-			//MORE TIME NODE BULLSHIT
-			if (typeid(*GNode) != typeid(TimeNode)){
-				OutputValPos = ImVec2(NodeRelevantPos.x + PADDING_X+25, OutputPos.y - 0.25*OutputMargin);
-				ImGui::SetCursorScreenPos(OutputValPos);
+		//Custom inputs fields depending on valuetype and if the input node type is not attributes
+		//
+		if (!displayAttribs) {
+			switch (GNode->Output[i].VariableType) {
+			case(Float): {
+				ImGui::PushItemWidth(40);
+				//MORE TIME NODE BULLSHIT
+				if (typeid(*GNode) != typeid(TimeNode)){
+					OutputValPos = ImVec2(NodeRelevantPos.x + PADDING_X+25, OutputPos.y - 0.25*OutputMargin);
+					ImGui::SetCursorScreenPos(OutputValPos);
 				
-				if (ImGui::InputFloat("", &(GNode->value.f_var), 0.0f, 0.0f, 2)) {
-					//if (GNode->Type == BaseNodeType::InputnodeUniform) { graph->UpdateUniforms(); }
+					if (ImGui::InputFloat("", &(GNode->value.f_var), 0.0f, 0.0f, 2)) {
+						//if (GNode->Type == BaseNodeType::InputnodeUniform) { graph->UpdateUniforms(); }
+						if (dynamic_cast<InputNode&>(*GNode).inputType == UniformVariable) { graph->UpdateUniforms(); }
+						//dynamic_cast<InputNode&>(*GNode).EditUniform()
+						else { Manager->ValueChanged = true; }
+					}
+			
+				
+
+				}
+				break;
+			}
+			
+			case(Int): {
+				OutputValPos = ImVec2(NodeRelevantPos.x + PADDING_X + 25, OutputPos.y - 0.25*OutputMargin);
+				ImGui::SetCursorScreenPos(OutputValPos);
+				ImGui::PushItemWidth(40);
+			
+				if (ImGui::InputInt("", &(GNode->value.i_var), 0.0f, 1.0f, 3)) {
 					if (dynamic_cast<InputNode&>(*GNode).inputType == UniformVariable) { graph->UpdateUniforms(); }
-					//dynamic_cast<InputNode&>(*GNode).EditUniform()
 					else { Manager->ValueChanged = true; }
 				}
 			
-				
-
+				break;
 			}
-			break;
-		}
+			case(Vec2): {
+				OutputValPos = ImVec2(NodeRelevantPos.x + PADDING_X + 15, OutputPos.y - 0.25*OutputMargin);
+				ImGui::SetCursorScreenPos(OutputValPos);
 			
-		case(Int): {
-			OutputValPos = ImVec2(NodeRelevantPos.x + PADDING_X + 25, OutputPos.y - 0.25*OutputMargin);
-			ImGui::SetCursorScreenPos(OutputValPos);
-			ImGui::PushItemWidth(40);
+				ImGui::PushItemWidth(80);
 			
-			if (ImGui::InputInt("", &(GNode->value.i_var), 0.0f, 1.0f, 3)) {
-				if (dynamic_cast<InputNode&>(*GNode).inputType == UniformVariable) { graph->UpdateUniforms(); }
-				else { Manager->ValueChanged = true; }
-			}
-			
-			break;
-		}
-		case(Vec2): {
-			OutputValPos = ImVec2(NodeRelevantPos.x + PADDING_X + 15, OutputPos.y - 0.25*OutputMargin);
-			ImGui::SetCursorScreenPos(OutputValPos);
-			
-			ImGui::PushItemWidth(80);
-			
-			if (ImGui::InputFloat2("", &(GNode->value.vec2_var.x), 2)) {
-				if (dynamic_cast<InputNode&>(*GNode).inputType == UniformVariable) { graph->UpdateUniforms(); }
-				else { Manager->ValueChanged = true; }
-			}
-			
-			break;
-		}
-		case(Vec3): {
-			OutputValPos = ImVec2(NodeRelevantPos.x + PADDING_X , OutputPos.y - 0.25*OutputMargin);
-			ImGui::SetCursorScreenPos(OutputValPos);
-			ImGui::PushItemWidth(120);
-			
-			if (ImGui::InputFloat3("", &(GNode->value.vec3_var.x), 2)) {
-				if (dynamic_cast<InputNode&>(*GNode).inputType == UniformVariable) { graph->UpdateUniforms(); }
-				else { Manager->ValueChanged = true; }
-			}
-			
-			break;
-		}
-		case(Vec4): {
-			OutputValPos = ImVec2(NodeRelevantPos.x + 10 , OutputPos.y - 0.25*OutputMargin);
-			ImGui::SetCursorScreenPos(OutputValPos);
-			ImGui::PushItemWidth(150);
-			
-			if (ImGui::InputFloat4("", &(GNode->value.vec4_var.x), 2)) {
-				if (dynamic_cast<InputNode&>(*GNode).inputType == UniformVariable) {
-					graph->UpdateUniforms(); 
+				if (ImGui::InputFloat2("", &(GNode->value.vec2_var.x), 2)) {
+					if (dynamic_cast<InputNode&>(*GNode).inputType == UniformVariable) { graph->UpdateUniforms(); }
+					else { Manager->ValueChanged = true; }
 				}
-				else { Manager->ValueChanged = true; }
-				
+			
+				break;
 			}
-			break;
-		}
+			case(Vec3): {
+				OutputValPos = ImVec2(NodeRelevantPos.x + PADDING_X , OutputPos.y - 0.25*OutputMargin);
+				ImGui::SetCursorScreenPos(OutputValPos);
+				ImGui::PushItemWidth(120);
+			
+				if (ImGui::InputFloat3("", &(GNode->value.vec3_var.x), 2)) {
+					if (dynamic_cast<InputNode&>(*GNode).inputType == UniformVariable) { graph->UpdateUniforms(); }
+					else { Manager->ValueChanged = true; }
+				}
+			
+				break;
+			}
+			case(Vec4): {
+				OutputValPos = ImVec2(NodeRelevantPos.x + 10 , OutputPos.y - 0.25*OutputMargin);
+				ImGui::SetCursorScreenPos(OutputValPos);
+				ImGui::PushItemWidth(150);
+			
+				if (ImGui::InputFloat4("", &(GNode->value.vec4_var.x), 2)) {
+					if (dynamic_cast<InputNode&>(*GNode).inputType == UniformVariable) {
+						graph->UpdateUniforms(); 
+					}
+					else { Manager->ValueChanged = true; }
+				
+				}
+				break;
+			}
 
-		default :
-			break;
+			default :
+				break;
 		
+			}
+			
+		}
+		else {
+			OutputValPos = ImVec2(NodeRelevantPos.x + 50, OutputPos.y);
+			ImGui::SetCursorScreenPos(OutputValPos);
+			ImGui::PushItemWidth(50);
+			ImGui::Text((GNode->Output[i].Name).c_str());
+	
 		}
 		ImGui::PopItemWidth();
 		ImGui::EndGroup();
-		
 
 		//Output name 
 		ImVec2 OutputTextPos = ImVec2(OutputPos.x - 1.5* PADDING_X, OutputPos.y - PADDING_Y);

@@ -248,6 +248,18 @@ void Graph::ReadNodeTypes(std::string FilePath)
 			std::string name = objectRead["Name"];
 
 			tempInput.Name = name;
+			
+
+			//Initial Input Node Type
+
+			std::string inputType = objectRead["InitVariableType"];
+
+			for (int i = 0; i < 4; i++) {
+				if (inputType.compare(VariableTypes[i]) == 0) {
+					tempInput.InitInputType = i;
+					break;
+				}
+			}
 
 
 			//Slots
@@ -258,10 +270,8 @@ void Graph::ReadNodeTypes(std::string FilePath)
 
 				std::string sname = slot["SlotName"];
 
-				tempInput.SlotName = sname;
-				tempInput.VarType = util::stringToValueType(slot["VariableType"]);
-
-
+				tempInput.SlotNames.push_back(sname);
+				tempInput.VarTypes.push_back(util::stringToValueType(slot["VariableType"]));
 			}
 
 			InputNodes.insert(std::pair<std::string, InputNodeInformation>(name, tempInput));
@@ -388,7 +398,7 @@ void Graph::CompileGraph(std::shared_ptr<Node> CurrentNode , std::string* Shader
 void Graph::ChangeShader(Shader* shader)
 {
 
-	shader->EditShader(*ShaderCode, FRAGMENT);
+	shader->EditShader(" " ,*ShaderCode);
 }
 
 void Graph::PrintConnections()
@@ -488,27 +498,27 @@ std::string Graph::ReplaceVarNames(std::string code, std::string oldName, std::s
 void Graph::WriteToShaderCode(std::string code, ShaderSection section)
 {
 	switch (section) {
-		case (FragVersion): {
+		case (VersionSeg): {
 			CodeSections[0].append("\n" + code);
 			//(*ShaderCode).insert((*ShaderCode).find("$Version$") + 1, "\n" + code);
 			break;
 		}
-		case (FragVarying): {
+		case (VaryingSeg): {
 			CodeSections[1].append("\n" + code);
 			//(*ShaderCode).insert((*ShaderCode).find("$Varyings$") + 1, "\n" + code);
 			break;
 		}
-		case (FragUniform): {
+		case (UniformSeg): {
 			CodeSections[2].append("\n" + code);
 		//	(*ShaderCode).insert((*ShaderCode).find("$Uniforms$") + 1, "\n" + code);
 			break;
 		}
-		case (FragConstant): {
+		case (ConstantSeg): {
 			CodeSections[3].append("\n" + code);
 			//(*ShaderCode).insert((*ShaderCode).find("$Constants$") + 1, "\n" + code);
 			break;
 		}
-		case (FragMain): {
+		case (MainSeg): {
 			CodeSections[4].append("\n" + code);
 			//(*ShaderCode).insert((*ShaderCode).find("$Main$") , "\n" + code);
 			break;

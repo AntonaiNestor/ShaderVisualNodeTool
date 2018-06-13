@@ -41,6 +41,7 @@ public:
 	// Array containing the shader objects currently contained in the program
 	// -1 indicates that there is no shader available in the program yet.
 	int ShaderObjIDs[5];
+
 	std::string fragCode;
 	std::string vertCode;
 
@@ -76,7 +77,9 @@ public:
 
 	void ChangeShaders(const char* vertexPath, const char* fragmentPath);
 
-	void EditShader(std::string newShader , ShaderType type);
+	//this has a different functionality than the initial suggested one
+	//needs to change into more generic parameters with a list
+	void EditShader(std::string newVertex , std::string newFragment);
 
 	void AddToProgram(const char* shaderPath, ShaderType type);
 

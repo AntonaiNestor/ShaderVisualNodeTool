@@ -4,7 +4,8 @@
       "NodeType": "Function Node",
       "Name": "Addition",
       "AvailableShaders": [
-        "Vertex","Fragment"
+        "Vertex",
+        "Fragment"
       ],
       "Slots": [
         {
@@ -296,6 +297,29 @@
         "float temp = mod($t, $length * 2.0f);",
         "float PP = $length - abs(temp - $length);"
 
+      ]
+
+    },
+    {
+      "NodeType": "Function Node",
+      "Name": "MVP",
+      "AvailableShaders": [
+        "Vertex"
+      ],
+      "Slots": [
+        {
+          "SlotType": "Input",
+          "SlotName": "$vec",
+          "VariableType": "vec3"
+        },
+        {
+          "SlotType": "Output",
+          "SlotName": "MVPvec",
+          "VariableType": "vec4"
+        }
+      ],
+      "Code": [
+        " vec4 MVPvec = Projection * View * Model* vec4($vec, 1.0); "
       ]
 
     }

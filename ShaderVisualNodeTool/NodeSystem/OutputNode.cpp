@@ -54,7 +54,7 @@ void OutputNode::Compile(std::string * ShaderCode)
 			tempCode = Graph::getInstance()->ReplaceVarNames(tempCode, strArray[i], Manager->VarToSlotMap[SlotName]);
 			Input.at(i).Value = Input.at(i).ConnectedNode->Output.at(0).Value;
 
-			Manager->WriteToShaderCode(tempCode + CodeString(),FragMain);
+			Manager->WriteToShaderCode(tempCode + CodeString(),MainSeg);
 
 			Manager->AssembleShaderCode();
 			//ShaderCode->append("\n" + tempCode + CodeString());

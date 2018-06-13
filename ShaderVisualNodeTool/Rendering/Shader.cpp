@@ -408,16 +408,15 @@ void Shader::ChangeShaders(const char * vertexPath, const char * fragmentPath)
 	glDeleteShader(fragment);
 }
 
-void Shader::EditShader(std::string newShader, ShaderType type)
+//the changed shader will receive vertex and 
+void Shader::EditShader(std::string newVertex, std::string newFragment)
 {
 	//this should be more generic, but for now all we do is just 
 
-	//std::string tempFrag = fragCode;
-	std::string tempFrag = newShader;
-	//tempFrag.insert(fragCode.find("$") + 1, "\n" + newShader);
+	std::string tempVert = newVertex;
+	std::string tempFrag = newFragment;
+	
 
-
-	//std::cout << tempFrag << std::endl;
 	const char* vShaderCode = vertCode.c_str();
 	const char* fShaderCode = tempFrag.c_str();
 
