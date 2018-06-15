@@ -64,8 +64,9 @@ void GUIManager::CreateNode(ImVec2 pos, BaseNodeType type , std::string Name)
 	}
 	case (OutputnodeT):{
 		//std::string OutCode = "FragColor = vec4 ($r , $g, $b, $a );"; 
-		std::string OutCode = "FragColor = $color;";
-		newGraphNode = std::make_shared<class::OutputNode>("Fragment Shader",1,OutCode);
+		//std::string OutCode = "FragColor = $color;";
+		auto nodeInfo = Graph::getInstance()->ShaderNodes[Name];
+		newGraphNode = std::make_shared<class::OutputNode>(nodeInfo);
 		break;
 	}
 	case (FunctionnodeT):{

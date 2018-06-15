@@ -444,6 +444,8 @@ int main()
 	Graph* graph = Graph::getInstance();
 	std::string code;
 
+	
+
 
 	bool windowOpen = true;
 	
@@ -465,14 +467,21 @@ int main()
 	GUI->CreateNode(ImVec2(100,400), InputNode, "float");*/
 	//GUI->CreateNode(ImVec2(250,200),FunctionNode,"Addition");
 
-	GUI->CreateNode(ImVec2(400, 300), OutputnodeT,"OutputNode");
-	//GUI->CreateNode(ImVec2(200, 300 ) , ShadernodeT,"Vertex");
-	graph->root = graph->NodeList.at(0);
+
+
 	graph->daShader = &shader;
 
-	
+
 	//relevant path but still don't like this. it assumes we are in main root of project ask morten
 	graph->ReadNodeTypes("NodeSystem/NodeTypes");
+
+
+	GUI->CreateNode(ImVec2(400, 300), OutputnodeT,"Fragment");
+	//GUI->CreateNode(ImVec2(200, 300 ) , ShadernodeT,"Vertex");
+	graph->root = graph->NodeList.at(0);
+
+	
+
 
 
 	bool show_demo_window = true;

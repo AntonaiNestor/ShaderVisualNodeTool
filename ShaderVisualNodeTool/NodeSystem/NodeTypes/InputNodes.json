@@ -72,15 +72,15 @@
       "Name": "Attributes",
       "Slots": [
         {
-          "SlotName": "aPos",
+          "SlotName": "Pos",
           "VariableType": "vec3"
         },
         {
-          "SlotName": "aNormal",
+          "SlotName": "Normal",
           "VariableType": "vec3"
         },
         {
-          "SlotName": "aTexCoords",
+          "SlotName": "TexCoords",
           "VariableType": "vec2"
         }
       ]

@@ -7,8 +7,8 @@ enum InputNodeType {
 
 	ConstantVariable,
 	UniformVariable,
-	AttributeVariable,
-	GlobalVariable
+	GlobalVariable,
+	AttributeVariable
 };
 
 
@@ -26,7 +26,7 @@ public:
 	InputNodeType inputType;
 
 	//methods
-	void Compile(std::string *ShaderCode);
+	void Compile(std::shared_ptr<Node> root);
 	std::string CodeString();
 
 	//this should have a program associated with it

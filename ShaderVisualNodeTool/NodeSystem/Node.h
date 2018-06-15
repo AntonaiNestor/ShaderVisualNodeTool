@@ -86,7 +86,7 @@ public:
 
 
 	//virtual methods
-	virtual void Compile(std::string *ShaderCode) = 0; 
+	virtual void Compile(std::shared_ptr<Node> root) = 0;
 	virtual std::string CodeString() = 0;
 	
 
@@ -94,7 +94,6 @@ public:
 	//output to input connection
 	void ConnectNode(std::shared_ptr<Node> ConnectedNode, int ConnectedIndex, int OutputIndex);
 	
-
 
 private:
 	

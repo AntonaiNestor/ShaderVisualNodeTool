@@ -1,5 +1,5 @@
 #include "FunctionNode.h"
-
+#include "OutputNode.h"
 
 
 //std::string NodeName,std::vector<SlotInformation> slots,std::string functionCode
@@ -32,7 +32,7 @@ FunctionNode::FunctionNode(FunctionNodeInformation nodeInfo)
 		newConnection.Value.f_var = std::stof(temp);*/
 		
 
-		 switch (slot.VarType) {
+	  switch (slot.VarType) {
 
 		 case (Bool): {
 			 newConnection.Value.b_var = graph->DefaultBool;
@@ -67,14 +67,14 @@ FunctionNode::FunctionNode(FunctionNodeInformation nodeInfo)
 		}
 
 		default:
-
 			break;
-		}
+	  }
 
 		//Input slot
 		if (!slot.SlotType) {
 			Input.push_back(newConnection);
 		}
+		//Output Slot
 		else {
 			Output.push_back(newConnection);
 		}
@@ -111,9 +111,8 @@ FunctionNode::~FunctionNode()
 {
 }
 
-void FunctionNode::Compile(std::string* ShaderCode)
+void FunctionNode::Compile(std::shared_ptr<Node> root)
 {
-	//CalculateValue();
 
 	int counter = 0;
 	std::string tempCode = StringCode;
@@ -121,7 +120,7 @@ void FunctionNode::Compile(std::string* ShaderCode)
 	auto Manager = Graph::getInstance();
 	int found = 0;
 
-
+	//go through all inputs and replace in the string code the names of the variables
 	for (int i = 0; i < Input.size();i++) {
 		//if the input isn;t connected to anything , replace name of the variable with default value
 		// Otherwise, replace the name of the variable with the appropriate name of the output it is connected to.
@@ -156,29 +155,33 @@ void FunctionNode::Compile(std::string* ShaderCode)
 	// PUT THIS UGLY THING IN A FUNCTION YOU SILLY GOOSE
 	auto outName = Output.at(0).Name;
 	auto tempOutName = outName;
-	auto outSlotName = std::to_string(this->UniqueID) + "->0";;
+	auto outSlotName = std::to_string(this->UniqueID) + "->0";
 	//auto ManagerInstance = Graph::getInstance();
 
 	outName = Manager->AssignUniqueName(outName,outSlotName);
-	//try {
-	//	//if the name exists in the map, then create a unique new name and insert that into the map.
-	//	//Also change slot name to that new name , so that we won't have to do this all the time
-	//	Manager->SlotToVariableMap.at(outName);
-	//	//Since we are reseting the namecounter and the map, there is no reason for that
-	//	//Output.at(0).Name = name + "_"+  Graph::getInstance()->GiveName();
-	//	outName = outName + "_" + Graph::getInstance()->GiveName();
-	//	Manager->SlotToVariableMap.insert(std::pair<std::string, std::string>(outName, outSlotName));
-	//	Manager->VarToSlotMap.insert(std::pair<std::string, std::string>(outSlotName, outName));
-
-	//}
-	//catch (std::out_of_range) {
-	//	Manager->SlotToVariableMap.insert(std::pair<std::string, std::string>(outName, outSlotName));
-	//	Manager->VarToSlotMap.insert(std::pair<std::string, std::string>(outSlotName, outName));
-	//}
+	
 
 	tempCode = Graph::getInstance()->ReplaceVarNames(tempCode, tempOutName,outName);
 	
-	Manager->WriteToShaderCode(tempCode,MainSeg);
+	//write the function code in the appropriate shader. 
+
+	//If that shader is the vertex then we need to introduce varyings in both, and also 
+	if (ShaderType(CurrShaderType) == VERTEX) {
+
+		std::string stringVarType = util::GetStringValueType(Output[0].VariableType,false);
+
+		std::string VertName = "out " + stringVarType + outName + " ;";
+		std::string FragName = "in " + stringVarType + outName + " ;";
+
+		dynamic_cast<OutputNode&>(*root).WriteToShaderCode(VertName, VaryingSeg,VERTEX);
+		dynamic_cast<OutputNode&>(*root).WriteToShaderCode(FragName, VaryingSeg, FRAGMENT);
+		//this might cause errors :(
+		//delete the variable declaration of the output, since it is already declared in the varying section
+		tempCode.erase( tempCode.find(outName) - (stringVarType.size()) , stringVarType.size());
+
+	}
+
+	dynamic_cast<OutputNode&>(*root).WriteToShaderCode(tempCode, MainSeg, ShaderType(CurrShaderType));
 
 	//ShaderCode->append("\n" + tempCode);
 

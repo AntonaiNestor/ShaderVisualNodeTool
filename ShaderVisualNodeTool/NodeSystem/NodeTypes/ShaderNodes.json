@@ -1,0 +1,55 @@
+{
+  "NodeTypes": [
+    {
+      "NodeType": "ShaderNode",
+      "Name": "Vertex",
+      "Slots": [
+        {
+          "SlotType": "Input",
+          "SlotName": "gl_Position",
+          "VariableType": "vec3"
+        },
+        {
+          "SlotType": "Input",
+          "SlotName": "$aNormal",
+          "VariableType": "vec3"
+        },
+        {
+          "SlotType": "Input",
+          "SlotName": "$aTexCoords",
+          "VariableType": "vec2"
+        },
+        {
+          "SlotType": "Output",
+          "SlotName": "FragPos",
+          "VariableType": "vec3"
+        },
+        {
+          "SlotType": "Output",
+          "SlotName": "Normal",
+          "VariableType":"vec3"
+        },
+        {
+          "SlotType": "Output",
+          "SlotName": "TexCoord",
+          "VariableType": "vec2"
+        }
+      ]
+
+    },
+    {
+      "NodeType": "ShaderNode",
+      "Name": "Fragment",
+      "Slots": [
+        {
+          "SlotType": "Input",
+          "SlotName": "$FragmentColor",
+          "VariableType": "vec4"
+        }
+      ]
+
+    }
+
+
+  ]
+}

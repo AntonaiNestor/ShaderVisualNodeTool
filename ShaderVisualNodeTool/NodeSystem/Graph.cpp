@@ -5,6 +5,7 @@
 #include "../Utility.h"
 #include "InputNode.h"
 #include "TimeNode.h"
+#include "OutputNode.h"
 
 
 Graph::Graph()
@@ -13,9 +14,7 @@ Graph::Graph()
 	NameCounter = 0;
 
 	//populate the vector of string with 5 empty ones
-	for (int i =0; i < 5 ; i++){
-		CodeSections.push_back("");
-	}
+	
 }
 
 
@@ -361,14 +360,123 @@ void Graph::ReadNodeTypes(std::string FilePath)
 	}
 
 
+	//--- Read Shader Nodes
+	
+
+	std::ifstream ioutfs((FilePath + "/ShaderNodes.json").c_str(), std::ifstream::in);
+
+	if (!ioutfs.is_open()) {
+		// Debug Log this and try catch
+		std::cout << "Error with opening Json File" << std::endl;
+	}
+	ioutfs >> j;
+	ioutfs.close();
+
+
+	//Parsing json information and building nodetypes in graph containers
+
+	if (j.find("NodeTypes") != j.end()) {
+		json info = j["NodeTypes"];
+
+		for (int i = 0; i < info.size(); i++) {
+
+			ShaderNodeInformation tempNode;
+			json objectRead = info.at(i);
+
+			
+			std::string name = objectRead["Name"];
+			tempNode.Name = name;
+
+
+			//Slots
+			auto slots = objectRead["Slots"];
+			for (auto slot : slots) {
+
+				//temporary slot vars
+				bool stype = util::stringToSlotType(slot["SlotType"]);
+				std::string sname = slot["SlotName"];
+				ValueType vartype = util::stringToValueType(slot["VariableType"]);
+
+				SlotInformation tempSlot;
+				tempSlot.Name = sname;
+				tempSlot.SlotType = stype;
+				tempSlot.VarType = vartype;
+				tempNode.Slots.push_back(tempSlot);
+
+			}
+
+
+			//TEMPORARY PROBABLY
+			tempNode.ShadeType = FRAGMENT;
+			tempNode.DefaultCode[0] = daShader->vertCode;
+			tempNode.DefaultCode[1] = daShader->fragCode;
+			//type and default code from graph according to name
+			/*if (name.compare("Vertex") == 0) {
+				tempNode.ShadeType = VERTEX;
+				tempNode.DefaultCode = daShader->vertCode;
+			}
+			else if (name.compare("Tess Eval") == 0) {
+				tempNode.ShadeType = FRAGMENT;
+				tempNode.DefaultCode = daShader->fragCode;
+			}
+			else if (name.compare("Tess Control") == 0) {
+				tempNode.ShadeType = FRAGMENT;
+				tempNode.DefaultCode = daShader->fragCode;
+			}
+			else if (name.compare("Geometry") == 0) {
+				tempNode.ShadeType = FRAGMENT;
+				tempNode.DefaultCode = daShader->fragCode;
+			}
+			else if (name.compare("Fragment") == 0) {
+				tempNode.ShadeType = FRAGMENT;
+				tempNode.DefaultCode = daShader->fragCode;
+			}*/
+		
+			//add to graph permanent information
+			ShaderNodes.insert(std::pair<std::string, ShaderNodeInformation>(tempNode.Name, tempNode));
+		}
+
+
+	}
 
 
 
 }
 
-void Graph::CompileGraph(std::shared_ptr<Node> CurrentNode , std::string* ShaderCode)
+void Graph::CompileGraph(std::shared_ptr<Node> CurrentNode , std::shared_ptr<Node> rootNode)
 {
 	
+	/*
+	
+	for (all inputs of the node){
+	
+		if (slot is not connected to anything){
+			continue;
+		}
+
+		else if (slot is connected to something) {
+			
+			//this check for compilation might be problematic once an output is connected to many inputs
+			if (the connected node has not been compiled already)
+			{
+			  Call compileGraphfunction for that node();
+			}
+
+		}
+	
+	}
+	
+	--after all inputs have been checked then
+	Compile this Node();
+
+	if (this is a shadernode) {
+				do nothing -> default shader code will take care of it
+			}
+			else {
+				use default value 			
+			}
+	
+	*/
 
 	//Traverse all the Inputs list of this node
 	for (std::vector<Connection>::iterator it = CurrentNode->Input.begin(); it != CurrentNode->Input.end(); ++it) {
@@ -376,29 +484,36 @@ void Graph::CompileGraph(std::shared_ptr<Node> CurrentNode , std::string* Shader
 
 		//if the connection 
 		if (it->ConnectedNode == nullptr) { continue; }
+		else {
+			if (!it->ConnectedNode->HasCompiled) {
+				CompileGraph(it->ConnectedNode,rootNode);
+			}
+			
+		
+		}
 
 		//if the connected node's inputs are empty 
 		//it means that it is an input node only
 		
-		if (it->ConnectedNode->Input.empty() && !it->ConnectedNode->HasCompiled) {
-			//if that node hasn't been compiled, compile it and continue to this node's next input
-			it->ConnectedNode->Compile(ShaderCode);
-			
-			continue;
-		}
-		// if it isn't empty and the node hasn't compiled  move to that node and call this function again
-		else if (!it->ConnectedNode->HasCompiled) {
-			CompileGraph(it->ConnectedNode, ShaderCode);
-		}
+		//if (it->ConnectedNode->Input.empty() && !it->ConnectedNode->HasCompiled) {
+		//	//if that node hasn't been compiled, compile it and continue to this node's next input
+		//	it->ConnectedNode->Compile(ShaderCode);
+		//	
+		//	continue;
+		//}
+		//// if it isn't empty and the node hasn't compiled  move to that node and call this function again
+		//else if (!it->ConnectedNode->HasCompiled) {
+		//	
+		//}
 	}
 
-	CurrentNode->Compile(ShaderCode);
+	CurrentNode->Compile(rootNode);
 }
 
 void Graph::ChangeShader(Shader* shader)
 {
-
-	shader->EditShader(" " ,*ShaderCode);
+	//change shader will edit the shadercodes existing in the root "fragment shader" 
+	shader->EditShader(dynamic_cast<OutputNode&>(*root).shaderCode[0], dynamic_cast<OutputNode&>(*root).shaderCode[1]);
 }
 
 void Graph::PrintConnections()
@@ -434,9 +549,10 @@ void Graph::UpdateGraph()
 {
 	PrintConnections();
 
-	ClearShaderCode();
-	CompileGraph(root, ShaderCode);
+	//ClearShaderCode();
+	CompileGraph(root,root);
 	ChangeShader(daShader);
+	dynamic_cast<OutputNode&>(*root).ClearShaderCode();
 	//UpdateUniforms();
 	ResetGraph();
 
@@ -495,66 +611,7 @@ std::string Graph::ReplaceVarNames(std::string code, std::string oldName, std::s
 	return code;
 }
 
-void Graph::WriteToShaderCode(std::string code, ShaderSection section)
-{
-	switch (section) {
-		case (VersionSeg): {
-			CodeSections[0].append("\n" + code);
-			//(*ShaderCode).insert((*ShaderCode).find("$Version$") + 1, "\n" + code);
-			break;
-		}
-		case (VaryingSeg): {
-			CodeSections[1].append("\n" + code);
-			//(*ShaderCode).insert((*ShaderCode).find("$Varyings$") + 1, "\n" + code);
-			break;
-		}
-		case (UniformSeg): {
-			CodeSections[2].append("\n" + code);
-		//	(*ShaderCode).insert((*ShaderCode).find("$Uniforms$") + 1, "\n" + code);
-			break;
-		}
-		case (ConstantSeg): {
-			CodeSections[3].append("\n" + code);
-			//(*ShaderCode).insert((*ShaderCode).find("$Constants$") + 1, "\n" + code);
-			break;
-		}
-		case (MainSeg): {
-			CodeSections[4].append("\n" + code);
-			//(*ShaderCode).insert((*ShaderCode).find("$Main$") , "\n" + code);
-			break;
-		}
-		default: {
-			CodeSections[4].append("\n" + code);
-			//(*ShaderCode).insert((*ShaderCode).find("$Main$") + 6, "\n" + code);
-			break;
-		}
 
-
-
-
-	}
-
-}
-
-void Graph::AssembleShaderCode()
-{
-	for (int i = 0; i < 5; i++) {
-		(*ShaderCode).insert((*ShaderCode).find(Identifiers[i]) + Identifiers[i].length(), "\n" + CodeSections[i]);
-	}
-
-}
-
-void Graph::ClearShaderCode()
-{
-	//clear shaderCode -- can skip this i think
-	ShaderCode->clear();
-	//clear sections
-	for (int i = 0; i < 5; i++) {
-		CodeSections[i].clear();
-	}
-	//initialize shadercode to skeleton code
-	(*ShaderCode) = daShader->fragCode;
-}
 
 void Graph::UpdateUniforms()
 {

@@ -1,22 +1,49 @@
+//$Version$ 
+#version 330 core
+layout( location = 0 ) out vec4 FragColor;
 
-out vec4 FragColor;
+//in vec3 fColor;
 
-in vec2 TexCoord;
+//Varying-Standard
+in vec3 Normal;
+in vec3 FragPos;
+
+//$Varyings$
 
 
-//uniform vec4 InputCol;
-//uniform sampler2D texture_diffuse1;
+// -$
 
+//Uniforms-Standard
+uniform float test;
+uniform mat4 view;
+uniform vec4 InputCol;
+
+
+
+//$Uniforms$
+
+// -$
+
+
+//$Constants$
+
+// -$
 
 void main()
 {
 	
-    FragColor = vec4(1.0,1.0,0.0,1.0);  
-	//float ambientStrength = 0.5;
-    //vec3 ambient = ambientStrength * InputCol.xyz;
+    //Main - Default
+	float ambientStrength = 0.2;
+    vec3 ambient = ambientStrength * InputCol.xyz;
 
-    //vec3 result = ambient * vec3(1.0,1.0,1.0);
-    //FragColor = vec4(result, 1.0);
-	//FragColor = InputCol;
-	//FragColor = texture(texture_diffuse1, TexCoord);
+	vec3 result = ambient * vec3(1.0,1.0,1.0);
+	
+	FragColor = InputCol;
+
+	//$Main$
+	
+
+	// -$
+	
+
 }

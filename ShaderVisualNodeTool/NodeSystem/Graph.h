@@ -37,6 +37,16 @@ struct FunctionNodeInformation {
 	std::string Code; // GLSL code
 };
 
+struct ShaderNodeInformation {
+
+	std::string Name; // name which will tell the shadertype
+	ShaderType ShadeType; // the shaderType according to the name
+	std::vector<SlotInformation> Slots; //slot information  
+	std::string DefaultCode[2]; // the default shader code, retrieved from the program 
+	//in the shader though, not from the json file (for now)
+	
+};
+
 enum ShaderSection {
 
 	VersionSeg,
@@ -83,7 +93,7 @@ public:
 	// The information from these will be used on creation
 	//Same idea can be extended to everything
 	std::map<std::string,FunctionNodeInformation> FunctionNodes;
-
+	std::map<std::string, ShaderNodeInformation> ShaderNodes;
 
 
 
@@ -93,8 +103,8 @@ public:
 	//Root of the graph
 	std::shared_ptr<Node> root;
 	//these two here are probably not correct
-	std::string* ShaderCode = new std::string("");
-	std::vector<std::string> CodeSections;
+	//std::string* ShaderCode = new std::string("");
+	
 	std::string Identifiers[5] = {"$Version$","$Varyings$","$Uniforms$","$Constants$" ,"$Main$" };
 
 	Shader* daShader;
@@ -106,6 +116,7 @@ public:
 	//List of all the nodes in the graph - order is not important, just access to all of them
 	std::vector<std::shared_ptr<Node>> NodeList;
 	std::vector<std::shared_ptr<Node>> UniformNodes;
+	std::vector<std::shared_ptr<Node>> ShaderNodeList;
 
 	// ---- Methods 
 
@@ -130,16 +141,14 @@ public:
 	void ResetNameCounter();
 
 	//Depth first backwards traversal and compilation of the nodes
-	void CompileGraph(std::shared_ptr<Node> CurrentNode , std::string* ShaderCode);
+	void CompileGraph(std::shared_ptr<Node> CurrentNode , std::shared_ptr<Node> rootNode);
 	void ChangeShader(Shader* shader);
 	void PrintConnections();
 	void ResetGraph();
 	void UpdateGraph();
 	std::string AssignUniqueName(std::string initName, std::string slotName);
 	std::string ReplaceVarNames(std::string code, std::string oldName, std::string newName);
-	void WriteToShaderCode(std::string code, ShaderSection section);
-	void AssembleShaderCode();
-	void ClearShaderCode();
+	
 	void UpdateUniforms();
 
 	//Datatype InitialiseValue(ValueType type);

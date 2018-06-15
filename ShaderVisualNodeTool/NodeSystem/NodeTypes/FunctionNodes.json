@@ -322,6 +322,54 @@
         " vec4 MVPvec = Projection * View * Model* vec4($vec, 1.0); "
       ]
 
+    },
+    {
+      "NodeType": "Function Node",
+      "Name": "vec3To4",
+      "AvailableShaders": [
+        "Vertex",
+        "Fragment"
+      ],
+      "Slots": [
+        {
+          "SlotType": "Input",
+          "SlotName": "$vector",
+          "VariableType": "vec3"
+        },
+        {
+          "SlotType": "Output",
+          "SlotName": "Vector4From3",
+          "VariableType": "vec4"
+        }
+      ],
+      "Code": [
+        " vec4 Vector4From3 = vec4($vector, 1.0) ; "
+      ]
+
+    },
+    {
+      "NodeType": "Function Node",
+      "Name": "vec2To4",
+      "AvailableShaders": [
+        "Vertex",
+        "Fragment"
+      ],
+      "Slots": [
+        {
+          "SlotType": "Input",
+          "SlotName": "$vector",
+          "VariableType": "vec2"
+        },
+        {
+          "SlotType": "Output",
+          "SlotName": "Vector4From3",
+          "VariableType": "vec4"
+        }
+      ],
+      "Code": [
+        " vec4 Vector4From3 = vec4($vector,1.0, 1.0) ; "
+      ]
+
     }
 
 

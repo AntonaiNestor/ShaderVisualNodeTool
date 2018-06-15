@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -74,6 +74,7 @@
     <None Include="imgui.ini" />
     <None Include="NodeSystem\NodeTypes\FunctionNodes.json" />
     <None Include="NodeSystem\NodeTypes\InputNodes.json" />
+    <None Include="NodeSystem\NodeTypes\ShaderNodes.json" />
     <None Include="NodeSystem\NodeTypes\test2.json" />
     <None Include="Shaders\ExtendSides.gs" />
     <None Include="Shaders\GeometryCurves.gs" />
@@ -85,6 +86,9 @@
     <None Include="Shaders\SimpleTesEval.tes" />
     <None Include="Shaders\SimpleVertexShader.vert" />
     <None Include="Shaders\TrianglesToPoints.gs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Shaders\VertexShaderCopy.vert" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

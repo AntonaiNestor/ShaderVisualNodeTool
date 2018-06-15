@@ -17,7 +17,7 @@ public:
 	std::string StringCode;
 
 	//methods
-	void Compile(std::string *ShaderCode);
+	void Compile(std::shared_ptr<Node> root);
 	std::string CodeString();
 
 	//can't have these. We do not run the actual code that calculates the output.

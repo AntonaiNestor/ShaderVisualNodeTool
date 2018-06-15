@@ -5,13 +5,21 @@
 class OutputNode : public Node
 {
 public:
-	OutputNode(std::string Name,int NoInputs,std::string functionCode);
+	OutputNode(ShaderNodeInformation nodeInfo);
 	~OutputNode();
 
-	std::string finalFragment;
-	std::string shaderCode;
 
-	void Compile(std::string *ShaderCode);
+	//temporarily the output node knows both 
+	std::string DefaultCode[2];
+	std::string shaderCode[2];
+	std::vector<std::string> CodeSections[2];
+	ShaderType Stype;
+
+
+	void WriteToShaderCode(std::string code, ShaderSection section, ShaderType type);
+	void AssembleShaderCode();
+	void ClearShaderCode();
+	void Compile(std::shared_ptr<Node> root);
 	std::string CodeString();
 };
 

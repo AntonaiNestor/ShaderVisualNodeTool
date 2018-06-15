@@ -1,5 +1,5 @@
 #include "InputNode.h"
-
+#include "OutputNode.h"
 #include <iostream>
 
 InputNode::InputNode()
@@ -192,22 +192,85 @@ InputNode::~InputNode()
 //
 // Compiling constant nodes means only appending a simple var in the shadercode
 // The actual value of the node is also passed to the children nodes on connection
-void InputNode::Compile(std::string	*ShaderCode) {
+void InputNode::Compile(std::shared_ptr<Node> root) {
 	
-	//Put cases here for uniforms and whatnot
+	
 	auto Manager = Graph::getInstance();
 
 	if (inputType == UniformVariable) {
-		Manager->WriteToShaderCode(CodeString(),UniformSeg);
 		
+		dynamic_cast<OutputNode&>(*root).WriteToShaderCode(CodeString(), UniformSeg, FRAGMENT);
 	}
 	else if (inputType == AttributeVariable){
 		//do nothing in regards of writing a declaration of the variable
+		// We also know that this will execute uniquely for the VS. It CANNOT run in the fragment so 
+		// no need to check
+
+		//however this will need to create a varying with the name vPos,Normal,Texcoords etc in the VS and in in the fragment
+		//question this does it also write in the main of the VS that Normal = aNormal;  ?
+		//Because if we attach normal to something else 
+
+		auto tempPointer = dynamic_cast<OutputNode&>(*root);
+
+		//go through all outputs of the attributes 
+		for (int i = 0; i < Output.size(); i++) {
+			//if the output is connected to something
+			if (Output[i].ConnectedNode!=nullptr)
+			{
+
+				//Put cases here for uniforms and whatnot
+			
+				std::string name = Output.at(i).Name;
+				std::string slotName = std::to_string(this->UniqueID) + "->" + std::to_string(i);
+				ValueType outputType = Output.at(i).VariableType;
+
+
+				name = Manager->AssignUniqueName(name, slotName);
+
+
+				//the varying string that need to be written in the VS
+				std::string varyingNameVS = "out " + util::GetStringValueType(Output[i].VariableType, false) + Output[i].Name + " ;" ;
+				std::string varyingNameFS = "in " + util::GetStringValueType(Output[i].VariableType, false) + Output[i].Name + " ;" ;
+
+				std::string VSattrDecl;
+				//depending on the variable name, write the appropriate match between the varying and the attribute
+				//this is a bit hardcoded and out of place but for now it is da truth
+				switch (i) {
+
+					case (0):
+						VSattrDecl = Output[i].Name + " = aPos ;";
+						break;
+					case(1):
+						VSattrDecl = Output[i].Name + " = aNormal ;";
+						break;
+					case(2):
+						VSattrDecl = Output[i].Name + " = aTexCoords;";
+						break;
+					case(3):
+						VSattrDecl = Output[i].Name + " = aTangents;";
+						break;
+					case(4):
+						VSattrDecl = Output[i].Name + " = aBitangents;";
+						break;
+					default:
+						VSattrDecl = Output[i].Name + " = aPos ;";
+						break;
+				}
+
+
+				//write in VS
+				dynamic_cast<OutputNode&>(*root).WriteToShaderCode(varyingNameVS, VaryingSeg, VERTEX);
+				dynamic_cast<OutputNode&>(*root).WriteToShaderCode(varyingNameFS, VaryingSeg, FRAGMENT);
+				dynamic_cast<OutputNode&>(*root).WriteToShaderCode(VSattrDecl, MainSeg, VERTEX);
+
+			}
+		}
+		//
 		
-	
+
 	}
 	else {
-		Manager->WriteToShaderCode(CodeString(), ConstantSeg);
+		dynamic_cast<OutputNode&>(*root).WriteToShaderCode(CodeString(), ConstantSeg, FRAGMENT);
 	}
 	
 	HasCompiled = true;
@@ -218,19 +281,19 @@ std::string InputNode::CodeString()
 {
 	// TODO this probably needs to check if there are more than one outputs and append that much text
 	// Also for now we do not add the "$"
-	std::string name = Output.at(0).Name;
-	std::string slotName = std::to_string(this->UniqueID) + "->0" ;
-	ValueType outputType = Output.at(0).VariableType;
+	
 	auto ManagerInstance = Graph::getInstance();
-
-
-
-	name = ManagerInstance->AssignUniqueName(name,slotName);
-
 	std::string StringVal;
+
 
 	//for now just declare them in the main
 	if (inputType == UniformVariable) {
+
+
+		std::string name = Output.at(0).Name;
+		std::string slotName = std::to_string(this->UniqueID) + "->0";
+		ValueType outputType = Output.at(0).VariableType;
+		name = ManagerInstance->AssignUniqueName(name, slotName);
 
 		StringVal += "uniform ";
 		switch (outputType) {
@@ -285,7 +348,12 @@ std::string InputNode::CodeString()
 		}
 		
 	}
-	else {
+	else if (inputType == ConstantVariable){
+
+		std::string name = Output.at(0).Name;
+		std::string slotName = std::to_string(this->UniqueID) + "->0";
+		ValueType outputType = Output.at(0).VariableType;
+		name = ManagerInstance->AssignUniqueName(name, slotName);
 
 		Datatype val = value;
 		switch (outputType) {
@@ -339,7 +407,26 @@ std::string InputNode::CodeString()
 			break;
 		}
 	}
+	else if (inputType == AttributeVariable) {
 
+
+		for (int i = 0; i < Output.size(); i++) {
+			//if the output is connected to something
+			if (Output[i].ConnectedNode != nullptr)
+			{
+
+				//Put cases here for uniforms and whatnot
+
+				std::string name = Output.at(i).Name;
+				std::string slotName = std::to_string(this->UniqueID) + "->" + std::to_string(i);
+				ValueType outputType = Output.at(i).VariableType;
+
+
+				name = ManagerInstance->AssignUniqueName(name, slotName);
+			}
+		}
+	
+	}
 	
 
 	return StringVal;

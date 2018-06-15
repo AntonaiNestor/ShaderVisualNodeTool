@@ -417,7 +417,7 @@ void Shader::EditShader(std::string newVertex, std::string newFragment)
 	std::string tempFrag = newFragment;
 	
 
-	const char* vShaderCode = vertCode.c_str();
+	const char* vShaderCode = tempVert.c_str();
 	const char* fShaderCode = tempFrag.c_str();
 
 

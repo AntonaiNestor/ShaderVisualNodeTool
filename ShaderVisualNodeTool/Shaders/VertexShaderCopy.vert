@@ -11,14 +11,14 @@ layout (location = 4) in vec3 aBitangents;
 
 // -$
 
-//$Varyings$
+//$VaryingsOut$
 
 // out <type> VariableName ;
 
 //passed to the fragment shader for interpolation
-//out vec2 TexCoord;
-//out vec3 Normal;
-//out vec3 FragPos;
+out vec2 TexCoord;
+out vec3 Normal;
+out vec3 FragPos;
 
 // -$
 
@@ -55,16 +55,16 @@ void main()
 
 
 	//Main - Default
-	// TexCoord=aTexCoords;
+	 TexCoord=aTexCoords;
   
 	//normal passing
-	//mat3 normalMatrix = transpose(inverse(mat3(View * Model)));
-   // Normal = normalize(normalMatrix * aNormal);
-   // Normal = aNormal;
+	mat3 normalMatrix = transpose(inverse(mat3(View * Model)));
+    Normal = normalize(normalMatrix * aNormal);
+
 
 	//the current vertex position in view space
-	//vec4 vertPos4 = View * Model * vec4(aPos, 1.0);
-   // FragPos = vec3(vertPos4) / vertPos4.w;
+	vec4 vertPos4 = View * Model * vec4(aPos, 1.0);
+    FragPos = vec3(vertPos4) / vertPos4.w;
 
 	//gl position
     gl_Position = Projection * View * Model* vec4(aPos, 1.0); 
