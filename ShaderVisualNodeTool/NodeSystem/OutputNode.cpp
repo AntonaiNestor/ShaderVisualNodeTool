@@ -8,6 +8,7 @@ OutputNode::OutputNode(ShaderNodeInformation nodeInfo)
 	//general node attributes
 	Name = nodeInfo.Name;
 	Type = BaseNodeType::OutputnodeT;
+	CurrShaderType = 4;
 	Stype = nodeInfo.ShadeType;
 	UniqueID = Graph::getInstance()->AssignID();
 

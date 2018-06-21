@@ -1,6 +1,6 @@
 #include "GUIManager.h"
 #include "../NodeSystem/InputNode.h"
-
+#include "../NodeSystem/ShaderNode.h"
 #include "../NodeSystem/OutputNode.h"
 #include "../NodeSystem/FunctionNode.h"
 #include "../NodeSystem/TimeNode.h"
@@ -44,7 +44,7 @@ void GUIManager::CreateNode(ImVec2 pos, BaseNodeType type , std::string Name)
 	// since we push the object in the graph's list then a reference is kept.
 	
 	std::shared_ptr<Node> newGraphNode;
-
+	auto Manager = Graph::getInstance();
 
 	
 	switch (type) {
@@ -72,17 +72,22 @@ void GUIManager::CreateNode(ImVec2 pos, BaseNodeType type , std::string Name)
 	case (FunctionnodeT):{
 		
 		auto nodeInfo = Graph::getInstance()->FunctionNodes[Name];
-
 		newGraphNode = std::make_shared<class::FunctionNode>(nodeInfo);
+		break;
+	}
+	case (ShadernodeT): {
+
+		auto nodeInfo = Graph::getInstance()->ShaderNodes[Name];
+		newGraphNode = std::make_shared<class::ShaderNode>(nodeInfo);
+		//don't forget to delete from here after deletion
+		Manager->ShaderNodeList.push_back(newGraphNode);
 		break;
 	}
 	default :
 		break;
 	}
 
-
-	
-	Graph::getInstance()->AddNode(newGraphNode);
+	Manager->AddNode(newGraphNode);
 	// 2) Create Visual Node at pos - same logic as above, object is in the heap but pointer is in the stack
 
 	auto NewVnode= std::make_shared<VisualNode>(newGraphNode,pos);
@@ -270,7 +275,7 @@ void GUIManager::RenderGUI() {
 		
 	}
 
-	// Draw context menu
+	// Draw context menu -Main one 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(8, 8));
 	if (ImGui::BeginPopup("Creation Menu"))
 	{
@@ -279,6 +284,7 @@ void GUIManager::RenderGUI() {
 		ImVec2 MousePos = ImGui::GetMousePosOnOpeningCurrentPopup() - NodeViewPos;
 			ImGui::Separator();
 
+			//Input Nodes submenu
 			if (ImGui::BeginMenu("Input Node")) {
 				for (std::map<std::string, InputNodeInformation>::iterator iter = graph->InputNodes.begin(); iter != graph->InputNodes.end(); ++iter)
 				{
@@ -300,7 +306,7 @@ void GUIManager::RenderGUI() {
 				}
 				ImGui::EndMenu();
 			}
-			
+			//Function Nodes submenu
 			if (ImGui::BeginMenu("Function Node")) {
 
 
@@ -314,22 +320,29 @@ void GUIManager::RenderGUI() {
 						CreateNode(MousePos,FunctionnodeT,iter->first);
 					}
 
-					//Key k = iter->first;
-					//ignore value
-					//Value v = iter->second;
+				
 				}
-				//-------- Iterate here 
 			
-				//ImGui::MenuItem("Multiplication Node");
-				//-----------------------------
 
 				ImGui::EndMenu();
 			}
-			if (ImGui::BeginMenu("Output Node")) {
+			//Shader Nodes submenu
+			if (ImGui::BeginMenu("Shader Node")) {
 
 				//-------- Iterate here 
-				ImGui::MenuItem("Fragment Node");
+				//ImGui::MenuItem("Fragment Node");
 
+				for (std::map<std::string, ShaderNodeInformation>::iterator iter = graph->ShaderNodes.begin(); iter != graph->ShaderNodes.end(); ++iter)
+				{
+
+					//new menu entry
+					if (ImGui::MenuItem((iter->first).c_str())) {
+
+						//call constructor for function node
+						CreateNode(MousePos, ShadernodeT, iter->first);
+					}
+
+				}
 				//-------------
 				ImGui::EndMenu();
 			}

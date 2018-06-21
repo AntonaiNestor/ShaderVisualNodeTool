@@ -370,6 +370,94 @@
         " vec4 Vector4From3 = vec4($vector,1.0, 1.0) ; "
       ]
 
+    },
+    {
+      "NodeType": "Function Node",
+      "Name": "MatVecMult",
+      "AvailableShaders": [
+        "Vertex",
+        "Fragment"
+      ],
+      "Slots": [
+        {
+          "SlotType": "Input",
+          "SlotName": "$Mat4",
+          "VariableType": "mat4"
+        },
+        {
+          "SlotType": "Input",
+          "SlotName": "$vec4",
+          "VariableType": "vec4"
+        },
+        {
+          "SlotType": "Output",
+          "SlotName": "MVmult",
+          "VariableType": "vec4"
+        }
+      ],
+      "Code": [
+        " vec4 MVmult= $Mat4 * $vec4 ; "
+      ]
+
+    },
+    {
+      "NodeType": "Function Node",
+      "Name": "floatVec4Mult",
+      "AvailableShaders": [
+        "Vertex",
+        "Fragment"
+      ],
+      "Slots": [
+        {
+          "SlotType": "Input",
+          "SlotName": "$float",
+          "VariableType": "float"
+        },
+        {
+          "SlotType": "Input",
+          "SlotName": "$vec4",
+          "VariableType": "vec4"
+        },
+        {
+          "SlotType": "Output",
+          "SlotName": "FV4mult",
+          "VariableType": "vec4"
+        }
+      ],
+      "Code": [
+        " vec4 FV4mult = $float * $vec4 ; "
+      ]
+
+    },
+
+    {
+      "NodeType": "Function Node",
+      "Name": "Vec4Addition",
+      "AvailableShaders": [
+        "Vertex",
+        "Fragment"
+      ],
+      "Slots": [
+        {
+          "SlotType": "Input",
+          "SlotName": "$vec1",
+          "VariableType": "vec4"
+        },
+        {
+          "SlotType": "Input",
+          "SlotName": "$vec2",
+          "VariableType": "vec4"
+        },
+        {
+          "SlotType": "Output",
+          "SlotName": "vec4Add",
+          "VariableType": "vec4"
+        }
+      ],
+      "Code": [
+        " vec4 vec4Add = $vec1 + $vec2 ; "
+      ]
+
     }
 
 

@@ -70,7 +70,7 @@ public:
 	// -- Variables
 
 	//default  variable values for initialization
-	const char* VariableTypes[4] = { "Constant", "Uniform", "Global","Attribute"};
+	const char* VariableTypes[5] = { "Constant", "Uniform", "Global","Attribute","TransformationMatrix"};
 	const char* ShaderTypes[5] = {"Vertex","Tesselation Control","Tesselation Eval", "Geometry","Fragment"};
 	bool DefaultBool = false;
 	float DefaultFloat = 1.0f;
@@ -147,6 +147,7 @@ public:
 	void ResetGraph();
 	void UpdateGraph();
 	std::string AssignUniqueName(std::string initName, std::string slotName);
+	void ReplaceUniqueName(std::string newName,std::string slotName);
 	std::string ReplaceVarNames(std::string code, std::string oldName, std::string newName);
 	
 	void UpdateUniforms();

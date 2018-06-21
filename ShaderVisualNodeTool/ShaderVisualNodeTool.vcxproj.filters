@@ -90,6 +90,9 @@
     <ClInclude Include="NodeSystem\TimeNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="NodeSystem\ShaderNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GUI\Imgui\imgui.cpp">
@@ -161,6 +164,9 @@
     <ClCompile Include="NodeSystem\TimeNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="NodeSystem\ShaderNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="imgui.ini" />
@@ -177,5 +183,9 @@
     <None Include="NodeSystem\NodeTypes\test2.json" />
     <None Include="NodeSystem\NodeTypes\FunctionNodes.json" />
     <None Include="NodeSystem\NodeTypes\InputNodes.json" />
+    <None Include="NodeSystem\NodeTypes\ShaderNodes.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Shaders\VertexShaderCopy.vert" />
   </ItemGroup>
 </Project>

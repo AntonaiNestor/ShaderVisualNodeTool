@@ -78,6 +78,7 @@ public:
 	int UniqueID;
 	bool HasCompiled;
 	Datatype value;
+	//why are the following 2 things not specific to function nodes?
 	int CurrShaderType;
 	std::vector<int> AllowedExecShaderTypes;
 

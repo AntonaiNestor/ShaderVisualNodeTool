@@ -43,6 +43,7 @@
     <ClInclude Include="Rendering\Shader.h" />
     <ClInclude Include="Rendering\stb_image.h" />
     <ClInclude Include="NodeSystem\TimeNode.h" />
+    <ClInclude Include="NodeSystem\ShaderNode.h" />
     <ClInclude Include="Utility.h" />
   </ItemGroup>
   <ItemGroup>
@@ -68,6 +69,7 @@
     <ClCompile Include="Rendering\Shader.cpp" />
     <ClCompile Include="Rendering\stb_image.cpp" />
     <ClCompile Include="NodeSystem\TimeNode.cpp" />
+    <ClCompile Include="NodeSystem\ShaderNode.cpp" />
     <ClCompile Include="Utility.cpp" />
   </ItemGroup>
   <ItemGroup>

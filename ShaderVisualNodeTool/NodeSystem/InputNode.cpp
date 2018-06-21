@@ -28,82 +28,7 @@ InputNode::InputNode()
 
 }
 
-//why am i passing a string instead of the enum?
-//InputNode::InputNode(std::string nodeName, std::string slotName, ValueType vartype)
-//{
-//
-//	auto graph = Graph::getInstance();
-//	Type = BaseNodeType::InputnodeT;
-//	inputType = InputNodeType::ConstantVariable;
-//	UniqueID = graph->AssignID();
-//	HasCompiled = false;
-//	Name = nodeName;
-//	ValueType type = vartype;
-//
-//
-//	//output struct creation
-//	Connection connect;
-//	connect.ConnectedNode = nullptr;
-//	connect.ConnectionIndex = -1;
-//	connect.VariableType = type;
-//	connect.Enabled = true;
-//	connect.Name = slotName;
-//	
-//	switch (type) {
-//		case (Float):{
-//		
-//			connect.Value.f_var = graph->DefaultFloat;
-//			value.f_var = graph->DefaultFloat;
-//		}
-//			break;
-//		case (Int):{
-//			
-//			connect.Value.i_var = graph->DefaultInt;
-//			value.i_var = graph->DefaultInt;
-//			break;
-//		}
-//		case (Vec2):{
-//			
-//			connect.Value.vec2_var = graph->DefaultVec2;
-//			value.vec2_var = graph->DefaultVec2;
-//			break;
-//		}
-//		case (Vec3):{
-//			
-//			connect.Value.vec3_var = graph->DefaultVec3;
-//			value.vec3_var = graph->DefaultVec3;
-//			break;
-//		}
-//		case (Vec4): {
-//			
-//			connect.Value.vec4_var = graph->DefaultVec4;
-//
-//			value.vec4_var = graph->DefaultVec4;
-//			break;
-//		}
-//		case (Mat4): {
-//			
-//			connect.Value.mat4_var = graph->DefaultMat4;
-//			value.mat4_var = graph->DefaultMat4;
-//			break;
-//		}
-//		case (Sampler2D):{
-//			//Name = "Texture";
-//		
-//			break;
-//		}
-//		case(SamplerCube):{
-//			//Name = "SamplerCube";
-//			break;
-//		}
-//		default:{
-//			//Name = "Float";
-//			break;
-//		}
-//	}
-//	Output.push_back(connect);
-//
-//}
+
 
 InputNode::InputNode(InputNodeInformation nodeInfo)
 {
@@ -198,7 +123,8 @@ void InputNode::Compile(std::shared_ptr<Node> root) {
 	auto Manager = Graph::getInstance();
 
 	if (inputType == UniformVariable) {
-		
+		//A uniform must be written in all the shaders of the program for use
+		dynamic_cast<OutputNode&>(*root).WriteToShaderCode(CodeString(), UniformSeg,VERTEX);
 		dynamic_cast<OutputNode&>(*root).WriteToShaderCode(CodeString(), UniformSeg, FRAGMENT);
 	}
 	else if (inputType == AttributeVariable){
@@ -228,7 +154,7 @@ void InputNode::Compile(std::shared_ptr<Node> root) {
 				name = Manager->AssignUniqueName(name, slotName);
 
 
-				//the varying string that need to be written in the VS
+				//the varying string that need to be written in the VS and the FS
 				std::string varyingNameVS = "out " + util::GetStringValueType(Output[i].VariableType, false) + Output[i].Name + " ;" ;
 				std::string varyingNameFS = "in " + util::GetStringValueType(Output[i].VariableType, false) + Output[i].Name + " ;" ;
 
@@ -258,7 +184,7 @@ void InputNode::Compile(std::shared_ptr<Node> root) {
 				}
 
 
-				//write in VS
+				//write in VS and FS
 				dynamic_cast<OutputNode&>(*root).WriteToShaderCode(varyingNameVS, VaryingSeg, VERTEX);
 				dynamic_cast<OutputNode&>(*root).WriteToShaderCode(varyingNameFS, VaryingSeg, FRAGMENT);
 				dynamic_cast<OutputNode&>(*root).WriteToShaderCode(VSattrDecl, MainSeg, VERTEX);
@@ -269,8 +195,27 @@ void InputNode::Compile(std::shared_ptr<Node> root) {
 		
 
 	}
-	else {
-		dynamic_cast<OutputNode&>(*root).WriteToShaderCode(CodeString(), ConstantSeg, FRAGMENT);
+	else if (inputType == ConstantVariable){
+		//Constant nodes will write to the immediate connected node type
+		ShaderType writeType = ShaderType(Output[0].ConnectedNode->CurrShaderType);
+		dynamic_cast<OutputNode&>(*root).WriteToShaderCode(CodeString(), ConstantSeg, writeType);
+	}
+	else if (inputType == TransformationMatrix) {
+		//The transformation matrix nodes do not need to do anything on compile
+		// They are essentially only here to provide a name, and only the visual part 
+		//changes the out name
+
+		//Put cases here for uniforms and whatnot
+
+		std::string name = Output.at(0).Name;
+		std::string slotName = std::to_string(this->UniqueID) + "->" + std::to_string(0);
+		ValueType outputType = Output.at(0).VariableType;
+
+
+		 Manager->ReplaceUniqueName(name, slotName);
+		//However maybe here I should consider declaring the more complex matrices like 
+		// ModelView or ProjectionView instead of having to create them from the application
+		// Problem with this is that you cannot have them as uniforms and calculate them in place
 	}
 	
 	HasCompiled = true;
@@ -328,7 +273,7 @@ std::string InputNode::CodeString()
 
 		}
 		case(Mat4): {
-			StringVal += "mat4 ";
+			StringVal += "mat4 " + name + " ;";
 			break;
 		}
 
@@ -388,7 +333,8 @@ std::string InputNode::CodeString()
 
 		}
 		case(Mat4): {
-			StringVal += "mat4 ";
+			//this should be taking the values from the value of the node
+			StringVal += "mat4 " + name + "= mat4 (1.0f);";
 			break;
 		}
 

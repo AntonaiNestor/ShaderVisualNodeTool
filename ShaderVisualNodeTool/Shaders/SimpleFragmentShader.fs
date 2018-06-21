@@ -6,14 +6,24 @@ layout( location = 0 ) out vec4 FragColor;
 
 //Varying-Standard
 //in vec3 Normal;
-//in vec3 FragPos;
+in vec3 FragPos;
 
 //$Varyings$
 
 
 // -$
 
+//Uniform Buffer Object - Be mindful of the memory layout for different hardware maybe
+layout (std140) uniform Matrices
+{
+	uniform mat4 View;
+	uniform mat4 Projection;
+	
+};
+
 //Uniforms-Standard
+uniform mat4 Model;
+uniform mat4 MVP ;
 uniform float test;
 uniform mat4 view;
 uniform vec4 InputCol;

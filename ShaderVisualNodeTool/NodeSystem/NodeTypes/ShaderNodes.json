@@ -7,35 +7,19 @@
         {
           "SlotType": "Input",
           "SlotName": "gl_Position",
-          "VariableType": "vec3"
+          "VariableType": "vec4"
         },
         {
           "SlotType": "Input",
-          "SlotName": "$aNormal",
-          "VariableType": "vec3"
+          "SlotName": "gl_PointSize",
+          "VariableType": "float"
         },
         {
           "SlotType": "Input",
-          "SlotName": "$aTexCoords",
-          "VariableType": "vec2"
-        },
-        {
-          "SlotType": "Output",
-          "SlotName": "FragPos",
-          "VariableType": "vec3"
-        },
-        {
-          "SlotType": "Output",
-          "SlotName": "Normal",
-          "VariableType":"vec3"
-        },
-        {
-          "SlotType": "Output",
-          "SlotName": "TexCoord",
-          "VariableType": "vec2"
+          "SlotName": "gl_ClipDistance",
+          "VariableType": "float"
         }
       ]
-
     },
     {
       "NodeType": "ShaderNode",
@@ -43,7 +27,7 @@
       "Slots": [
         {
           "SlotType": "Input",
-          "SlotName": "$FragmentColor",
+          "SlotName": "$FragColor",
           "VariableType": "vec4"
         }
       ]

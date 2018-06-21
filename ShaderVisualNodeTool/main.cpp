@@ -372,6 +372,10 @@ int main()
 	 unsigned int modelLoc = glGetUniformLocation(shader.ID, "Model");
 	 glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
+	 glm::mat4 MVP = projection * view * model;
+	 unsigned int MVPLoc = glGetUniformLocation(shader.ID, "MVP");
+	 glUniformMatrix4fv(MVPLoc, 1, GL_FALSE, glm::value_ptr(MVP));
+
 	 //// retrieve the matrix uniform locations
 
 	 //unsigned int viewLoc = glGetUniformLocation(shader.ID, "View");
@@ -561,9 +565,13 @@ int main()
 		
 
 			//SET UNIFORMS AGAIN
+			
+			
+
 
 			glm::mat4 view;
 			glm::mat4 projection;
+		
 
 			view = glm::lookAt(glm::vec3(0.0f, 0.0f, 5.0f), //camera pos
 				glm::vec3(0.0f, 0.0f, 0.0f), //camera target
@@ -588,14 +596,15 @@ int main()
 			//Buffer Projection mat
 			glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(projection));
 
-
-
-			//first shader
 			shader.Use();
 
 			glm::mat4 model = glm::mat4()* glm::translate(glm::vec3(2.0f,0.0f,0.0f));
 			unsigned int modelLoc = glGetUniformLocation(shader.ID, "Model");
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+			glm::mat4 MVP = projection * view * model;
+			unsigned int MVPLoc = glGetUniformLocation(shader.ID, "MVP");
+			glUniformMatrix4fv(MVPLoc, 1, GL_FALSE, glm::value_ptr(MVP));
 
 			//// retrieve the matrix uniform locations
 

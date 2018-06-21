@@ -119,7 +119,9 @@ void VisualNode::DisplayNode(ImDrawList * drawList,ImVec2 offset)
 		case(OutputnodeT):
 			DrawOutputNode( drawList,offset);
 			break;
-
+		case(ShadernodeT):
+			DrawOutputNode(drawList, offset);
+			break;
 		default:
 			NodeDrawn = false;
 			//draw nothing
@@ -218,6 +220,7 @@ void VisualNode::DrawInputNode(ImDrawList * drawList, ImVec2 offset)
 
 	auto graph = Graph::getInstance();
 	bool displayAttribs = false;
+	bool displayMat = false;
 	const char* item_current = graph->VariableTypes[0];
 	
 	//ARGH STOP THIS, YOU ARE KILLING ME
@@ -244,6 +247,10 @@ void VisualNode::DrawInputNode(ImDrawList * drawList, ImVec2 offset)
 			displayAttribs = true;
 			break;
 		}
+		case(4): {
+			displayMat = true;
+			break;
+		}
 		default:
 			//item_current = graph->VariableTypes[0];
 			break;
@@ -251,7 +258,7 @@ void VisualNode::DrawInputNode(ImDrawList * drawList, ImVec2 offset)
 		}
 
 		//if this is isn't an attribute node
-		if (!displayAttribs){
+		if (!displayAttribs && !displayMat){
 			ImGui::PushItemWidth(80);
 			ImGui::SetCursorScreenPos(ImVec2(NodeRelevantPos.x, NodeRelevantPos.y + 1 + TITLE_BOX_HEIGHT));
 			if (ImGui::BeginCombo("T" + GNode->UniqueID, item_current, 1)) // The second parameter is the label previewed before opening the combo.
@@ -284,6 +291,41 @@ void VisualNode::DrawInputNode(ImDrawList * drawList, ImVec2 offset)
 				ImGui::EndCombo();
 			}
 		}
+
+		//if this is a transformation matrix node 
+	    if (displayMat  ) {
+			ImGui::PushItemWidth(80);
+			ImGui::SetCursorScreenPos(ImVec2(NodeRelevantPos.x, NodeRelevantPos.y + 1 + TITLE_BOX_HEIGHT));
+
+			std::string Matrices[4] = {"Model", "View", "Projection","MVP"};
+			const char* MatricesCC[4] = { "Model", "View", "Projection","MVP" };
+			const char*  curr_choice = (GNode->Output[0].Name).c_str() ;
+
+			//Display a dropdown menu with the available matrices to choose from. For now it iwll only be Model,Projection,View,MVP
+			if (ImGui::BeginCombo("a" + GNode->UniqueID, curr_choice, 1)) // The second parameter is the label previewed before opening the combo.
+			{
+
+				for (int n = 0; n < 4; n++)
+				{
+					bool is_selected = !(GNode->Output[0].Name.compare(Matrices[n]));
+					if (ImGui::Selectable(MatricesCC[n], is_selected)) {
+
+						//depending on your selection, choose different uniform name to use
+						GNode->Output.at(0).Name = Matrices[n];
+
+						Manager->ValueChanged = true;
+
+						std::cout << GNode->Output.at(0).Name << std::endl;
+					}
+
+					if (is_selected)
+						ImGui::SetItemDefaultFocus();   // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
+				}
+				ImGui::EndCombo();
+			}
+
+		}
+		//Draw the droplist here
 
 		
 	

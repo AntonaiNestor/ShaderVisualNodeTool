@@ -11,5 +11,7 @@ public:
 
 	//overwritting edituniform fow now
 	void EditUniform();
+
+	void Compile(std::shared_ptr<Node> root);
 };
 

@@ -253,7 +253,8 @@ void Graph::ReadNodeTypes(std::string FilePath)
 
 			std::string inputType = objectRead["InitVariableType"];
 
-			for (int i = 0; i < 4; i++) {
+			//5 here is the size of the InputType enum, consider counting them dynamically
+			for (int i = 0; i < 5; i++) {
 				if (inputType.compare(VariableTypes[i]) == 0) {
 					tempInput.InitInputType = i;
 					break;
@@ -411,26 +412,26 @@ void Graph::ReadNodeTypes(std::string FilePath)
 			tempNode.DefaultCode[0] = daShader->vertCode;
 			tempNode.DefaultCode[1] = daShader->fragCode;
 			//type and default code from graph according to name
-			/*if (name.compare("Vertex") == 0) {
+			if (name.compare("Vertex") == 0) {
 				tempNode.ShadeType = VERTEX;
-				tempNode.DefaultCode = daShader->vertCode;
+				//tempNode.DefaultCode = daShader->vertCode;
 			}
 			else if (name.compare("Tess Eval") == 0) {
 				tempNode.ShadeType = FRAGMENT;
-				tempNode.DefaultCode = daShader->fragCode;
+				//tempNode.DefaultCode = daShader->fragCode;
 			}
 			else if (name.compare("Tess Control") == 0) {
 				tempNode.ShadeType = FRAGMENT;
-				tempNode.DefaultCode = daShader->fragCode;
+				//tempNode.DefaultCode = daShader->fragCode;
 			}
 			else if (name.compare("Geometry") == 0) {
 				tempNode.ShadeType = FRAGMENT;
-				tempNode.DefaultCode = daShader->fragCode;
+				//tempNode.DefaultCode = daShader->fragCode;
 			}
 			else if (name.compare("Fragment") == 0) {
 				tempNode.ShadeType = FRAGMENT;
-				tempNode.DefaultCode = daShader->fragCode;
-			}*/
+				//tempNode.DefaultCode = daShader->fragCode;
+			}
 		
 			//add to graph permanent information
 			ShaderNodes.insert(std::pair<std::string, ShaderNodeInformation>(tempNode.Name, tempNode));
@@ -550,6 +551,14 @@ void Graph::UpdateGraph()
 	PrintConnections();
 
 	//ClearShaderCode();
+
+	//first compile all shadernodes except the root
+
+	for (int i = 0; i < ShaderNodeList.size(); i ++) {
+		CompileGraph(ShaderNodeList.at(i),root);
+	}
+
+	//then start from the root
 	CompileGraph(root,root);
 	ChangeShader(daShader);
 	dynamic_cast<OutputNode&>(*root).ClearShaderCode();
@@ -560,8 +569,11 @@ void Graph::UpdateGraph()
 
 std::string Graph::AssignUniqueName(std::string initName, std::string slotName)
 {
+
 	std::string finalName = initName;
 
+	// CHANGE THIS WITH COUNT INSTEAD OF EXCEPTION AND ALSO RETHINK IF THERE ARE CASES
+	// WERE A NAME ISNT UNIQUE BUT IS SHARED BY MULTIPLE SLOTNAMES e.g Transformation matrix
 	//if the unique slot name already is in the map then retrieve that name
 	try {
 
@@ -572,8 +584,8 @@ std::string Graph::AssignUniqueName(std::string initName, std::string slotName)
 		
 
 	}
-	//otherwise check if the name of the variable already exists
-	//if it does generate a new name, otherwise simply push the pair in both maps
+	//otherwise check if the name of the variable already exists in the other map
+	//if it does generate a new name, otherwise simply push the pair in both maps to establish the name
 	catch (std::out_of_range) {
 		
 		try {
@@ -595,6 +607,23 @@ std::string Graph::AssignUniqueName(std::string initName, std::string slotName)
 
 
 	return finalName;
+}
+
+
+//instead of returning the unique name that is connected to the slot, it will replace it
+void Graph::ReplaceUniqueName(std::string newName, std::string slotName)
+{
+	std::string finalName;
+	//if the unique slot name already is in the map then replace it with the new name 
+	if (VarToSlotMap.count(slotName) > 0) {
+		VarToSlotMap[slotName] = newName;
+		//Will there be an issue with the opposite map? Probably there will be an issue ATTENTION
+	}
+	//if the slotname doesn't have a name associated yet , simply insert it
+	else {
+		VarToSlotMap[slotName] = newName;
+	}
+	
 }
 
 std::string Graph::ReplaceVarNames(std::string code, std::string oldName, std::string newName)

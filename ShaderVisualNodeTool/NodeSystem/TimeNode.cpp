@@ -24,7 +24,7 @@ TimeNode::TimeNode()
 	Name = "Time";
 	connect.Name = "Timer";
 
-	//Don't get it from graph
+	//Don't get it from graph but from scene
 	connect.Value.f_var = graph->time;
 	value.f_var = graph->time;
 	
@@ -41,6 +41,12 @@ TimeNode::TimeNode()
 TimeNode::~TimeNode()
 {
 	//remove from Uniform nodes
+}
+
+
+void TimeNode::Compile(std::shared_ptr<Node> root) {
+
+
 }
 
 void TimeNode::EditUniform()

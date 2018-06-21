@@ -18,7 +18,7 @@ layout (location = 4) in vec3 aBitangents;
 //passed to the fragment shader for interpolation
 //out vec2 TexCoord;
 //out vec3 Normal;
-//out vec3 FragPos;
+out vec3 FragPos;
 
 // -$
 
@@ -31,7 +31,8 @@ layout (std140) uniform Matrices
 };
 
 //Uniforms-Standard
- 
+uniform mat4 Model;
+uniform mat4 MVP ;
 uniform float test;
 uniform mat4 view;
 uniform vec4 InputCol;
@@ -39,7 +40,7 @@ uniform vec4 InputCol;
 
 //$Uniforms$
 
-uniform mat4 Model;
+
 
 // -$
 
@@ -63,11 +64,11 @@ void main()
    // Normal = aNormal;
 
 	//the current vertex position in view space
-	//vec4 vertPos4 = View * Model * vec4(aPos, 1.0);
-   // FragPos = vec3(vertPos4) / vertPos4.w;
+	vec4 vertPos4 = View * Model * vec4(aPos, 1.0);
+    FragPos = vec3(vertPos4) / vertPos4.w;
 
 	//gl position
-    gl_Position = Projection * View * Model* vec4(aPos, 1.0); 
+    gl_Position = (Projection* View* Model* vec4(aPos, 1.0)) + 0.01*vec4(aNormal,1.0); 
 
 
 	//$Main$
