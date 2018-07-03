@@ -9,10 +9,10 @@ public:
 	~OutputNode();
 
 
-	//temporarily the output node knows both 
-	std::string DefaultCode[2];
-	std::string shaderCode[2];
-	std::vector<std::string> CodeSections[2];
+	//temporarily the output node knows all three shaders 
+	std::string DefaultCode[3];
+	std::string shaderCode[3];
+	std::vector<std::string> CodeSections[3];
 	ShaderType Stype;
 
 

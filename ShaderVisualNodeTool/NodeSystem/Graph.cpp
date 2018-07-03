@@ -514,7 +514,7 @@ void Graph::CompileGraph(std::shared_ptr<Node> CurrentNode , std::shared_ptr<Nod
 void Graph::ChangeShader(Shader* shader)
 {
 	//change shader will edit the shadercodes existing in the root "fragment shader" 
-	shader->EditShader(dynamic_cast<OutputNode&>(*root).shaderCode[0], dynamic_cast<OutputNode&>(*root).shaderCode[1]);
+	shader->EditShader(dynamic_cast<OutputNode&>(*root).shaderCode[0], dynamic_cast<OutputNode&>(*root).shaderCode[1], dynamic_cast<OutputNode&>(*root).shaderCode[2]);
 }
 
 void Graph::PrintConnections()
@@ -560,6 +560,7 @@ void Graph::UpdateGraph()
 
 	//then start from the root
 	CompileGraph(root,root);
+	dynamic_cast<OutputNode&>(*root).AssembleShaderCode();
 	ChangeShader(daShader);
 	dynamic_cast<OutputNode&>(*root).ClearShaderCode();
 	//UpdateUniforms();

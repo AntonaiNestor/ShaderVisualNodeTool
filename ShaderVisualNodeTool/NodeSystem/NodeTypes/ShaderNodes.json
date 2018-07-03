@@ -23,6 +23,23 @@
     },
     {
       "NodeType": "ShaderNode",
+      "Name": "Geometry",
+      "Slots": [
+        {
+          "SlotType": "Input",
+          "SlotName": "NumOutVertices",
+          "VariableType": "float"
+        },
+        {
+          "SlotType": "Input",
+          "SlotName": "gl_Position",
+          "VariableType": "vec4"
+        }
+      ]
+
+    },
+    {
+      "NodeType": "ShaderNode",
       "Name": "Fragment",
       "Slots": [
         {

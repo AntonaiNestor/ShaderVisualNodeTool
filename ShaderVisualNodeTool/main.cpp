@@ -321,7 +321,7 @@ int main()
 	// LOAD MODEL
 	//Make Path relevant
 	char path[] = "D:/Graphics Libraries/Resources/Suzanne.obj";
-	Shader shader("Shaders/SimpleVertexShader.vert", "Shaders/SimpleFragmentShader.fs");
+	Shader shader("Shaders/SimpleVertexShader.vert", "Shaders/SimpleFragmentShader.fs","Shaders/GeometryPassTriangles.gs");
 
 	//// return a mesh object created from the extracted mesh data
 	// Mesh test1(vertices, indices);
@@ -392,7 +392,7 @@ int main()
 	 //shader.setFloat("test",0.5);
 	 shader.SetFloat("TessLevelInner", 1.0);
 	 shader.SetFloat("TessLevelOuter", 1.0);
-
+	 shader.SetFloat("time", glfwGetTime());
 	 glUseProgram(0);
 
 
@@ -622,7 +622,7 @@ int main()
 			//shader.setFloat("test",0.5);
 			shader.SetFloat("TessLevelInner", 1.0);
 			shader.SetFloat("TessLevelOuter", 1.0);
-
+			shader.SetFloat("time", glfwGetTime());
 			glUseProgram(0);
 
 			ourModel.Draw(shader);

@@ -44,6 +44,7 @@ public:
 
 	std::string fragCode;
 	std::string vertCode;
+	std::string geomCode;
 
 	// Constructors -- For now all shaders are loaded from files.
 	// This will probably change when we decide to create shaders using abstract
@@ -79,7 +80,7 @@ public:
 
 	//this has a different functionality than the initial suggested one
 	//needs to change into more generic parameters with a list
-	void EditShader(std::string newVertex , std::string newFragment);
+	void EditShader(std::string newVertex ,std::string newGeometry, std::string newFragment);
 
 	void AddToProgram(const char* shaderPath, ShaderType type);
 

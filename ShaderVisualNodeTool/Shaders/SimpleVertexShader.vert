@@ -18,7 +18,11 @@ layout (location = 4) in vec3 aBitangents;
 //passed to the fragment shader for interpolation
 //out vec2 TexCoord;
 //out vec3 Normal;
-out vec3 FragPos;
+
+out VS_OUT {
+    vec3 FragPos;
+} vs_out;
+
 
 // -$
 
@@ -65,11 +69,11 @@ void main()
 
 	//the current vertex position in view space
 	vec4 vertPos4 = View * Model * vec4(aPos, 1.0);
-    FragPos = vec3(vertPos4) / vertPos4.w;
+    vs_out.FragPos = vec3(vertPos4) / vertPos4.w;
 
 	//gl position
-    gl_Position = (Projection* View* Model* vec4(aPos, 1.0)) + 0.01*vec4(aNormal,1.0); 
-
+    gl_Position = (Projection* View* Model* vec4(aPos, 1.0)) ; 
+	//+ 0.01*vec4(aNormal,1.0)
 
 	//$Main$
 	

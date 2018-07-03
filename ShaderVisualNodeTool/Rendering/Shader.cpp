@@ -129,6 +129,9 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath, const char* geo
 		const char* vShaderCode = vertexCode.c_str();
 		const char * fShaderCode = fragmentCode.c_str();
 		const char * gShaderCode = geometryCode.c_str();
+
+
+
 		// 2. compile shaders
 		unsigned int vertex, fragment, geometry;
 		int success;
@@ -149,6 +152,15 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath, const char* geo
 		glCompileShader(geometry);
 		CheckCompileErrors(geometry, "GEOMETRY");
 
+		fragCode = fragmentCode;
+		vertCode = vertexCode;
+		geomCode = geometryCode;
+
+
+		//save the shader objects
+		ShaderObjIDs[0] = vertex;
+		ShaderObjIDs[3] = geometry;
+		ShaderObjIDs[4] = fragment;
 
 		// shader Program
 		ID = glCreateProgram();
@@ -409,20 +421,22 @@ void Shader::ChangeShaders(const char * vertexPath, const char * fragmentPath)
 }
 
 //the changed shader will receive vertex and 
-void Shader::EditShader(std::string newVertex, std::string newFragment)
+void Shader::EditShader(std::string newVertex, std::string newGeometry, std::string newFragment)
 {
 	//this should be more generic, but for now all we do is just 
 
 	std::string tempVert = newVertex;
+	std::string tempGeom = newGeometry;
 	std::string tempFrag = newFragment;
-	
+	//for now the geomCode is just the default one
+	std::string tempGeomm = geomCode;
 
 	const char* vShaderCode = tempVert.c_str();
 	const char* fShaderCode = tempFrag.c_str();
-
+	const char* gShaderCode = tempGeom.c_str();
 
 	// 2. compile shaders
-	unsigned int vertex, fragment;
+	unsigned int vertex, fragment,geometry;
 	int success;
 	char infoLog[512];
 	// vertex shader
@@ -430,6 +444,11 @@ void Shader::EditShader(std::string newVertex, std::string newFragment)
 	glShaderSource(vertex, 1, &vShaderCode, NULL);
 	glCompileShader(vertex);
 	CheckCompileErrors(vertex, "VERTEX");
+	//geometry
+	geometry = glCreateShader(GL_GEOMETRY_SHADER);
+	glShaderSource(geometry, 1, &gShaderCode, NULL);
+	glCompileShader(geometry);
+	CheckCompileErrors(geometry, "GEOMETRY");
 	// fragment Shader
 	fragment = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragment, 1, &fShaderCode, NULL);
@@ -441,6 +460,7 @@ void Shader::EditShader(std::string newVertex, std::string newFragment)
 	glDeleteProgram(ID);
 	ID = glCreateProgram();
 	glAttachShader(ID, vertex);
+	glAttachShader(ID, geometry);
 	glAttachShader(ID, fragment);
 	glLinkProgram(ID);
 	CheckCompileErrors(ID, "PROGRAM");

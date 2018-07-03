@@ -15,8 +15,10 @@ OutputNode::OutputNode(ShaderNodeInformation nodeInfo)
 	//default shader code
 	DefaultCode[0] = nodeInfo.DefaultCode[0];
 	DefaultCode[1] = nodeInfo.DefaultCode[1];
+	DefaultCode[2] = nodeInfo.DefaultCode[2];
 	shaderCode[0] = DefaultCode[0];
 	shaderCode[1] = DefaultCode[1];
+	shaderCode[2] = DefaultCode[2];
 	HasCompiled = false;
 
 
@@ -24,6 +26,7 @@ OutputNode::OutputNode(ShaderNodeInformation nodeInfo)
 	for (int i = 0; i < 5; i++) {
 		CodeSections[0].push_back("");
 		CodeSections[1].push_back("");
+		CodeSections[2].push_back("");
 	}
 
 
@@ -92,21 +95,6 @@ OutputNode::OutputNode(ShaderNodeInformation nodeInfo)
 		}
 	}
 
-
-
-	//reading this from json
-	//for (int i = 0; i < noInputs; i++) {
-	//	Connection DefaultIn;
-	//	DefaultIn.Name = strArray[i];
-	//	DefaultIn.VariableType = Vec4;
-	//	//DefaultIn.Value = 1; // Not correct, the output will never be actually calculated at this point. The code never runs 
-	//						 // You have to attach the full code to a shader, that is how you get a value
-	//						 // But for now keep it
-
-	//	Input.push_back(DefaultIn);
-	//}
-
-
 	
 }
 
@@ -126,8 +114,12 @@ void OutputNode::WriteToShaderCode(std::string code, ShaderSection section , Sha
 			shaderIndex = 0;
 			break;
 		}
-		case(FRAGMENT): {
+		case(GEOMETRY): {
 			shaderIndex = 1;
+			break;
+		}
+		case(FRAGMENT): {
+			shaderIndex = 2;
 			break;
 		}
 	}
@@ -172,14 +164,28 @@ void OutputNode::WriteToShaderCode(std::string code, ShaderSection section , Sha
 void OutputNode::AssembleShaderCode()
 {
 
+	
 	auto graph = Graph::getInstance();
+
 	for (int i = 0; i < 5; i++) {
 
 		shaderCode[0].insert((shaderCode[0]).find(graph->Identifiers[i]) + graph->Identifiers[i].length(), "\n" + CodeSections[0][i]);
 		shaderCode[1].insert((shaderCode[1]).find(graph->Identifiers[i]) + graph->Identifiers[i].length(), "\n" + CodeSections[1][i]);
-	
+		shaderCode[2].insert((shaderCode[2]).find(graph->Identifiers[i]) + graph->Identifiers[i].length(), "\n" + CodeSections[2][i]);
 	}
+	//this should go in the loop and cout all shaders
+	std::cout << "--Vertex shader--- : " << std::endl;
+	std::cout << shaderCode[0] << std::endl;
+	std::cout << "------------------ " << std::endl;
 
+	//this should go in the loop and cout all shaders
+	std::cout << "--Geometry shader--- : " << std::endl;
+	std::cout << shaderCode[1] << std::endl;
+	std::cout << "------------------ " << std::endl;
+
+	std::cout << "----Fragment shader ---- : " << std::endl;
+	std::cout << shaderCode[2] << std::endl;
+	std::cout << "------------------ " << std::endl;
 }
 
 void OutputNode::ClearShaderCode()
@@ -188,14 +194,18 @@ void OutputNode::ClearShaderCode()
 	//clear shaderCode -- can skip this i think
 	shaderCode[0].clear();
 	shaderCode[1].clear();
+	shaderCode[2].clear();
 	//clear sections
 	for (int i = 0; i < 5; i++) {
 		CodeSections[0][i].clear();
 		CodeSections[1][i].clear();
+		CodeSections[2][i].clear();
 	}
 	//initialize shadercode to skeleton code
 	shaderCode[0] = DefaultCode[0];
 	shaderCode[1] = DefaultCode[1];
+	shaderCode[2] = DefaultCode[2];
+
 }
 
 
@@ -219,7 +229,7 @@ void OutputNode::Compile(std::shared_ptr<Node> root)
 
 			WriteToShaderCode(tempCode + CodeString(),MainSeg,FRAGMENT);
 
-			AssembleShaderCode();
+		
 			//ShaderCode->append("\n" + tempCode + CodeString());
 			//ShaderCode->append("\n" +Input.at(i).Name + " = " + std::to_string(Input.at(0).Value) + ";");
 		}
@@ -233,13 +243,7 @@ void OutputNode::Compile(std::shared_ptr<Node> root)
 	
 
 	//ShaderCode->append("\n" + tempCode + CodeString());
-	std::cout << "--Vertex shader--- : " << std::endl;
 
-	std::cout << shaderCode[0]  << std::endl;
-	std::cout << "------------------ " << std::endl;
-	std::cout << "----Fragment shader ---- : " << std::endl;
-	std::cout << shaderCode[1] << std::endl;
-	std::cout << "------------------ " << std::endl;
 
 
 	HasCompiled = true;

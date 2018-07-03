@@ -165,7 +165,9 @@ void FunctionNode::Compile(std::shared_ptr<Node> root)
 	
 	//write the function code in the appropriate shader. 
 
-	//If that shader is the vertex then we need to introduce varyings in both, and also 
+	//If that shader is the vertex then we need to introduce varyings in both,
+
+	//TODO VARYING HERE AS WELL
 	if (ShaderType(CurrShaderType) == VERTEX) {
 
 		std::string stringVarType = util::GetStringValueType(Output[0].VariableType,false);

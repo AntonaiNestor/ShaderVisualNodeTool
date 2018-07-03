@@ -125,6 +125,7 @@ void InputNode::Compile(std::shared_ptr<Node> root) {
 	if (inputType == UniformVariable) {
 		//A uniform must be written in all the shaders of the program for use
 		dynamic_cast<OutputNode&>(*root).WriteToShaderCode(CodeString(), UniformSeg,VERTEX);
+		dynamic_cast<OutputNode&>(*root).WriteToShaderCode(CodeString(), UniformSeg, GEOMETRY);
 		dynamic_cast<OutputNode&>(*root).WriteToShaderCode(CodeString(), UniformSeg, FRAGMENT);
 	}
 	else if (inputType == AttributeVariable){
@@ -135,6 +136,9 @@ void InputNode::Compile(std::shared_ptr<Node> root) {
 		//however this will need to create a varying with the name vPos,Normal,Texcoords etc in the VS and in in the fragment
 		//question this does it also write in the main of the VS that Normal = aNormal;  ?
 		//Because if we attach normal to something else 
+
+		//TODO INTERACE BLOCKS
+		//The varying needs to be done through interface blocks. It is the most clean way 
 
 		auto tempPointer = dynamic_cast<OutputNode&>(*root);
 

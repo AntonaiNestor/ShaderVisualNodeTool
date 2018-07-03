@@ -176,7 +176,6 @@
     <None Include="Shaders\GeometryShaderHouses.gs" />
     <None Include="Shaders\SimpleFragmentShader.fs" />
     <None Include="Shaders\SimpleFragmentShader1.fs" />
-    <None Include="Shaders\SimpleGeometry.gs" />
     <None Include="Shaders\SimpleTesControl.tcs" />
     <None Include="Shaders\SimpleTesEval.tes" />
     <None Include="Shaders\SimpleVertexShader.vert" />
@@ -184,6 +183,7 @@
     <None Include="NodeSystem\NodeTypes\FunctionNodes.json" />
     <None Include="NodeSystem\NodeTypes\InputNodes.json" />
     <None Include="NodeSystem\NodeTypes\ShaderNodes.json" />
+    <None Include="Shaders\GeometryPassTriangles.gs" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Shaders\VertexShaderCopy.vert" />
