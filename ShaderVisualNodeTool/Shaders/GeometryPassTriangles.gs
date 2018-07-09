@@ -2,7 +2,7 @@
 #version 330 core
 
 layout (triangles) in;
-layout (triangle_strip, max_vertices = 3) out;
+layout (triangle_strip, max_vertices = 256) out;
 
 
 
@@ -14,13 +14,15 @@ layout (triangle_strip, max_vertices = 3) out;
 // 1 value -> FRAGMENT
 
 //$Varyings$
-in VS_OUT {
-    vec3 FragPos;
-} gs_in[];
 
-out GS_OUT {
-    vec3 gFragPos;
-} gs_out;
+
+//in VS_OUT {
+// in vec3 vFragPos[];
+//} gs_in[];
+
+//out GS_OUT {
+// out  vec3 gFragPos;
+//} gs_out;
 
 // -$
 //in vec3 FragPos;
@@ -32,7 +34,7 @@ uniform mat4 MVP ;
 uniform float test;
 uniform mat4 view;
 uniform vec4 InputCol;
-
+uniform float time;
 //$Uniforms$
 
 
@@ -89,18 +91,26 @@ void main() {
 
 	// -$
 
+
 	//Default Pass through shader 
-	gs_out.gFragPos = gs_in[0].FragPos; 
-    gl_Position = gl_in[0].gl_Position; 
-    EmitVertex();
 
-	gs_out.gFragPos = gs_in[1].FragPos;
-	gl_Position = gl_in[1].gl_Position;
-    EmitVertex();
+	//Per vertex section
 
-	gs_out.gFragPos = gs_in[2].FragPos;
-	gl_Position = gl_in[2].gl_Position; 
-    EmitVertex();
+	//the 3 needs to change according to the primitive list
+	for (int i = 0; i < 3 ; i ++)
+	{
+		//gFragPos = vFragPos[i]; 
+	    gl_Position = gl_in[i].gl_Position;
+
+		
+		//$MainGeom$
+	
+
+		// -$
+
+
+		EmitVertex();
+	}
 
     EndPrimitive();
 }  

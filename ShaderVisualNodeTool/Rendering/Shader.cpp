@@ -429,7 +429,7 @@ void Shader::EditShader(std::string newVertex, std::string newGeometry, std::str
 	std::string tempGeom = newGeometry;
 	std::string tempFrag = newFragment;
 	//for now the geomCode is just the default one
-	std::string tempGeomm = geomCode;
+	//std::string tempGeomm = geomCode;
 
 	const char* vShaderCode = tempVert.c_str();
 	const char* fShaderCode = tempFrag.c_str();

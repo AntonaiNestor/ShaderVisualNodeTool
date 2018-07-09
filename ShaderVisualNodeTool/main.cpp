@@ -313,6 +313,11 @@ int main()
 	example1= example;
 	std::cout << example1.f << std::endl;
 	
+	std::string str = "test";
+	std::cout << str << std::endl;
+	str.clear();
+	std::cout << str << std::endl;
+	std::cout << str.compare("");
 //------------------------------------------
 
 	////is it even beneficial to convert to vec3? 

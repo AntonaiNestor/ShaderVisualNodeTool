@@ -6,9 +6,9 @@ layout( location = 0 ) out vec4 FragColor;
 
 //Varying-Standard
 //in vec3 Normal;
-in GS_OUT {
-    vec3 gFragPos;
-} fs_in;
+//in GS_OUT {
+ //in vec3 gFragPos;
+//} fs_in;
 //$Varyings$
 
 
@@ -51,7 +51,7 @@ void main()
 	
 	FragColor = InputCol;
 
-	vec3 FragPos = fs_in.gFragPos;
+	//vec3 FragPos = gFragPos;
 
 	//$Main$
 	

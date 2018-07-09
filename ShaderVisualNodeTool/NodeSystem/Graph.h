@@ -42,7 +42,7 @@ struct ShaderNodeInformation {
 	std::string Name; // name which will tell the shadertype
 	ShaderType ShadeType; // the shaderType according to the name
 	std::vector<SlotInformation> Slots; //slot information  
-	std::string DefaultCode[2]; // the default shader code, retrieved from the program 
+	std::string DefaultCode[5]; // the default shader code, retrieved from the program 
 	//in the shader though, not from the json file (for now)
 	
 };
@@ -53,7 +53,9 @@ enum ShaderSection {
 	VaryingSeg,
 	UniformSeg,
 	ConstantSeg,
-	MainSeg
+	MainSeg, // the main segment which will run once
+	MainGeomSeg //the per vertex main body of geometry shader for the loop
+	//I need an array of these segments if I am to not to have a loop in the geom
 };
 
 class Graph
@@ -105,7 +107,7 @@ public:
 	//these two here are probably not correct
 	//std::string* ShaderCode = new std::string("");
 	
-	std::string Identifiers[5] = {"$Version$","$Varyings$","$Uniforms$","$Constants$" ,"$Main$" };
+	std::vector<std::string> Identifiers = {"$Version$","$Varyings$","$Uniforms$","$Constants$" ,"$Main$","$MainGeom$" };
 
 	Shader* daShader;
 

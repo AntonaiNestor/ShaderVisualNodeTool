@@ -148,7 +148,7 @@ void InputNode::Compile(std::shared_ptr<Node> root) {
 			if (Output[i].ConnectedNode!=nullptr)
 			{
 
-				//Put cases here for uniforms and whatnot
+				
 			
 				std::string name = Output.at(i).Name;
 				std::string slotName = std::to_string(this->UniqueID) + "->" + std::to_string(i);
@@ -156,42 +156,51 @@ void InputNode::Compile(std::shared_ptr<Node> root) {
 
 
 				name = Manager->AssignUniqueName(name, slotName);
+				//USE THIS NAME? Wherever you connect this now needs to say gName for it to be used in the fragment shader or vName if used in Geomshader
 
-
-				//the varying string that need to be written in the VS and the FS
-				std::string varyingNameVS = "out " + util::GetStringValueType(Output[i].VariableType, false) + Output[i].Name + " ;" ;
-				std::string varyingNameFS = "in " + util::GetStringValueType(Output[i].VariableType, false) + Output[i].Name + " ;" ;
-
+				
 				std::string VSattrDecl;
+				std::string prefName = "v" + Output[i].Name;
 				//depending on the variable name, write the appropriate match between the varying and the attribute
 				//this is a bit hardcoded and out of place but for now it is da truth
 				switch (i) {
 
 					case (0):
-						VSattrDecl = Output[i].Name + " = aPos ;";
+						VSattrDecl = prefName + " = aPos ;";
 						break;
 					case(1):
-						VSattrDecl = Output[i].Name + " = aNormal ;";
+						VSattrDecl = prefName + " = aNormal ;";
 						break;
 					case(2):
-						VSattrDecl = Output[i].Name + " = aTexCoords;";
+						VSattrDecl = prefName + " = aTexCoords;";
 						break;
 					case(3):
-						VSattrDecl = Output[i].Name + " = aTangents;";
+						VSattrDecl = prefName + " = aTangents;";
 						break;
 					case(4):
-						VSattrDecl = Output[i].Name + " = aBitangents;";
+						VSattrDecl = prefName + " = aBitangents;";
 						break;
 					default:
-						VSattrDecl = Output[i].Name + " = aPos ;";
+						VSattrDecl = prefName + " = aPos ;";
 						break;
 				}
 
+				dynamic_cast<OutputNode&>(*root).CreateVaryingPipeline(util::GetStringValueType(Output[i].VariableType, false),name,VSattrDecl);
+				//the varying string that need to be written in the VS and the FS
+				/*std::string varyingNameVS = "out " + util::GetStringValueType(Output[i].VariableType, false) + "v" + Output[i].Name + " ;";
+				std::string varyingNameFS = "in " + util::GetStringValueType(Output[i].VariableType, false) + "g" + Output[i].Name + " ;";
+				std::string varyingNameGSin = "in " + util::GetStringValueType(Output[i].VariableType, false) + "v" + Output[i].Name + "[]" + " ;";
+				std::string varyingNameGSout = "out" + util::GetStringValueType(Output[i].VariableType, false) + "g" + Output[i].Name + " ;";
+				std::string varyingDeclGS = "g" + Output[i].Name + " = " + "v" + Output[i].Name + "[i]" + " ;";*/
 
-				//write in VS and FS
-				dynamic_cast<OutputNode&>(*root).WriteToShaderCode(varyingNameVS, VaryingSeg, VERTEX);
+
+				//write in VS ,GS and  FS
+				/*dynamic_cast<OutputNode&>(*root).WriteToShaderCode(varyingNameVS, VaryingSeg, VERTEX);
 				dynamic_cast<OutputNode&>(*root).WriteToShaderCode(varyingNameFS, VaryingSeg, FRAGMENT);
-				dynamic_cast<OutputNode&>(*root).WriteToShaderCode(VSattrDecl, MainSeg, VERTEX);
+				dynamic_cast<OutputNode&>(*root).WriteToShaderCode(varyingNameGSin, VaryingSeg, GEOMETRY);
+				dynamic_cast<OutputNode&>(*root).WriteToShaderCode(varyingNameGSout, VaryingSeg, GEOMETRY);
+				dynamic_cast<OutputNode&>(*root).WriteToShaderCode(varyingDeclGS, MainGeomSeg, GEOMETRY);
+				dynamic_cast<OutputNode&>(*root).WriteToShaderCode(VSattrDecl, MainSeg, VERTEX);*/
 
 			}
 		}

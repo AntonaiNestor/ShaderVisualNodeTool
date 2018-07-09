@@ -410,7 +410,8 @@ void Graph::ReadNodeTypes(std::string FilePath)
 			//TEMPORARY PROBABLY
 			tempNode.ShadeType = FRAGMENT;
 			tempNode.DefaultCode[0] = daShader->vertCode;
-			tempNode.DefaultCode[1] = daShader->fragCode;
+			tempNode.DefaultCode[1] = daShader->geomCode;
+			tempNode.DefaultCode[2] = daShader->fragCode;
 			//type and default code from graph according to name
 			if (name.compare("Vertex") == 0) {
 				tempNode.ShadeType = VERTEX;
@@ -425,7 +426,7 @@ void Graph::ReadNodeTypes(std::string FilePath)
 				//tempNode.DefaultCode = daShader->fragCode;
 			}
 			else if (name.compare("Geometry") == 0) {
-				tempNode.ShadeType = FRAGMENT;
+				tempNode.ShadeType = GEOMETRY;
 				//tempNode.DefaultCode = daShader->fragCode;
 			}
 			else if (name.compare("Fragment") == 0) {

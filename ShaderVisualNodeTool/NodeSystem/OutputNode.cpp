@@ -5,12 +5,14 @@
 OutputNode::OutputNode(ShaderNodeInformation nodeInfo)
 {
 
+
+	auto graph = Graph::getInstance();
 	//general node attributes
 	Name = nodeInfo.Name;
 	Type = BaseNodeType::OutputnodeT;
 	CurrShaderType = 4;
 	Stype = nodeInfo.ShadeType;
-	UniqueID = Graph::getInstance()->AssignID();
+	UniqueID = graph->AssignID();
 
 	//default shader code
 	DefaultCode[0] = nodeInfo.DefaultCode[0];
@@ -23,7 +25,7 @@ OutputNode::OutputNode(ShaderNodeInformation nodeInfo)
 
 
 	//Initialise the codesections vector
-	for (int i = 0; i < 5; i++) {
+	for (int i = 0; i <graph->Identifiers.size() ; i++) {
 		CodeSections[0].push_back("");
 		CodeSections[1].push_back("");
 		CodeSections[2].push_back("");
@@ -35,7 +37,7 @@ OutputNode::OutputNode(ShaderNodeInformation nodeInfo)
 
 	//these should be initialised either by json or depending on type , even though they will be standarised more or less
 	// However it will be easier to create from json, except from the default code. That should be in the application once
-	auto graph = Graph::getInstance();
+	
 
 	for (auto slot : nodeInfo.Slots) {
 
@@ -104,6 +106,29 @@ OutputNode::~OutputNode()
 }
 
 
+// TODO this needs another parameter to indicate where this varying is firstly being created and skip probably a few shaders.
+std::string OutputNode::CreateVaryingPipeline(std::string varType, std::string varName, std::string assignValue)
+{
+	//the varying string that need to be written in the VS and the FS
+	std::string varyingNameVS = "out " + varType + "v" + varName + " ;";
+	std::string varyingNameFS = "in " + varType + "g" + varName + " ;";
+	std::string varyingNameGSin = "in " + varType + "v" + varName + "[]" + " ;";
+	std::string varyingNameGSout = "out " + varType + "g" + varName + " ;";
+	std::string varyingDeclGS = "g" + varName + " = " + "v" + varName + "[i]" + " ;";
+
+	//write in VS ,GS and  FS
+	WriteToShaderCode(varyingNameVS, VaryingSeg, VERTEX);
+	WriteToShaderCode(varyingNameFS, VaryingSeg, FRAGMENT);
+	WriteToShaderCode(varyingNameGSin, VaryingSeg, GEOMETRY);
+	WriteToShaderCode(varyingNameGSout, VaryingSeg, GEOMETRY);
+	WriteToShaderCode(varyingDeclGS, MainGeomSeg, GEOMETRY);
+
+	//not sure about this
+    WriteToShaderCode(assignValue, MainSeg, VERTEX);
+
+	return ""; //return the new name? no because depending on the shader it will be used in then 
+}
+
 void OutputNode::WriteToShaderCode(std::string code, ShaderSection section , ShaderType type)
 {
 
@@ -124,40 +149,51 @@ void OutputNode::WriteToShaderCode(std::string code, ShaderSection section , Sha
 		}
 	}
 
+	//Neat! way to go enums!
+	CodeSections[shaderIndex][section].append("\n" + code);
 
-	switch (section) {
-	case (VersionSeg): {
-		CodeSections[shaderIndex][0].append("\n" + code);
-		//(*ShaderCode).insert((*ShaderCode).find("$Version$") + 1, "\n" + code);
-		break;
-	}
-	case (VaryingSeg): {
-		CodeSections[shaderIndex][1].append("\n" + code);
-		//(*ShaderCode).insert((*ShaderCode).find("$Varyings$") + 1, "\n" + code);
-		break;
-	}
-	case (UniformSeg): {
-		CodeSections[shaderIndex][2].append("\n" + code);
-		//	(*ShaderCode).insert((*ShaderCode).find("$Uniforms$") + 1, "\n" + code);
-		break;
-	}
-	case (ConstantSeg): {
-		CodeSections[shaderIndex][3].append("\n" + code);
-		//(*ShaderCode).insert((*ShaderCode).find("$Constants$") + 1, "\n" + code);
-		break;
-	}
-	case (MainSeg): {
-		CodeSections[shaderIndex][4].append("\n" + code);
-		//(*ShaderCode).insert((*ShaderCode).find("$Main$") , "\n" + code);
-		break;
-	}
-	default: {
-		CodeSections[shaderIndex][4].append("\n" + code);
-		//(*ShaderCode).insert((*ShaderCode).find("$Main$") + 6, "\n" + code);
-		break;
-	}
 
-	}
+	//maybe I can loop the enum for this
+	//switch (section) {
+	//case (VersionSeg): {
+	//	CodeSections[shaderIndex][0].append("\n" + code);
+	//	//(*ShaderCode).insert((*ShaderCode).find("$Version$") + 1, "\n" + code);
+	//	break;
+	//}
+	//case (VaryingSeg): {
+	//	CodeSections[shaderIndex][1].append("\n" + code);
+	//	//(*ShaderCode).insert((*ShaderCode).find("$Varyings$") + 1, "\n" + code);
+	//	break;
+	//}
+	//case (UniformSeg): {
+	//	CodeSections[shaderIndex][2].append("\n" + code);
+	//	//	(*ShaderCode).insert((*ShaderCode).find("$Uniforms$") + 1, "\n" + code);
+	//	break;
+	//}
+	//case (ConstantSeg): {
+	//	CodeSections[shaderIndex][3].append("\n" + code);
+	//	//(*ShaderCode).insert((*ShaderCode).find("$Constants$") + 1, "\n" + code);
+	//	break;
+	//}
+	//case (MainSeg): {
+	//	//WRITE IN THE MAIN SEGMENT IN MULTIPLE OCCASIONS
+	//	CodeSections[shaderIndex][4].append("\n" + code);
+	//	//(*ShaderCode).insert((*ShaderCode).find("$Main$") , "\n" + code);
+	//	break;
+	//}
+	//case (MainGeomSeg): {
+	//	//WRITE IN THE MAIN SEGMENT IN MULTIPLE OCCASIONS
+	//	CodeSections[shaderIndex][5].append("\n" + code);
+	//	//(*ShaderCode).insert((*ShaderCode).find("$Main$") , "\n" + code);
+	//	break;
+	//}
+	//default: {
+	//	CodeSections[shaderIndex][4].append("\n" + code);
+	//	//(*ShaderCode).insert((*ShaderCode).find("$Main$") + 6, "\n" + code);
+	//	break;
+	//}
+
+	//}
 
 }
 
@@ -167,11 +203,19 @@ void OutputNode::AssembleShaderCode()
 	
 	auto graph = Graph::getInstance();
 
-	for (int i = 0; i < 5; i++) {
+	for (int i = 0; i < graph->Identifiers.size() ; i++) {
+		
+		// && 
+		for (int j = 0; j < 3; j++) {
+			//if the identifier exists then 
+			
+			if (((shaderCode[j]).find(graph->Identifiers[i]) != std::string::npos) && CodeSections[j][i].compare("")) {
+				shaderCode[j].insert((shaderCode[j]).find(graph->Identifiers[i]) + graph->Identifiers[i].length(), "\n" + CodeSections[j][i]);
+			}
 
-		shaderCode[0].insert((shaderCode[0]).find(graph->Identifiers[i]) + graph->Identifiers[i].length(), "\n" + CodeSections[0][i]);
-		shaderCode[1].insert((shaderCode[1]).find(graph->Identifiers[i]) + graph->Identifiers[i].length(), "\n" + CodeSections[1][i]);
-		shaderCode[2].insert((shaderCode[2]).find(graph->Identifiers[i]) + graph->Identifiers[i].length(), "\n" + CodeSections[2][i]);
+			//shaderCode[j].insert((shaderCode[j]).find(graph->Identifiers[i]) + graph->Identifiers[i].length(), "\n" + CodeSections[j][i]);
+		}
+		
 	}
 	//this should go in the loop and cout all shaders
 	std::cout << "--Vertex shader--- : " << std::endl;
@@ -196,7 +240,7 @@ void OutputNode::ClearShaderCode()
 	shaderCode[1].clear();
 	shaderCode[2].clear();
 	//clear sections
-	for (int i = 0; i < 5; i++) {
+	for (int i = 0; i < 6; i++) {
 		CodeSections[0][i].clear();
 		CodeSections[1][i].clear();
 		CodeSections[2][i].clear();
@@ -221,11 +265,48 @@ void OutputNode::Compile(std::shared_ptr<Node> root)
 	for (int i = 0; i < Input.size(); i++) {
 		//if the input isn;t connected to anything , replace name of the variable with default value
 		if (Input.at(i).ConnectedNode) {
+			
+
+
+			//Here I am checking where the connected variable is coming from. If it is a varying then I need to append v or g.
+			std::string shaderNamePrefix = "";
+
+			//For function nodes, if the shadertype is not the same OR for input nodes if it is attribute variable
+			auto tempP = Input.at(i).ConnectedNode;
+			if (tempP->Type == InputnodeT || (tempP->Type == FunctionnodeT && tempP->CurrShaderType != CurrShaderType)) {
+
+				//TODO put this in a function and cover the TS as well
+				switch (CurrShaderType) {
+
+				case(VERTEX):
+					shaderNamePrefix = "v";
+					break;
+
+				case(GEOMETRY):
+					shaderNamePrefix = "v";
+					break;
+				case (FRAGMENT):
+					shaderNamePrefix = "g";
+					break;
+
+				default:
+					break;
+				}
+
+			}
+
+
+			auto SlotName = std::to_string(Input.at(i).ConnectedNode->UniqueID) + "->" + std::to_string(Input.at(i).ConnectionIndex); 
+			auto newName = shaderNamePrefix + Manager->VarToSlotMap[SlotName];
+
 			//this is not correct. The final fragment outputs need to be accounted for
-			std::string tempCode = "FragColor = " + Input.at(i).Name + " ;";
-			auto SlotName = std::to_string(Input.at(i).ConnectedNode->UniqueID) + "->" + std::to_string(Input.at(i).ConnectionIndex);
-			tempCode = Manager->ReplaceVarNames(tempCode, Input.at(i).Name, Manager->VarToSlotMap[SlotName]);
-			Input.at(i).Value = Input.at(i).ConnectedNode->Output.at(0).Value;
+			std::string tempCode = "FragColor = " + newName + " ;";
+			
+			//prefix + unique name associated with slot
+			
+
+			//tempCode = Manager->ReplaceVarNames(tempCode, Input.at(i).Name, newName);
+			//Input.at(i).Value = Input.at(i).ConnectedNode->Output.at(0).Value;
 
 			WriteToShaderCode(tempCode + CodeString(),MainSeg,FRAGMENT);
 

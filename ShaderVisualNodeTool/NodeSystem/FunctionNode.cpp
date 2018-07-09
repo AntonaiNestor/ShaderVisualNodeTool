@@ -1,5 +1,6 @@
 #include "FunctionNode.h"
 #include "OutputNode.h"
+#include "InputNode.h"
 
 
 //std::string NodeName,std::vector<SlotInformation> slots,std::string functionCode
@@ -126,7 +127,40 @@ void FunctionNode::Compile(std::shared_ptr<Node> root)
 		// Otherwise, replace the name of the variable with the appropriate name of the output it is connected to.
 		if (Input.at(i).ConnectedNode) {
 			auto SlotName = std::to_string(Input.at(i).ConnectedNode->UniqueID) + "->"+ std::to_string(Input.at(i).ConnectionIndex);
-			tempCode = Graph::getInstance()->ReplaceVarNames(tempCode, Input.at(i).Name, Manager->VarToSlotMap[SlotName]);
+
+			//Here I am checking where the connected variable is coming from. If it is a varying then I need to append v or g.
+			std::string shaderNamePrefix = "";
+
+			//For function nodes, if the shadertype is not the same OR for input nodes if it is attribute variable
+			auto tempP = Input.at(i).ConnectedNode;
+			if ((tempP->Type == InputnodeT && dynamic_cast<InputNode&>(*tempP).inputType==AttributeVariable)
+				|| (tempP->Type == FunctionnodeT && tempP->CurrShaderType!=CurrShaderType)) {
+				
+				//TODO put this in a function and cover the 
+				switch (CurrShaderType) {
+
+				case(VERTEX):
+					shaderNamePrefix = "v";
+					break;
+
+				case(GEOMETRY):
+					shaderNamePrefix = "v";
+					break;
+				case (FRAGMENT):
+					shaderNamePrefix = "g";
+					break;
+
+				default:
+					break;
+				}
+					
+					
+			}
+			//prefix + unique name associated with slot
+			auto newName = shaderNamePrefix + Manager->VarToSlotMap[SlotName];
+			
+			//replace the name of the variable in the code with the added prefix. If the variable isn't a varying then the prefix does nothing
+			tempCode = Graph::getInstance()->ReplaceVarNames(tempCode, Input.at(i).Name, newName );
 			Input.at(i).Value = Input.at(i).ConnectedNode->Output.at(Input.at(i).ConnectionIndex).Value;
 			//ShaderCode->append("\n" +Input.at(i).Name + " = " + std::to_string(Input.at(0).Value) + ";");
 		}
@@ -161,28 +195,50 @@ void FunctionNode::Compile(std::shared_ptr<Node> root)
 	outName = Manager->AssignUniqueName(outName,outSlotName);
 	
 
-	tempCode = Graph::getInstance()->ReplaceVarNames(tempCode, tempOutName,outName);
+	
 	
 	//write the function code in the appropriate shader. 
 
 	//If that shader is the vertex then we need to introduce varyings in both,
 
 	//TODO VARYING HERE AS WELL
-	if (ShaderType(CurrShaderType) == VERTEX) {
 
-		std::string stringVarType = util::GetStringValueType(Output[0].VariableType,false);
 
-		std::string VertName = "out " + stringVarType + outName + " ;";
-		std::string FragName = "in " + stringVarType + outName + " ;";
+	//if there node connected to the output "next" node, does not have the same shadertype (greater and not equal)
+	//then create a varying pipeline for the output if need
+	if (Output.at(0).ConnectedNode->CurrShaderType != CurrShaderType) {
 
-		dynamic_cast<OutputNode&>(*root).WriteToShaderCode(VertName, VaryingSeg,VERTEX);
-		dynamic_cast<OutputNode&>(*root).WriteToShaderCode(FragName, VaryingSeg, FRAGMENT);
-		//this might cause errors :(
-		//delete the variable declaration of the output, since it is already declared in the varying section
-		tempCode.erase( tempCode.find(outName) - (stringVarType.size()) , stringVarType.size());
+		if (ShaderType(CurrShaderType) == VERTEX ) {
 
+			std::string stringVarType = util::GetStringValueType(Output[0].VariableType, false);
+
+			//std::string VertName = "out " + stringVarType + outName + " ;";
+			//std::string FragName = "in " + stringVarType + outName + " ;";
+
+			//dynamic_cast<OutputNode&>(*root).WriteToShaderCode(VertName, VaryingSeg,VERTEX);
+			//dynamic_cast<OutputNode&>(*root).WriteToShaderCode(FragName, VaryingSeg, FRAGMENT);
+
+			//creates the series of name declaration in the  varying segments of VS,GS,FS
+			dynamic_cast<OutputNode&>(*root).CreateVaryingPipeline(stringVarType, outName, " ");
+
+			//this might cause errors :(
+			//delete the variable declaration of the output, since it is already declared in the varying section
+			// This seems actually correct to do. It should be done in all shaders
+			tempCode = Graph::getInstance()->ReplaceVarNames(tempCode, tempOutName, "v" + outName);
+			tempCode.erase(tempCode.find("v" + outName) - (stringVarType.size()), stringVarType.size());
+
+		}
+		else if (CurrShaderType == GEOMETRY) {
+			tempCode = Graph::getInstance()->ReplaceVarNames(tempCode, tempOutName, outName);
+		}
+		
+	
+	}
+	else {
+		tempCode = Graph::getInstance()->ReplaceVarNames(tempCode, tempOutName, outName);
 	}
 
+	//this should be done in all shaders
 	dynamic_cast<OutputNode&>(*root).WriteToShaderCode(tempCode, MainSeg, ShaderType(CurrShaderType));
 
 	//ShaderCode->append("\n" + tempCode);
