@@ -32,5 +32,6 @@ public:
 	//this should have a program associated with it
 	//the uniform value will 
 	void EditUniform();
+	std::string DeclareAttribute(int index, ShaderType type);
 };
 

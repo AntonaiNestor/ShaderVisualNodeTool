@@ -52,6 +52,9 @@ void main()
 	FragColor = InputCol;
 
 	//vec3 FragPos = gFragPos;
+	//$MainGeom$
+	// -$
+
 
 	//$Main$
 	

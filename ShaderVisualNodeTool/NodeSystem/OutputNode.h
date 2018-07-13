@@ -15,7 +15,7 @@ public:
 	std::vector<std::string> CodeSections[3]; //array of vectors
 	ShaderType Stype;
 
-	std::string CreateVaryingPipeline(std::string varType, std::string varName,std::string assignValue );
+	std::string CreateVaryingPipeline(ShaderType type ,std::string varType, std::string varName,std::string assignValue );
 	void WriteToShaderCode(std::string code, ShaderSection section, ShaderType type);
 	void AssembleShaderCode();
 	void ClearShaderCode();

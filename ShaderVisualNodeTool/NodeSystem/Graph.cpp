@@ -642,6 +642,54 @@ std::string Graph::ReplaceVarNames(std::string code, std::string oldName, std::s
 	return code;
 }
 
+//usecase : 0 -> read
+//		  : 1 -> write
+std::string Graph::GetShaderPrefix(ShaderType type, bool usecase)
+{
+	switch (type) {
+
+	case(VERTEX): {
+		//Vertex shader appends v in both cases 
+		return "v";
+		break;
+	}
+	//case(VERTEX): {
+	//	return "v";
+	//	break;
+	//}
+	//case(VERTEX): {
+	//	return "v";
+	//	break;
+	//}
+	case(GEOMETRY): {
+		//this will change 
+		return  usecase ? "g" : "v";
+		break;
+	}
+	case(FRAGMENT): {
+		
+		return "g";
+		break;
+	}
+	
+	
+	default:
+		break;
+	}
+		
+	return std::string();
+}
+
+void Graph::CreateProgramUniform(std::string Varname)
+{
+	dynamic_cast<OutputNode&>(*root).WriteToShaderCode(Varname, UniformSeg, VERTEX);
+	/*
+		TESSELATION HERE	
+	*/
+	dynamic_cast<OutputNode&>(*root).WriteToShaderCode(Varname, UniformSeg, GEOMETRY);
+	dynamic_cast<OutputNode&>(*root).WriteToShaderCode(Varname, UniformSeg, FRAGMENT);
+}
+
 
 
 void Graph::UpdateUniforms()
@@ -659,50 +707,5 @@ void Graph::UpdateUniforms()
 
 }
 
-//Datatype Graph::InitialiseValue(ValueType type)
-//{
-//
-//	Datatype tempVal;
-//	switch (type) {
-//		case (Float): {
-//			tempVal.f_var = DefaultFloat;
-//			break;
-//		}	 
-//		case (Int): {
-//			tempVal.i_var = DefaultInt;
-//			break;
-//		}
-//		case (Vec2): {
-//			tempVal.vec2_var = DefaultVec2;
-//			break;
-//		}
-//		case (Vec3): {
-//			tempVal.vec3_var =  DefaultVec3;
-//			break;
-//		}
-//		case (Vec4): {
-//			tempVal.vec3_var =DefaultVec4;
-//			break;
-//		}
-//		case (Mat4): {
-//			tempVal.mat4_var = DefaultMat4;
-//			break;
-//		}
-//		case (Sampler2D): {
-//			
-//
-//			break;
-//		}
-//		case(SamplerCube): {
-//			
-//			break;
-//		}
-//		default: {
-//			
-//			break;
-//		}
-//	}
-//
-//	return tempVal;
-//}
+
 

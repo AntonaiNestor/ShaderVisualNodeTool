@@ -114,6 +114,7 @@ InputNode::~InputNode()
 	std::cout << " Destroying Constant Node " << std::endl;
 }
 
+
 //
 // Compiling constant nodes means only appending a simple var in the shadercode
 // The actual value of the node is also passed to the children nodes on connection
@@ -122,97 +123,114 @@ void InputNode::Compile(std::shared_ptr<Node> root) {
 	
 	auto Manager = Graph::getInstance();
 
+	//A uniform is automatically writen in all shader types  
 	if (inputType == UniformVariable) {
-		//A uniform must be written in all the shaders of the program for use
-		dynamic_cast<OutputNode&>(*root).WriteToShaderCode(CodeString(), UniformSeg,VERTEX);
-		dynamic_cast<OutputNode&>(*root).WriteToShaderCode(CodeString(), UniformSeg, GEOMETRY);
-		dynamic_cast<OutputNode&>(*root).WriteToShaderCode(CodeString(), UniformSeg, FRAGMENT);
+	
+		Manager->CreateProgramUniform(CodeString());
 	}
-	else if (inputType == AttributeVariable){
-		//do nothing in regards of writing a declaration of the variable
-		// We also know that this will execute uniquely for the VS. It CANNOT run in the fragment so 
-		// no need to check
 
-		//however this will need to create a varying with the name vPos,Normal,Texcoords etc in the VS and in in the fragment
-		//question this does it also write in the main of the VS that Normal = aNormal;  ?
-		//Because if we attach normal to something else 
+	//Vertex Attributes : SPECIAL CASE
+	else if (inputType == AttributeVariable){
+
+		//do nothing in regards of writing a declaration of the variable
+		// We also know that this will execute uniquely for the VS. It CANNOT run for anything else
 
 		//TODO INTERACE BLOCKS
-		//The varying needs to be done through interface blocks. It is the most clean way 
+		//The varying maybe should be done with interface blocks.
 
-		auto tempPointer = dynamic_cast<OutputNode&>(*root);
-
-		//go through all outputs of the attributes 
+		//Go through all outputs of the attributes and create the necessary name declarations as varyings or not 
 		for (int i = 0; i < Output.size(); i++) {
-			//if the output is connected to something
+			
 			if (Output[i].ConnectedNode!=nullptr)
 			{
-
-				
-			
+				//Assign unique name for this slot output
 				std::string name = Output.at(i).Name;
 				std::string slotName = std::to_string(this->UniqueID) + "->" + std::to_string(i);
 				ValueType outputType = Output.at(i).VariableType;
-
-
+				
 				name = Manager->AssignUniqueName(name, slotName);
-				//USE THIS NAME? Wherever you connect this now needs to say gName for it to be used in the fragment shader or vName if used in Geomshader
+				
+
+				std::string VSattrDecl;
+
+				//if the output is connected to a type of shader that is greater than VERTEX, Input nodes do not have a specific shadertype.
+				// They either write to whatever the connected node is or to all or special cases likes this
+
+				//TODO : When we have multiple outs, then I will need to check all of the connected node types
+				if (Output[i].ConnectedNode->CurrShaderType > VERTEX){
+
+					//These attributes are always handled in the vertex shader so prefix is always "v"
+					std::string prefName = "v" + name;
+
+					//depending on the variable name, write the appropriate match between the varying and the attribute
+					//Hardcoded , maybe there is a way to detach this from here?
+					//Also there might be more attributes in the future
+					//Attribute names are hardcoded as well e.g aPos;
+					switch (i) {
+						case (0):
+							VSattrDecl = prefName + DeclareAttribute(i, ShaderType(CurrShaderType));// " = aPos ;";
+							break;
+						case(1):
+							VSattrDecl = prefName + " = aNormal ;";
+							break;
+						case(2):
+							VSattrDecl = prefName + " = aTexCoords;";
+							break;
+						case(3):
+							VSattrDecl = prefName + " = aTangents;";
+							break;
+						case(4):
+							VSattrDecl = prefName + " = aBitangents;";
+							break;
+						default:
+							VSattrDecl = prefName + " = aPos ;";
+							break;
+					}
+
+					dynamic_cast<OutputNode&>(*root).CreateVaryingPipeline(VERTEX,util::GetStringValueType(outputType, false),name,VSattrDecl);
 
 				
-				std::string VSattrDecl;
-				std::string prefName = "v" + Output[i].Name;
-				//depending on the variable name, write the appropriate match between the varying and the attribute
-				//this is a bit hardcoded and out of place but for now it is da truth
-				switch (i) {
-
+				
+				
+				}
+				//if the attribute is connected to a vertexshader execution node then do not have a prefix. Just write the name 
+				// However since this is isn't a varying anymore we need to declare the valuetype as well
+				else {
+					switch (i) {
 					case (0):
-						VSattrDecl = prefName + " = aPos ;";
+						VSattrDecl = util::GetStringValueType(outputType, false) +  name + " = aPos ;";
 						break;
 					case(1):
-						VSattrDecl = prefName + " = aNormal ;";
+						VSattrDecl = util::GetStringValueType(outputType, false) + name + " = aNormal ;";
 						break;
 					case(2):
-						VSattrDecl = prefName + " = aTexCoords;";
+						VSattrDecl = util::GetStringValueType(outputType, false) + name + " = aTexCoords;";
 						break;
 					case(3):
-						VSattrDecl = prefName + " = aTangents;";
+						VSattrDecl = util::GetStringValueType(outputType, false) + name + " = aTangents;";
 						break;
 					case(4):
-						VSattrDecl = prefName + " = aBitangents;";
+						VSattrDecl = util::GetStringValueType(outputType, false) + name + " = aBitangents;";
 						break;
 					default:
-						VSattrDecl = prefName + " = aPos ;";
+						VSattrDecl = util::GetStringValueType(outputType, false) + name + " = aPos ;";
 						break;
+					}
+					dynamic_cast<OutputNode&>(*root).WriteToShaderCode(VSattrDecl, MainSeg, VERTEX);
 				}
-
-				dynamic_cast<OutputNode&>(*root).CreateVaryingPipeline(util::GetStringValueType(Output[i].VariableType, false),name,VSattrDecl);
-				//the varying string that need to be written in the VS and the FS
-				/*std::string varyingNameVS = "out " + util::GetStringValueType(Output[i].VariableType, false) + "v" + Output[i].Name + " ;";
-				std::string varyingNameFS = "in " + util::GetStringValueType(Output[i].VariableType, false) + "g" + Output[i].Name + " ;";
-				std::string varyingNameGSin = "in " + util::GetStringValueType(Output[i].VariableType, false) + "v" + Output[i].Name + "[]" + " ;";
-				std::string varyingNameGSout = "out" + util::GetStringValueType(Output[i].VariableType, false) + "g" + Output[i].Name + " ;";
-				std::string varyingDeclGS = "g" + Output[i].Name + " = " + "v" + Output[i].Name + "[i]" + " ;";*/
-
-
-				//write in VS ,GS and  FS
-				/*dynamic_cast<OutputNode&>(*root).WriteToShaderCode(varyingNameVS, VaryingSeg, VERTEX);
-				dynamic_cast<OutputNode&>(*root).WriteToShaderCode(varyingNameFS, VaryingSeg, FRAGMENT);
-				dynamic_cast<OutputNode&>(*root).WriteToShaderCode(varyingNameGSin, VaryingSeg, GEOMETRY);
-				dynamic_cast<OutputNode&>(*root).WriteToShaderCode(varyingNameGSout, VaryingSeg, GEOMETRY);
-				dynamic_cast<OutputNode&>(*root).WriteToShaderCode(varyingDeclGS, MainGeomSeg, GEOMETRY);
-				dynamic_cast<OutputNode&>(*root).WriteToShaderCode(VSattrDecl, MainSeg, VERTEX);*/
 
 			}
 		}
-		//
 		
 
 	}
 	else if (inputType == ConstantVariable){
-		//Constant nodes will write to the immediate connected node type
+		//Constant nodes will write to the immediate connected node type.
+		// TODO : This must repeat for all connected nodes don't forget
 		ShaderType writeType = ShaderType(Output[0].ConnectedNode->CurrShaderType);
 		dynamic_cast<OutputNode&>(*root).WriteToShaderCode(CodeString(), ConstantSeg, writeType);
 	}
+	// Also unique case but they are UniformMatrices
 	else if (inputType == TransformationMatrix) {
 		//The transformation matrix nodes do not need to do anything on compile
 		// They are essentially only here to provide a name, and only the visual part 
@@ -223,9 +241,7 @@ void InputNode::Compile(std::shared_ptr<Node> root) {
 		std::string name = Output.at(0).Name;
 		std::string slotName = std::to_string(this->UniqueID) + "->" + std::to_string(0);
 		ValueType outputType = Output.at(0).VariableType;
-
-
-		 Manager->ReplaceUniqueName(name, slotName);
+		Manager->ReplaceUniqueName(name, slotName);
 		//However maybe here I should consider declaring the more complex matrices like 
 		// ModelView or ProjectionView instead of having to create them from the application
 		// Problem with this is that you cannot have them as uniforms and calculate them in place
@@ -463,6 +479,26 @@ void InputNode::EditUniform()
 	}
 
 	glUseProgram(0);
+
+}
+
+std::string InputNode::DeclareAttribute(int index, ShaderType type)
+{
+	//5 cases of types. Each type has only a certain amount of attributes
+	switch (type) {
+	case(VERTEX): {
+	
+	}
+		break;
+
+	case(GEOMETRY): {
+	
+	}
+		break;
+
+	default:
+		break;
+	}
 
 }
 

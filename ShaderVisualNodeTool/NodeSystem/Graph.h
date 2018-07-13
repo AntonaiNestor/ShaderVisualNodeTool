@@ -148,10 +148,15 @@ public:
 	void PrintConnections();
 	void ResetGraph();
 	void UpdateGraph();
+
+	//utility functions etc
 	std::string AssignUniqueName(std::string initName, std::string slotName);
 	void ReplaceUniqueName(std::string newName,std::string slotName);
 	std::string ReplaceVarNames(std::string code, std::string oldName, std::string newName);
-	
+
+	//this shouldn't be part of the graph
+	std::string GetShaderPrefix(ShaderType type,bool usecase);
+	void CreateProgramUniform(std::string Varname);
 	void UpdateUniforms();
 
 	//Datatype InitialiseValue(ValueType type);

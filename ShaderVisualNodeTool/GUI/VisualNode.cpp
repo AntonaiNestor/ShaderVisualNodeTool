@@ -297,6 +297,7 @@ void VisualNode::DrawInputNode(ImDrawList * drawList, ImVec2 offset)
 			ImGui::PushItemWidth(80);
 			ImGui::SetCursorScreenPos(ImVec2(NodeRelevantPos.x, NodeRelevantPos.y + 1 + TITLE_BOX_HEIGHT));
 
+			//This needs to move to a central position
 			std::string Matrices[4] = {"Model", "View", "Projection","MVP"};
 			const char* MatricesCC[4] = { "Model", "View", "Projection","MVP" };
 			const char*  curr_choice = (GNode->Output[0].Name).c_str() ;
@@ -315,7 +316,7 @@ void VisualNode::DrawInputNode(ImDrawList * drawList, ImVec2 offset)
 
 						Manager->ValueChanged = true;
 
-						std::cout << GNode->Output.at(0).Name << std::endl;
+						//std::cout << GNode->Output.at(0).Name << std::endl;
 					}
 
 					if (is_selected)
@@ -325,7 +326,7 @@ void VisualNode::DrawInputNode(ImDrawList * drawList, ImVec2 offset)
 			}
 
 		}
-		//Draw the droplist here
+
 
 		
 	
@@ -560,6 +561,7 @@ void VisualNode::DrawFunctionNode(ImDrawList * drawList, ImVec2 offset)
 
 				//dynamic_cast<InputNode&>(*GNode).inputType = InputNodeType(n);
 				GNode->CurrShaderType = GNode->AllowedExecShaderTypes[n];
+				std::cout << GNode->CurrShaderType << std::endl;
 				Manager->ValueChanged = true;
 			}
 			if (is_selected)

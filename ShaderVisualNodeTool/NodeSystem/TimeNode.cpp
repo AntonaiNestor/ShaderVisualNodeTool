@@ -45,6 +45,10 @@ TimeNode::~TimeNode()
 
 
 void TimeNode::Compile(std::shared_ptr<Node> root) {
+	auto Manager = Graph::getInstance();
+
+	
+	Manager->CreateProgramUniform(CodeString());
 
 
 }

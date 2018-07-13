@@ -120,17 +120,17 @@
         {
           "SlotType": "Input",
           "SlotName": "$ambientColor",
-          "VariableType": "vec3"
+          "VariableType": "vec4"
         },
         {
           "SlotType": "Input",
           "SlotName": "$diffuseColor",
-          "VariableType": "vec3"
+          "VariableType": "vec4"
         },
         {
           "SlotType": "Input",
           "SlotName": "$specColor",
-          "VariableType": "vec3"
+          "VariableType": "vec4"
         },
         {
           "SlotType": "Output",
@@ -150,7 +150,7 @@
         "float specAngle = max(dot(halfDir, normal), 0.0);",
         "specular = pow(specAngle, 16.0);",
         "}",
-        "vec4 BlinnPhong = vec4($ambientColor + lambertian * $diffuseColor + specular * $specColor, 1.0);"
+        "vec4 BlinnPhong = $ambientColor + lambertian * $diffuseColor + specular * $specColor;"
 
       ]
 
@@ -175,6 +175,11 @@
         },
         {
           "SlotType": "Input",
+          "SlotName": "$FragPos",
+          "VariableType": "vec3"
+        },
+        {
+          "SlotType": "Input",
           "SlotName": "$ShowNormals",
           "VariableType": "bool"
         },
@@ -188,10 +193,10 @@
       ],
       "Code": [
         "bool check = $ShowNormals ;",
-        "vec3 X = dFdx(FragPos);",
-        "vec3 Y = dFdy(FragPos);",
+        "vec3 X = dFdx($FragPos);",
+        "vec3 Y = dFdy($FragPos);",
         "vec3 normal=normalize(cross(X,Y));",
-        " vec3 lightDirection = normalize($lightPos - FragPos);",
+        " vec3 lightDirection = normalize($lightPos - $FragPos);",
         "float light = max(0.0, dot(lightDirection, normal));",
         "vec4 SSN_Color;",
         "if (check){",
@@ -490,6 +495,46 @@
       ],
       "Code": [
         " vec3 Vec3DividedbyW =vec3( $vec4) / $vec4.w ;"
+      ]
+
+    },
+    {
+      "NodeType": "Function Node",
+      "Name": "Explode",
+      "AvailableShaders": [
+        "Vertex",
+        "Geometry"
+      ],
+      "Slots": [
+        {
+          "SlotType": "Input",
+          "SlotName": "$Normal",
+          "VariableType": "vec3"
+        },
+        {
+          "SlotType": "Input",
+          "SlotName": "$Position",
+          "VariableType": "vec4"
+        },
+        {
+          "SlotType": "Input",
+          "SlotName": "$Time",
+          "VariableType": "float"
+        },
+        {
+          "SlotType": "Input",
+          "SlotName": "$Magnitude",
+          "VariableType": "float"
+        },
+        {
+          "SlotType": "Output",
+          "SlotName": "ExplodePos",
+          "VariableType": "vec4"
+        }
+      ],
+      "Code": [
+        "vec3 ExplDir = $Normal * ((sin($Time) + 1.0) / 2.0) * $Magnitude;",
+        "vec4 ExplodePos = $Position + vec4(ExplDir, 0.0);"
       ]
 
     }

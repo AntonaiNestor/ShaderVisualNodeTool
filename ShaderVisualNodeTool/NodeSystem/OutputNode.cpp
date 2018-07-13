@@ -1,5 +1,5 @@
 #include "OutputNode.h"
-
+#include "InputNode.h"
 
 
 OutputNode::OutputNode(ShaderNodeInformation nodeInfo)
@@ -105,9 +105,7 @@ OutputNode::~OutputNode()
 {
 }
 
-
-// TODO this needs another parameter to indicate where this varying is firstly being created and skip probably a few shaders.
-std::string OutputNode::CreateVaryingPipeline(std::string varType, std::string varName, std::string assignValue)
+std::string OutputNode::CreateVaryingPipeline(ShaderType type,std::string varType, std::string varName, std::string assignValue)
 {
 	//the varying string that need to be written in the VS and the FS
 	std::string varyingNameVS = "out " + varType + "v" + varName + " ;";
@@ -115,16 +113,28 @@ std::string OutputNode::CreateVaryingPipeline(std::string varType, std::string v
 	std::string varyingNameGSin = "in " + varType + "v" + varName + "[]" + " ;";
 	std::string varyingNameGSout = "out " + varType + "g" + varName + " ;";
 	std::string varyingDeclGS = "g" + varName + " = " + "v" + varName + "[i]" + " ;";
-
+	std::string varyingDeclGSE = "g" + varName + " = " + assignValue + " ;"; 
 	//write in VS ,GS and  FS
-	WriteToShaderCode(varyingNameVS, VaryingSeg, VERTEX);
-	WriteToShaderCode(varyingNameFS, VaryingSeg, FRAGMENT);
-	WriteToShaderCode(varyingNameGSin, VaryingSeg, GEOMETRY);
-	WriteToShaderCode(varyingNameGSout, VaryingSeg, GEOMETRY);
-	WriteToShaderCode(varyingDeclGS, MainGeomSeg, GEOMETRY);
 
-	//not sure about this
-    WriteToShaderCode(assignValue, MainSeg, VERTEX);
+	//If you are creating a varying from the vertex shader then do all the rest 
+	if (type == VERTEX) {
+		WriteToShaderCode(varyingNameVS, VaryingSeg, VERTEX);
+		WriteToShaderCode(varyingNameGSin, VaryingSeg, GEOMETRY);
+		WriteToShaderCode(varyingNameGSout, VaryingSeg, GEOMETRY);
+		WriteToShaderCode(varyingDeclGS, MainGeomSeg, GEOMETRY);
+
+		//In function nodes, the actual declaration in the main segment is handled in their compile function. Correct?
+		WriteToShaderCode(assignValue, MainSeg, VERTEX);
+	}
+	else if (type == GEOMETRY) {
+		WriteToShaderCode(varyingNameGSout, VaryingSeg, GEOMETRY);
+		//WriteToShaderCode(varyingDeclGSE, MainGeomSeg, GEOMETRY);
+	}
+
+	//you will always retrieve a varying from the Geometry shader to the fragment no matter what
+	WriteToShaderCode(varyingNameFS, VaryingSeg, FRAGMENT);
+	
+    
 
 	return ""; //return the new name? no because depending on the shader it will be used in then 
 }
@@ -266,35 +276,17 @@ void OutputNode::Compile(std::shared_ptr<Node> root)
 		//if the input isn;t connected to anything , replace name of the variable with default value
 		if (Input.at(i).ConnectedNode) {
 			
-
-
 			//Here I am checking where the connected variable is coming from. If it is a varying then I need to append v or g.
 			std::string shaderNamePrefix = "";
 
-			//For function nodes, if the shadertype is not the same OR for input nodes if it is attribute variable
+			//If the incoming shadertype is not the same OR for input nodes if it is attribute variable, it means it is a varying
 			auto tempP = Input.at(i).ConnectedNode;
-			if (tempP->Type == InputnodeT || (tempP->Type == FunctionnodeT && tempP->CurrShaderType != CurrShaderType)) {
-
-				//TODO put this in a function and cover the TS as well
-				switch (CurrShaderType) {
-
-				case(VERTEX):
-					shaderNamePrefix = "v";
-					break;
-
-				case(GEOMETRY):
-					shaderNamePrefix = "v";
-					break;
-				case (FRAGMENT):
-					shaderNamePrefix = "g";
-					break;
-
-				default:
-					break;
-				}
-
+			if ((tempP->Type == InputnodeT && dynamic_cast<InputNode&>(*tempP).inputType == AttributeVariable)
+				|| (tempP->Type == FunctionnodeT && tempP->CurrShaderType<CurrShaderType)) {
+					
+				shaderNamePrefix = Manager->GetShaderPrefix(ShaderType(CurrShaderType),false);
+			
 			}
-
 
 			auto SlotName = std::to_string(Input.at(i).ConnectedNode->UniqueID) + "->" + std::to_string(Input.at(i).ConnectionIndex); 
 			auto newName = shaderNamePrefix + Manager->VarToSlotMap[SlotName];
@@ -310,9 +302,7 @@ void OutputNode::Compile(std::shared_ptr<Node> root)
 
 			WriteToShaderCode(tempCode + CodeString(),MainSeg,FRAGMENT);
 
-		
-			//ShaderCode->append("\n" + tempCode + CodeString());
-			//ShaderCode->append("\n" +Input.at(i).Name + " = " + std::to_string(Input.at(0).Value) + ";");
+	
 		}
 		else {
 			//If you are not connected with anything don't append anything
@@ -322,10 +312,6 @@ void OutputNode::Compile(std::shared_ptr<Node> root)
 
 	}
 	
-
-	//ShaderCode->append("\n" + tempCode + CodeString());
-
-
 
 	HasCompiled = true;
 }

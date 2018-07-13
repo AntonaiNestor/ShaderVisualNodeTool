@@ -2,7 +2,7 @@
 #version 330 core
 
 layout (triangles) in;
-layout (triangle_strip, max_vertices = 256) out;
+layout (points, max_vertices = 256) out;
 
 
 
@@ -47,44 +47,8 @@ uniform float time;
 // -$
 
 
-//Explosion shader
-vec3 GetNormal()
-{
-   vec3 a = vec3(gl_in[0].gl_Position) - vec3(gl_in[1].gl_Position);
-   vec3 b = vec3(gl_in[2].gl_Position) - vec3(gl_in[1].gl_Position);
-   return normalize(cross(a, b));
-}  
-
-//Explosion shader
-vec4 explode(vec4 position, vec3 normal)
-{
-    float magnitude = 0.5;
-    vec3 direction = normal * ((sin(time) + 1.0) / 2.0) * magnitude; 
-    return position + vec4(direction, 0.0);
-} 
-
 
 void main() {    
-
-
-//Explosion shader
-//	vec3 normal = GetNormal();
-
- //   gl_Position = explode(gl_in[0].gl_Position, normal);
-//	gs_out.gFragPos = gs_in[0].FragPos;
-  //  TexCoords = gs_in[0].texCoords;
-//    EmitVertex();
- //   gl_Position = explode(gl_in[1].gl_Position, normal);
-//	gs_out.gFragPos = gs_in[1].FragPos;
- //   TexCoords = gs_in[1].texCoords;
- //   EmitVertex();
- //   gl_Position = explode(gl_in[2].gl_Position, normal);
-//	gs_out.gFragPos = gs_in[2].FragPos;
- //   TexCoords = gs_in[2].texCoords;
-//    EmitVertex();
-//    EndPrimitive();
-	
-
 
 	//$Main$
 	

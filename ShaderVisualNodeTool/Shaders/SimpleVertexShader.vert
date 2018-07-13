@@ -56,20 +56,11 @@ void main()
 
 
 	//Main - Default
-	// TexCoord=aTexCoords;
-  
-	//normal passing
-	//mat3 normalMatrix = transpose(inverse(mat3(View * Model)));
-   // Normal = normalize(normalMatrix * aNormal);
-   // Normal = aNormal;
 
-	//the current vertex position in view space
-	//vec4 vertPos4 = View * Model * vec4(aPos, 1.0);
-   // vFragPos = vec3(vertPos4) / vertPos4.w;
-
-	//gl position
     gl_Position = (Projection* View* Model* vec4(aPos, 1.0)) ; 
-	//+ 0.01*vec4(aNormal,1.0)
+	//$MainGeom$
+
+	// -$
 
 	//$Main$
 	
