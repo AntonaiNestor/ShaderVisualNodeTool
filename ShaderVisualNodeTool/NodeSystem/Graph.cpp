@@ -41,17 +41,15 @@ bool Graph::CreateConnectionOutIn(std::shared_ptr<Node> from, std::shared_ptr<No
 		return false;
 	}
 
-	//
-	
-
-	//if both nodes have valid IDs
+	//if both nodes have valid IDs 
 	if (i < AdjacencyList.size() && j < AdjacencyList.size()) {
 
 
 		//create the connection between slots
 		
-		//if the input slot that we are  connecting to was already connected with something
-		//delete that connection correctly
+		//if the input slot that we are connecting to was already connected with something
+		//Reset that connection correctly
+		//This still might leave in the adjacency list the info that the connected node -> to node
 		if (to->Input.at(ToIndex).ConnectedNode != nullptr) {
 			RemoveConnection(to->Input.at(ToIndex).ConnectedNode, to, to->Input.at(ToIndex).ConnectionIndex, ToIndex);
 		}
@@ -60,9 +58,9 @@ bool Graph::CreateConnectionOutIn(std::shared_ptr<Node> from, std::shared_ptr<No
 		//was one. 
 
 		//TODO THIS SHOULD BE REMOVED WHEN I MAKE INPUTS TO BE PASSED TO MORE OUTPUTS
-		if (from->Output.at(FromIndex).ConnectedNode != nullptr) {
+		/*if (from->Output.at(FromIndex).ConnectedNode != nullptr) {
 			RemoveConnection(from,from->Output.at(FromIndex).ConnectedNode,FromIndex , from->Output.at(FromIndex).ConnectionIndex);
-		}
+		}*/
 
 		from->ConnectNode(to, ToIndex, FromIndex);
 
@@ -77,10 +75,6 @@ bool Graph::CreateConnectionOutIn(std::shared_ptr<Node> from, std::shared_ptr<No
 
 				// in case i want to have the connections two ways
 				//AdjacencyList.at(j).push_back(i);
-				
-				
-				//We need to notify Node from that it is now connecteed to j as well.
-				
 
 				return true;		
 		}
@@ -98,6 +92,7 @@ bool Graph::CreateConnectionInOut(std::shared_ptr<Node> from, std::shared_ptr<No
 
 	if (i == j) {
 		//Add debug message " node cannot be connected to itself"
+		std::cout << " node cannot be connected to itself" << std::endl;
 		return false;
 	}
 
@@ -106,19 +101,24 @@ bool Graph::CreateConnectionInOut(std::shared_ptr<Node> from, std::shared_ptr<No
 	//at the moment
 
 	//TODO REMOVE THIS FIRST ONE IF YOU WANT TO HAVE MULTIPLE OUTPUTS
-	if (to->Output.at(ToIndex).ConnectedNode != nullptr) {
+	/*if (to->Output.at(ToIndex).ConnectedNode != nullptr) {
 		RemoveConnection(to,to->Output.at(ToIndex).ConnectedNode, ToIndex, to->Output.at(ToIndex).ConnectionIndex);
-	}
+	}*/
 
-	if (from->Input.at(FromIndex).ConnectedNode != nullptr) {
-		RemoveConnection(from->Input.at(FromIndex).ConnectedNode,from, from->Input.at(FromIndex).ConnectionIndex,FromIndex);
-	}
-
-	to->ConnectNode(from, FromIndex, ToIndex);
+	
 
 
 	//if both nodes have valid IDs
 	if (i < AdjacencyList.size() && j < AdjacencyList.size()) {
+
+
+		if (from->Input.at(FromIndex).ConnectedNode != nullptr) {
+			RemoveConnection(from->Input.at(FromIndex).ConnectedNode, from, from->Input.at(FromIndex).ConnectionIndex, FromIndex);
+		}
+
+		to->ConnectNode(from, FromIndex, ToIndex);
+
+
 		//search for the connection in an opposite direction
 		auto x = find(AdjacencyList.at(j).begin(), AdjacencyList.at(j).end(), i);
 		//if i and j are not already connected
@@ -132,10 +132,6 @@ bool Graph::CreateConnectionInOut(std::shared_ptr<Node> from, std::shared_ptr<No
 			// in case i want to have the connections two ways
 			//AdjacencyList.at(i).push_back(j);
 
-			
-			//We need to notify Node To that it is now connecteed to From as well.
-			to->ConnectNode(from, FromIndex, ToIndex);
-
 			return true;
 		}
 	}
@@ -148,28 +144,70 @@ bool Graph::CreateConnectionInOut(std::shared_ptr<Node> from, std::shared_ptr<No
 //returns true if even when removing a specific connection the nodes are still attached
 bool Graph::RemoveConnection(std::shared_ptr<Node> from, std::shared_ptr<Node> to, int FromIndex, int ToIndex)
 {
+	//From is always the output node and to is always the input node
 
-	from->Output.at(FromIndex).ResetConnection();
+	//Delete the connection from the outnode by searching in the slot's list and completely removing that entry
+	//I do not care about the index of that list so no issue with that 
+	//CAUTION : This will result in error if I do use extra indices
+
+	//Go to the output slot and remove the connection that led to the connected node
+	from->Output.at(FromIndex).ResetConnection(to);
+
+	////just for not accessing the point again and again
+	//auto tempList = from->Output[FromIndex];
+
+	//for (int i = 0; i < tempList.size(); i++) {
+	//	
+	//	//if you found the entry in the out slot list that points to the about to delete connection, clear it
+	//	if (tempList[i].ConnectedNode == to && tempList[i].ConnectionIndex == ToIndex) {
+	//		from->Output.at(FromIndex).at(i).ResetConnection();
+	//		//remove the entry from the vector as well, no need to keep it
+	//		from->Output.at(FromIndex).erase(from->Output.at(FromIndex).begin() + i);
+	//	}
+	//}
+
+	//Clear Input at
 	to->Input.at(ToIndex).ResetConnection();
 
 	//here we need to check (as in the replace function ) if by removing this connection we 
 	// lose a connection between nodes for the adjacency list.
 
-	//to do that check after the rest if there still and output that points to that node.
-	//If there isn't, find and delete the node from the list.
+	//Instead of checking all outputs which are now many , check if nodes are connected from the input side
+	// You smart son (m.)
 	bool StillConnected = false;
-	for (auto it : from->Output) {
-		if (it.ConnectedNode == to) {
+
+	for (auto inslot : to->Input) {
+		
+		if (inslot.ConnectedNode == from) {
 			StillConnected = true;
 			break;
+
 		}
+
 	}
+
+	//for (auto outslot : from->Output) {
+	//	if (!StillConnected) {
+	//		for (auto connection : outslot) {
+	//			if (connection.ConnectedNode == to) {
+	//				StillConnected = true;
+	//				break;
+	//			}
+	//		}
+	//	}
+	//	else break;
+	//	
+	//}
+
+
 	if (!StillConnected) {
 
-		int toID = to->UniqueID;
 		int fromID = from->UniqueID;
-
-		for (std::vector<int>::iterator it = AdjacencyList.at(toID).begin(); it != AdjacencyList.at(toID).end(); ++it)
+		int toID = to->UniqueID;
+		
+		// Removes the information that To node is connected to From node
+		//If from  -> to existed then remove it  (to from did not exist since this a directed graph)
+	/*	for (std::vector<int>::iterator it = AdjacencyList.at(toID).begin(); it != AdjacencyList.at(toID).end(); ++it)
 		{
 			if (*it == fromID)
 			{
@@ -177,9 +215,22 @@ bool Graph::RemoveConnection(std::shared_ptr<Node> from, std::shared_ptr<Node> t
 				break;
 
 			}
+		}*/
+
+
+		for (std::vector<int>::iterator it = AdjacencyList.at(fromID).begin(); it != AdjacencyList.at(fromID).end(); ++it)
+		{
+			if (*it == toID)
+			{
+				AdjacencyList.at(fromID).erase(it);
+				break;
+
+			}
 		}
+
 		return false;
 	}
+
 	return true;
 }
 
@@ -489,7 +540,7 @@ void Graph::CompileGraph(std::shared_ptr<Node> CurrentNode , std::shared_ptr<Nod
 	*/
 
 	//Traverse all the Inputs list of this node
-	for (std::vector<Connection>::iterator it = CurrentNode->Input.begin(); it != CurrentNode->Input.end(); ++it) {
+	for (std::vector<InputConnection>::iterator it = CurrentNode->Input.begin(); it != CurrentNode->Input.end(); ++it) {
 
 
 		//if the connection 
@@ -532,11 +583,16 @@ void Graph::PrintConnections()
 	for (auto node : NodeList) {
 		std::cout << " Node : " << node->UniqueID << " is connected with :" << std::endl;
 		int counter = 0;
-		for (auto in : node->Output) {
-
-			if (in.ConnectedNode != nullptr){
-				std::cout << "-- Node : " << in.ConnectedNode->UniqueID << " From slot -> "<< counter++<< " To slot -> " << in.ConnectionIndex << std::endl;
+		for (auto  Outslot: node->Output) {
+			
+			for (int i = 0; i < Outslot.ConnectedNode.size(); i ++) {
+					
+				std::cout << "-- Node : " << Outslot.ConnectedNode[i]->UniqueID << " From slot -> " << counter << " To slot -> " << Outslot.ConnectionIndex[i] << std::endl;
+					
 			}
+			
+			counter++;
+			
 		}
 		std::cout << "------------------------------------------------------" << std::endl;
 	}
@@ -591,8 +647,6 @@ std::string Graph::AssignUniqueName(std::string initName, std::string slotName)
 		
 		////if the name exists in the map, then create a unique new name and insert that into the map.
 		
-		
-
 	}
 	//otherwise check if the name of the variable already exists in the other map
 	//if it does generate a new name, otherwise simply push the pair in both maps to establish the name
@@ -618,7 +672,6 @@ std::string Graph::AssignUniqueName(std::string initName, std::string slotName)
 
 	return finalName;
 }
-
 
 //instead of returning the unique name that is connected to the slot, it will replace it
 void Graph::ReplaceUniqueName(std::string newName, std::string slotName)
@@ -697,8 +750,6 @@ void Graph::CreateProgramUniform(std::string Varname)
 	dynamic_cast<OutputNode&>(*root).WriteToShaderCode(Varname, UniformSeg, GEOMETRY);
 	dynamic_cast<OutputNode&>(*root).WriteToShaderCode(Varname, UniformSeg, FRAGMENT);
 }
-
-
 
 void Graph::UpdateUniforms()
 {

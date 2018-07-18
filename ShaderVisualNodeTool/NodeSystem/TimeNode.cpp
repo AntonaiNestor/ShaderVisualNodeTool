@@ -14,7 +14,7 @@ TimeNode::TimeNode()
 
 	ValueType type = Float;
 	//output struct creation
-	Connection connect;
+	InputConnection connect;
 	connect.ConnectedNode = nullptr;
 	connect.ConnectionIndex = -1;
 	connect.VariableType = type;

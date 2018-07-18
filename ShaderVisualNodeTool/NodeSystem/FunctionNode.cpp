@@ -17,94 +17,108 @@ FunctionNode::FunctionNode(FunctionNodeInformation nodeInfo)
 
 	AllowedExecShaderTypes = nodeInfo.AllowedExecShaders;
 	CurrShaderType = AllowedExecShaderTypes.back();
-	//parse slots and create necessary information
-	//std::vector<std::string> slotNames;
 
+	//parse slots and create necessary information
 	for (auto slot : nodeInfo.Slots) {
 
-		Connection newConnection;
-
-		newConnection.Name = slot.Name;
-		newConnection.VariableType = slot.VarType;
-
-	
-
-		/*std::string temp = util::GetStringValueType(slot.VarType,true);
-		newConnection.Value.f_var = std::stof(temp);*/
-		
-
-	  switch (slot.VarType) {
-
-		 case (Bool): {
-			 newConnection.Value.b_var = graph->DefaultBool;
-			 break;
-		 }
-		case(Float): {
-			newConnection.Value.f_var = { graph->DefaultFloat };
-			break;
-		}
-		case(Int): {
-			newConnection.Value.i_var = { graph->DefaultInt };
-			break;
-		}
-		case(Vec2): {
-			newConnection.Value.vec2_var = { graph->DefaultVec2 };
-			break;
-
-		}
-		case(Vec3): {
-			newConnection.Value.vec3_var = { graph->DefaultVec3 };
-			break;
-
-		}
-		case(Vec4): {
-			newConnection.Value.vec4_var = { graph->DefaultVec4 };
-			break;
-
-		}
-		case(Mat4): {
-			newConnection.Value.mat4_var = { graph->DefaultMat4 };
-			break;
-		}
-
-		default:
-			break;
-	  }
 
 		//Input slot
 		if (!slot.SlotType) {
-			Input.push_back(newConnection);
+
+			InputConnection newConnection;
+
+			newConnection.Name = slot.Name;
+			newConnection.VariableType = slot.VarType;
+
+			switch (slot.VarType) {
+
+			case (Bool): {
+				 newConnection.Value.b_var = graph->DefaultBool;
+				 break;
+		    }
+			case(Float): {
+				newConnection.Value.f_var = { graph->DefaultFloat };
+				break;
+			}
+			case(Int): {
+				newConnection.Value.i_var = { graph->DefaultInt };
+				break;
+			}
+			case(Vec2): {
+				newConnection.Value.vec2_var = { graph->DefaultVec2 };
+				break;
+
+			}
+			case(Vec3): {
+				newConnection.Value.vec3_var = { graph->DefaultVec3 };
+				break;
+
+			}
+			case(Vec4): {
+				newConnection.Value.vec4_var = { graph->DefaultVec4 };
+				break;
+
+			}
+			case(Mat4): {
+				newConnection.Value.mat4_var = { graph->DefaultMat4 };
+				break;
+			}
+
+			default:
+				break;
+		  }
+
+		   Input.push_back(newConnection);
 		}
 		//Output Slot
 		else {
+			OutputConnection newConnection;
+
+			newConnection.Name = slot.Name;
+			newConnection.VariableType = slot.VarType;
+
+			switch (slot.VarType) {
+
+			case (Bool): {
+				newConnection.Value.b_var = graph->DefaultBool;
+				break;
+			}
+			case(Float): {
+				newConnection.Value.f_var = { graph->DefaultFloat };
+				break;
+			}
+			case(Int): {
+				newConnection.Value.i_var = { graph->DefaultInt };
+				break;
+			}
+			case(Vec2): {
+				newConnection.Value.vec2_var = { graph->DefaultVec2 };
+				break;
+
+			}
+			case(Vec3): {
+				newConnection.Value.vec3_var = { graph->DefaultVec3 };
+				break;
+
+			}
+			case(Vec4): {
+				newConnection.Value.vec4_var = { graph->DefaultVec4 };
+				break;
+
+			}
+			case(Mat4): {
+				newConnection.Value.mat4_var = { graph->DefaultMat4 };
+				break;
+			}
+
+			default:
+				break;
+			}
+
 			Output.push_back(newConnection);
 		}
 	}
 
-	////output struct creation
-	//std::string strArray[]{ "AddResult","$a","$b" };
-
-
-	//for (int i = 0; i < NoInputs; i++) {
-
-	//	Connection connect;
-
-	//	//Pairs of var names and types will be passed as a list of pairs from the parser
-	//	connect.Name = strArray[i+1]; 
-	//	connect.DataType = Float;
-	//	connect.Value = 1.0;
-
-	//	Input.push_back(connect);
-	//}
-	//
-	//Connection DefaultOut;
-	//DefaultOut.Name = strArray[0];
-	//DefaultOut.DataType = Float;
-	//DefaultOut.Value = 1; // Not correct, the output will never be actually calculated at this point. The code never runs 
-	//// You have to attach the full code to a shader, that is how you get a value
-	//// But for now keep it
-
-	//Output.push_back(DefaultOut);
 }
 
 
@@ -125,14 +139,15 @@ void FunctionNode::Compile(std::shared_ptr<Node> root)
 	for (int i = 0; i < Input.size();i++) {
 		//if the input isn;t connected to anything , replace name of the variable with default value
 		// Otherwise, replace the name of the variable with the appropriate name of the output it is connected to.
-		if (Input.at(i).ConnectedNode) {
+		auto tempP = Input.at(i).ConnectedNode;
+		if (tempP) {
 			auto SlotName = std::to_string(Input.at(i).ConnectedNode->UniqueID) + "->"+ std::to_string(Input.at(i).ConnectionIndex);
 
 			//Here I am checking where the connected variable is coming from. If it is a varying then I need to append v or g.
 			std::string shaderNamePrefix = "";
 
 			//For function nodes, if the shadertype is not the same OR for input nodes if it is attribute variable
-			auto tempP = Input.at(i).ConnectedNode;
+			
 			if ((tempP->Type == InputnodeT && dynamic_cast<InputNode&>(*tempP).inputType==AttributeVariable && tempP->CurrShaderType<CurrShaderType)
 				|| (tempP->Type == FunctionnodeT && tempP->CurrShaderType<CurrShaderType)) {
 				shaderNamePrefix = Manager->GetShaderPrefix( ShaderType(CurrShaderType), true);
@@ -168,70 +183,102 @@ void FunctionNode::Compile(std::shared_ptr<Node> root)
 	
 	}
 
-	// PUT THIS UGLY THING IN A FUNCTION YOU SILLY GOOSE
-	auto outName = Output.at(0).Name;
-	auto tempOutName = outName;
-	auto outSlotName = std::to_string(this->UniqueID) + "->0";
-	//auto ManagerInstance = Graph::getInstance();
 
-	outName = Manager->AssignUniqueName(outName,outSlotName);
+	//TODO : make this work for multiple outputs. At the moment it will break because it will rewrite the whole code
+	for (int i = 0; i < Output.size(); i++) {
+		// PUT THIS UGLY THING IN A FUNCTION YOU SILLY GOOSE
+		auto outName = Output.at(i).Name;
+		auto tempOutName = outName;
+		auto outSlotName = std::to_string(this->UniqueID) + "->"+ std::to_string(i);
+		//auto ManagerInstance = Graph::getInstance();
+
+		outName = Manager->AssignUniqueName(outName,outSlotName);
 	
-	//write the function code in the appropriate shader. 
+		//write the function code in the appropriate shader.
+		// Also if this name is used in a shader stage that is greater than this, I need to also create a varying of it
 
-	//If that shader is the vertex then we need to introduce varyings in both,
+		bool HasCreatedVarying = false;
+		bool HasBeenDeclaredInShader = false;
 
-	//TODO VARYING HERE AS WELL
+		for (int connID = 0; connID < Output[i].ConnectedNode.size(); connID++) {
+
+			if (Output[i].ConnectedNode[connID]->CurrShaderType > CurrShaderType && !HasCreatedVarying) {
 
 
-	//if there node connected to the output "next" node, does not have the same shadertype (greater and not equal)
-	//then create a varying pipeline for the output if need
-	if (Output.at(0).ConnectedNode->CurrShaderType > CurrShaderType) {
+				std::string stringVarType = util::GetStringValueType(Output[i].VariableType, false);
+				dynamic_cast<OutputNode&>(*root).CreateVaryingPipeline(ShaderType(CurrShaderType), stringVarType, outName, " ");
 
-		if (ShaderType(CurrShaderType) == VERTEX ) {
+				std::string prefix = Manager->GetShaderPrefix(ShaderType(CurrShaderType), true);
+				
+				//if the function code has not been written to the shader yet, write it and make the last line of the out to match the varying
+				if (!HasBeenDeclaredInShader) {
+					tempCode = Manager->ReplaceVarNames(tempCode, tempOutName, prefix + outName);
+					tempCode.erase(tempCode.find(prefix + outName) - (stringVarType.size()), stringVarType.size());
 
-			std::string stringVarType = util::GetStringValueType(Output[0].VariableType, false);
+					if (ShaderType(CurrShaderType) == VERTEX) {
+						dynamic_cast<OutputNode&>(*root).WriteToShaderCode(tempCode, MainSeg, ShaderType(CurrShaderType));
 
-			//std::string VertName = "out " + stringVarType + outName + " ;";
-			//std::string FragName = "in " + stringVarType + outName + " ;";
+					}
+					else if (CurrShaderType == GEOMETRY) {
+						//the main part of the geom code is done manually
+						dynamic_cast<OutputNode&>(*root).WriteToShaderCode(tempCode, MainGeomSeg, ShaderType(CurrShaderType));
 
-			//dynamic_cast<OutputNode&>(*root).WriteToShaderCode(VertName, VaryingSeg,VERTEX);
-			//dynamic_cast<OutputNode&>(*root).WriteToShaderCode(FragName, VaryingSeg, FRAGMENT);
+					}
 
-			//creates the series of name declaration in the  varying segments of VS,GS,FS
-			dynamic_cast<OutputNode&>(*root).CreateVaryingPipeline(VERTEX, stringVarType, outName, " ");
+				}
+				//if it has been declared, instead of rewriting the function code which will result in errors, simply add 
+				// a declaration where the varying var is = to the result already written;
+				else {
+					std::string code = prefix + outName + " = "+ outName;
 
-			//this might cause errors :(
-			//delete the variable declaration of the output, since it is already declared in the varying section
-			// This seems actually correct to do. It should be done in all shaders
-			// Add the prefix v to the output name since it is a varying. and write it in the main segment of the shader you are 
-			tempCode = Graph::getInstance()->ReplaceVarNames(tempCode, tempOutName, "v" + outName);
-			tempCode.erase(tempCode.find("v" + outName) - (stringVarType.size()), stringVarType.size());
+					if (ShaderType(CurrShaderType) == VERTEX) {
+						dynamic_cast<OutputNode&>(*root).WriteToShaderCode(code, MainSeg, ShaderType(CurrShaderType));
 
-			dynamic_cast<OutputNode&>(*root).WriteToShaderCode(tempCode, MainSeg, ShaderType(CurrShaderType));
+					}
+					else if (CurrShaderType == GEOMETRY) {
+						//the main part of the geom code is done manually
+						dynamic_cast<OutputNode&>(*root).WriteToShaderCode(code, MainGeomSeg, ShaderType(CurrShaderType));
 
-		}
-		else if (CurrShaderType == GEOMETRY) {
+					}
+					
+				}
 
-			std::string stringVarType = util::GetStringValueType(Output[0].VariableType, false);
-			//declaration of vars in geom and fragment 
-			dynamic_cast<OutputNode&>(*root).CreateVaryingPipeline(GEOMETRY, stringVarType, outName," ");
-			tempCode = Graph::getInstance()->ReplaceVarNames(tempCode, tempOutName, "g"+outName);
-			tempCode.erase(tempCode.find("g" + outName) - (stringVarType.size()), stringVarType.size());
-			//the main part of the geom code is done manually
-			dynamic_cast<OutputNode&>(*root).WriteToShaderCode(tempCode, MainGeomSeg, ShaderType(CurrShaderType));
+				HasCreatedVarying = true;
+			}
+			//Same shader
+			else if (Output[i].ConnectedNode[connID]->CurrShaderType == CurrShaderType && !HasBeenDeclaredInShader) {
 
-		} 
-	}
-	//Same shader
-	else {
-		tempCode = Graph::getInstance()->ReplaceVarNames(tempCode, tempOutName, outName);
-		if (CurrShaderType == GEOMETRY) {
-			dynamic_cast<OutputNode&>(*root).WriteToShaderCode(tempCode, MainGeomSeg, ShaderType(CurrShaderType));
-		}
-		else {
-			dynamic_cast<OutputNode&>(*root).WriteToShaderCode(tempCode, MainSeg, ShaderType(CurrShaderType));
+
+				if (!HasCreatedVarying){
+					tempCode = Graph::getInstance()->ReplaceVarNames(tempCode, tempOutName, outName);
+
+					if (CurrShaderType == GEOMETRY) {
+						dynamic_cast<OutputNode&>(*root).WriteToShaderCode(tempCode, MainGeomSeg, ShaderType(CurrShaderType));
+					}
+					else {
+						dynamic_cast<OutputNode&>(*root).WriteToShaderCode(tempCode, MainSeg, ShaderType(CurrShaderType));
+					}
+				}
+				else {
+					std::string prefix = Manager->GetShaderPrefix(ShaderType(CurrShaderType), true);
+					std::string stringVarType = util::GetStringValueType(Output[i].VariableType, false);
+					std::string code = stringVarType + " " + outName + " = " + prefix + outName;
+
+					if (CurrShaderType == GEOMETRY) {
+						dynamic_cast<OutputNode&>(*root).WriteToShaderCode(code, MainGeomSeg, ShaderType(CurrShaderType));
+					}
+					else {
+						dynamic_cast<OutputNode&>(*root).WriteToShaderCode(code, MainSeg, ShaderType(CurrShaderType));
+					}
+				}
+
+				HasBeenDeclaredInShader = true;
+			}
+
+
 		}
 		
+
 	}
 
 

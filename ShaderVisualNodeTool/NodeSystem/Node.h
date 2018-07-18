@@ -46,25 +46,61 @@ typedef union Datatype {
 
 class Node;
 
+//typedef
 
-struct Connection {
+struct InputConnection {
+
 	std::shared_ptr<Node> ConnectedNode;
 	int ConnectionIndex;
 	ValueType VariableType;
 	std::string Name;
-
-	//template<typename T> value;
 	Datatype Value; 
 	bool Enabled; //Enabled /disable connection
 	
 	//there is an issue with this in regards to initialising or reseting the  default value
 	// Node class doesn't node the default
-	Connection() { ConnectedNode = nullptr; ConnectionIndex = -1; Enabled = true;  }
+	InputConnection() { ConnectedNode = nullptr; ConnectionIndex = -1; Enabled = true;  }
 	//Connection(std::string name , ValueTyPE)
 	
 	//this clears the connection only from this side, not for the connected node
 	void ResetConnection() { ConnectedNode = nullptr; ConnectionIndex = -1; Enabled = true; }
 	
+};
+
+struct OutputConnection {
+
+	std::vector<std::shared_ptr<Node>> ConnectedNode;
+	std::vector<int> ConnectionIndex;
+	ValueType VariableType;
+	std::string Name;
+	Datatype Value;
+	bool Enabled; //Enabled /disable connection
+
+	//there is an issue with this in regards to initialising or reseting the  default value
+	// Node class doesn't node the default
+	OutputConnection() { Enabled = true; }//ConnectedNode = nullptr;  }
+	//Connection(std::string name , ValueTyPE)
+
+	//this clears the connection only from this side, not for the connected node
+	void ResetConnection(std::shared_ptr<Node> conNode) {
+
+		//search through the list of connections and when you find correct pointer delete that connection
+		for (int i = 0; i < ConnectedNode.size(); i++) {
+			if (ConnectedNode.at(i) == conNode) {
+
+				//erase the pointer and the index from the two lists
+				//TODO : make sure that the two lists have no index mismatches when created
+				ConnectedNode.at(i) = nullptr;
+				ConnectedNode.erase(ConnectedNode.begin() + i);
+
+				ConnectionIndex.erase(ConnectionIndex.begin() + i);
+				break;
+			}
+		}
+	
+		Enabled = true; 
+	}
+
 };
 
 
@@ -81,21 +117,19 @@ public:
 	int UniqueID;
 	bool HasCompiled;
 	Datatype value;
-	//why are the following 2 things not specific to function nodes?
 	int CurrShaderType;
 	std::vector<int> AllowedExecShaderTypes;
 
-	std::vector<Connection> Input;
-	std::vector<Connection> Output; 
+	std::vector<InputConnection> Input;
+	std::vector<OutputConnection> Output; 
 
 
 	//virtual methods
 	virtual void Compile(std::shared_ptr<Node> root) = 0;
 	virtual std::string CodeString() = 0;
 	
-
-
-	//output to input connection
+	//output to input connection 
+	//Edit: Multiple outputs needs an extra index in the information
 	void ConnectNode(std::shared_ptr<Node> ConnectedNode, int ConnectedIndex, int OutputIndex);
 	
 

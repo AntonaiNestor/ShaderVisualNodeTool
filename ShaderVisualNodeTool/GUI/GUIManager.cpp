@@ -54,7 +54,6 @@ void GUIManager::CreateNode(ImVec2 pos, BaseNodeType type , std::string Name)
 			newGraphNode = std::make_shared<TimeNode>();
 			
 		}
-
 		else {
 			auto nodeInfo = Graph::getInstance()->InputNodes[Name];
 			newGraphNode = std::make_shared<InputNode>(nodeInfo);
