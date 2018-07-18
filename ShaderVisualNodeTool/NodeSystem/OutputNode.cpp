@@ -113,7 +113,8 @@ std::string OutputNode::CreateVaryingPipeline(ShaderType type,std::string varTyp
 	std::string varyingNameGSin = "in " + varType + "v" + varName + "[]" + " ;";
 	std::string varyingNameGSout = "out " + varType + "g" + varName + " ;";
 	std::string varyingDeclGS = "g" + varName + " = " + "v" + varName + "[i]" + " ;";
-	std::string varyingDeclGSE = "g" + varName + " = " + assignValue + " ;"; 
+	std::string varyingDeclGSE = "g" + varName  + assignValue + " ;"; 
+	//assign value contains the = 
 	//write in VS ,GS and  FS
 
 	//If you are creating a varying from the vertex shader then do all the rest 
@@ -128,7 +129,8 @@ std::string OutputNode::CreateVaryingPipeline(ShaderType type,std::string varTyp
 	}
 	else if (type == GEOMETRY) {
 		WriteToShaderCode(varyingNameGSout, VaryingSeg, GEOMETRY);
-		//WriteToShaderCode(varyingDeclGSE, MainGeomSeg, GEOMETRY);
+		//write it in the main geom seg. The floats are ok but the gl_position isn't if you write them in the main seg
+		WriteToShaderCode(varyingDeclGSE, MainGeomSeg, GEOMETRY);
 	}
 
 	//you will always retrieve a varying from the Geometry shader to the fragment no matter what

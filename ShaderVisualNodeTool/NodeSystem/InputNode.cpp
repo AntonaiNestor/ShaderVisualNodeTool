@@ -35,7 +35,9 @@ InputNode::InputNode(InputNodeInformation nodeInfo)
 
 	auto graph = Graph::getInstance();
 	Type = BaseNodeType::InputnodeT;
+	//Currshadertype will be something to be included from the nodeinfo
 	inputType = InputNodeType(nodeInfo.InitInputType);
+	CurrShaderType = nodeInfo.ShaderType;
 	UniqueID = graph->AssignID();
 	
 	HasCompiled = false;
@@ -132,8 +134,10 @@ void InputNode::Compile(std::shared_ptr<Node> root) {
 	//Vertex Attributes : SPECIAL CASE
 	else if (inputType == AttributeVariable){
 
-		//do nothing in regards of writing a declaration of the variable
-		// We also know that this will execute uniquely for the VS. It CANNOT run for anything else
+		//If this is an attribute value of some shader, I need to assign the declaration to the output value name.
+		//The output value is name what is written on the Json file and the user sees and here it will be assigned
+		// the appropriate value 
+		// 
 
 		//TODO INTERACE BLOCKS
 		//The varying maybe should be done with interface blocks.
@@ -151,72 +155,81 @@ void InputNode::Compile(std::shared_ptr<Node> root) {
 				name = Manager->AssignUniqueName(name, slotName);
 				
 
-				std::string VSattrDecl;
+				std::string AttribDeclaration;
 
 				//if the output is connected to a type of shader that is greater than VERTEX, Input nodes do not have a specific shadertype.
 				// They either write to whatever the connected node is or to all or special cases likes this
 
 				//TODO : When we have multiple outs, then I will need to check all of the connected node types
-				if (Output[i].ConnectedNode->CurrShaderType > VERTEX){
+				// The output value will need to possibly create a varying variable to be passed to the next node.
+				//Also I need to consider the error when you connect a geometry attribute to a vertex shader. That should through an error (it will automatically)
+				
+				//Case of varying creation
+				if (Output[i].ConnectedNode->CurrShaderType > CurrShaderType){
 
 					//These attributes are always handled in the vertex shader so prefix is always "v"
-					std::string prefName = "v" + name;
+					//Edit : this will put the correct prefix depending on the shadertype 
+					std::string prefName = Manager->GetShaderPrefix(ShaderType(CurrShaderType),true) + name;
 
-					//depending on the variable name, write the appropriate match between the varying and the attribute
-					//Hardcoded , maybe there is a way to detach this from here?
-					//Also there might be more attributes in the future
-					//Attribute names are hardcoded as well e.g aPos;
-					switch (i) {
-						case (0):
-							VSattrDecl = prefName + DeclareAttribute(i, ShaderType(CurrShaderType));// " = aPos ;";
-							break;
-						case(1):
-							VSattrDecl = prefName + " = aNormal ;";
-							break;
-						case(2):
-							VSattrDecl = prefName + " = aTexCoords;";
-							break;
-						case(3):
-							VSattrDecl = prefName + " = aTangents;";
-							break;
-						case(4):
-							VSattrDecl = prefName + " = aBitangents;";
-							break;
-						default:
-							VSattrDecl = prefName + " = aPos ;";
-							break;
-					}
+					AttribDeclaration = prefName + DeclareAttribute(i, ShaderType(CurrShaderType));
+					//switch (i) {
+					//	case (0):
+					//		VSattrDecl = prefName + DeclareAttribute(i, ShaderType(CurrShaderType));// " = aPos ;";
+					//		break;
+					//	case(1):
+					//		VSattrDecl = prefName + " = aNormal ;";
+					//		break;
+					//	case(2):
+					//		VSattrDecl = prefName + " = aTexCoords;";
+					//		break;
+					//	case(3):
+					//		VSattrDecl = prefName + " = aTangents;";
+					//		break;
+					//	case(4):
+					//		VSattrDecl = prefName + " = aBitangents;";
+					//		break;
+					//	default:
+					//		VSattrDecl = prefName + " = aPos ;";
+					//		break;
+					//}
 
-					dynamic_cast<OutputNode&>(*root).CreateVaryingPipeline(VERTEX,util::GetStringValueType(outputType, false),name,VSattrDecl);
+					//this handles the varying name declarations on top of the shaders as well as writing to the current shader the attribute declaration. 
+					//Not even sure why the geometry shader attributes would be used in the fragment shader but w/e
+					dynamic_cast<OutputNode&>(*root).CreateVaryingPipeline(ShaderType(CurrShaderType),util::GetStringValueType(outputType, false),name, AttribDeclaration);
 
-				
-				
-				
 				}
-				//if the attribute is connected to a vertexshader execution node then do not have a prefix. Just write the name 
+				//if the attribute is connected to the same shadertype then do not have a prefix. Just write the name 
 				// However since this is isn't a varying anymore we need to declare the valuetype as well
-				else {
-					switch (i) {
+				else if (Output[i].ConnectedNode->CurrShaderType == CurrShaderType) {
+					AttribDeclaration = util::GetStringValueType(outputType, false) + name + DeclareAttribute(i, ShaderType(CurrShaderType));
+
+					//TODO FIX THIS ISSUE PLEASE. THIS IS SO UGLY. why do I even need another main segment for the geometry again? I do not seem to use it
+					if (ShaderType(CurrShaderType) == VERTEX)
+						dynamic_cast<OutputNode&>(*root).WriteToShaderCode(AttribDeclaration, MainSeg, VERTEX);
+					else if (ShaderType(CurrShaderType)==GEOMETRY)
+						dynamic_cast<OutputNode&>(*root).WriteToShaderCode(AttribDeclaration, MainGeomSeg ,GEOMETRY);
+
+					/*switch (i) {
 					case (0):
-						VSattrDecl = util::GetStringValueType(outputType, false) +  name + " = aPos ;";
+						AttribDeclaration = util::GetStringValueType(outputType, false) +  name + " = aPos ;";
 						break;
 					case(1):
-						VSattrDecl = util::GetStringValueType(outputType, false) + name + " = aNormal ;";
+						AttribDeclaration = util::GetStringValueType(outputType, false) + name + " = aNormal ;";
 						break;
 					case(2):
-						VSattrDecl = util::GetStringValueType(outputType, false) + name + " = aTexCoords;";
+						AttribDeclaration = util::GetStringValueType(outputType, false) + name + " = aTexCoords;";
 						break;
 					case(3):
-						VSattrDecl = util::GetStringValueType(outputType, false) + name + " = aTangents;";
+						AttribDeclaration = util::GetStringValueType(outputType, false) + name + " = aTangents;";
 						break;
 					case(4):
-						VSattrDecl = util::GetStringValueType(outputType, false) + name + " = aBitangents;";
+						AttribDeclaration = util::GetStringValueType(outputType, false) + name + " = aBitangents;";
 						break;
 					default:
-						VSattrDecl = util::GetStringValueType(outputType, false) + name + " = aPos ;";
+						AttribDeclaration = util::GetStringValueType(outputType, false) + name + " = aPos ;";
 						break;
-					}
-					dynamic_cast<OutputNode&>(*root).WriteToShaderCode(VSattrDecl, MainSeg, VERTEX);
+					}*/
+				
 				}
 
 			}
@@ -484,22 +497,64 @@ void InputNode::EditUniform()
 
 std::string InputNode::DeclareAttribute(int index, ShaderType type)
 {
+
+	//TODO Insert here checks for index and type mismatch :
+
+
 	//5 cases of types. Each type has only a certain amount of attributes
 	switch (type) {
+		//vertex has 5 attributes for now. 
 	case(VERTEX): {
-	
-	}
+		switch (index) {
+		case (0):
+			return  " = aPos ;";
+			break;
+		case(1):
+			return  " = aNormal ;";
+			break;
+		case(2):
+			return  " = aTexCoords;";
+			break;
+		case(3):
+			return  " = aTangents;";
+			break;
+		case(4):
+			return  " = aBitangents;";
+			break;
+		default:
+			return  " = aPos ;";
+			break;
+		}
+
 		break;
+	}
 
 	case(GEOMETRY): {
-	
-	}
+		switch (index) {
+		case (0):
+			return  " = gl_in[i].gl_Position ;";
+			break;
+		case(1):
+			return  " = gl_InvocationID ;";
+			break;
+		case(2):
+			return  " =  gl_PrimitiveIDIn ;";
+			break;
+		case(3):
+			return  " = gl_in[i].gl_PointSize ;";
+			break;
+		default:
+			return  " ";
+			break;
+
+
+		}
 		break;
 
+	}
 	default:
 		break;
 	}
-
 }
 
 

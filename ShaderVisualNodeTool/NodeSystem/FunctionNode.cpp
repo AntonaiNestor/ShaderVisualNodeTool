@@ -133,7 +133,7 @@ void FunctionNode::Compile(std::shared_ptr<Node> root)
 
 			//For function nodes, if the shadertype is not the same OR for input nodes if it is attribute variable
 			auto tempP = Input.at(i).ConnectedNode;
-			if ((tempP->Type == InputnodeT && dynamic_cast<InputNode&>(*tempP).inputType==AttributeVariable && CurrShaderType>VERTEX)
+			if ((tempP->Type == InputnodeT && dynamic_cast<InputNode&>(*tempP).inputType==AttributeVariable && tempP->CurrShaderType<CurrShaderType)
 				|| (tempP->Type == FunctionnodeT && tempP->CurrShaderType<CurrShaderType)) {
 				shaderNamePrefix = Manager->GetShaderPrefix( ShaderType(CurrShaderType), true);
 				

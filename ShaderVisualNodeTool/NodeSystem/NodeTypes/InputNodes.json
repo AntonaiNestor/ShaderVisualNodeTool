@@ -4,6 +4,7 @@
       "NodeType": "Input Node",
       "InitVariableType": "Constant",
       "Name": "Float",
+      "ShaderType": "Default",
       "Slots": [
         {
           "SlotName": "FloatVar",
@@ -15,6 +16,7 @@
       "NodeType": "Input Node",
       "InitVariableType": "Constant",
       "Name": "Int",
+      "ShaderType": "Default",
       "Slots": [
         {
           "SlotName": "IntVar",
@@ -26,6 +28,7 @@
       "NodeType": "Input Node",
       "InitVariableType": "Constant",
       "Name": "Vec2",
+      "ShaderType": "Default",
       "Slots": [
         {
           "SlotName": "Vec2Var",
@@ -37,6 +40,7 @@
       "NodeType": "Input Node",
       "InitVariableType": "Constant",
       "Name": "Vec3",
+      "ShaderType": "Default",
       "Slots": [
         {
           "SlotName": "Vec3Var",
@@ -48,6 +52,7 @@
       "NodeType": "Input Node",
       "InitVariableType": "Constant",
       "Name": "Vec4",
+      "ShaderType": "Default",
       "Slots": [
         {
           "SlotName": "Vec4Var",
@@ -59,6 +64,7 @@
       "NodeType": "Input Node",
       "InitVariableType": "Constant",
       "Name": "Mat4",
+      "ShaderType": "Default",
       "Slots": [
         {
           "SlotName": "Mat4Var",
@@ -69,7 +75,8 @@
     {
       "NodeType": "Input Node",
       "InitVariableType": "Attribute",
-      "Name": "Attributes",
+      "Name": "VertexAttributes",
+      "ShaderType": "Vertex",
       "Slots": [
         {
           "SlotName": "Pos",
@@ -87,8 +94,29 @@
     },
     {
       "NodeType": "Input Node",
+      "InitVariableType": "Attribute",
+      "Name": "GeometryAttributes",
+      "ShaderType": "Geometry",
+      "Slots": [
+        {
+          "SlotName": "VertexIPosition",
+          "VariableType": "vec4"
+        },
+        {
+          "SlotName": "PrimitiveID",
+          "VariableType": "float"
+        },
+        {
+          "SlotName": "InvocationID",
+          "VariableType": "float"
+        }
+      ]
+    },
+    {
+      "NodeType": "Input Node",
       "InitVariableType": "TransformationMatrix",
       "Name": "TransformationMatrix",
+      "ShaderType": "Default",
       "Slots": [
         {
           "SlotName": "Model",

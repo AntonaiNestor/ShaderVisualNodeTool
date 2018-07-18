@@ -54,14 +54,17 @@ struct Connection {
 	std::string Name;
 
 	//template<typename T> value;
-	Datatype Value; // This will be Type or Symbol, should it be in the connection though?
+	Datatype Value; 
 	bool Enabled; //Enabled /disable connection
 	
 	//there is an issue with this in regards to initialising or reseting the  default value
 	// Node class doesn't node the default
 	Connection() { ConnectedNode = nullptr; ConnectionIndex = -1; Enabled = true;  }
 	//Connection(std::string name , ValueTyPE)
+	
+	//this clears the connection only from this side, not for the connected node
 	void ResetConnection() { ConnectedNode = nullptr; ConnectionIndex = -1; Enabled = true; }
+	
 };
 
 

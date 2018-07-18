@@ -26,6 +26,7 @@ struct InputNodeInformation {
 	std::vector<std::string> SlotNames;
 	std::vector<ValueType> VarTypes;
 	int InitInputType;
+	int ShaderType;
 };
 
 struct FunctionNodeInformation {

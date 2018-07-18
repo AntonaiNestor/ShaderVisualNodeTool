@@ -261,6 +261,14 @@ void Graph::ReadNodeTypes(std::string FilePath)
 				}
 			}
 
+			tempInput.ShaderType = -1;
+			std::string st = objectRead["ShaderType"];
+			for (int i = 0; i < 5 ;i ++) {
+				if (st.compare(ShaderTypes[i]) == 0) {
+					tempInput.ShaderType = i;
+					break;
+				}
+			}
 
 			//Slots
 			auto slots = objectRead["Slots"];
