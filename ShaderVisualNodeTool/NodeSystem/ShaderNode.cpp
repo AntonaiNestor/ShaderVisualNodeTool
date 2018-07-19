@@ -68,7 +68,7 @@ void ShaderNode::Compile(std::shared_ptr<Node> root)
 
 			auto tempP = Input.at(i).ConnectedNode;
 			//if it 
-			if ((tempP->Type == InputnodeT && dynamic_cast<InputNode&>(*tempP).inputType == AttributeVariable && CurrShaderType>VERTEX)
+			if ((tempP->Type == InputnodeT && dynamic_cast<InputNode&>(*tempP).inputType == AttributeVariable && CurrShaderType>tempP->CurrShaderType)
 				|| (tempP->Type == FunctionnodeT && tempP->CurrShaderType<CurrShaderType)) {
 
 				shaderNamePrefix = Manager->GetShaderPrefix(ShaderType(CurrShaderType), true);

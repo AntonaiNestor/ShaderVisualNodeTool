@@ -4,6 +4,8 @@
 #include "../NodeSystem/OutputNode.h"
 #include "../NodeSystem/FunctionNode.h"
 #include "../NodeSystem/TimeNode.h"
+#include "../NodeSystem/ArrayIndex.h"
+
 #include <iostream>
 
 
@@ -62,17 +64,24 @@ void GUIManager::CreateNode(ImVec2 pos, BaseNodeType type , std::string Name)
 		break;
 	}
 	case (OutputnodeT):{
-		//std::string OutCode = "FragColor = vec4 ($r , $g, $b, $a );"; 
-		//std::string OutCode = "FragColor = $color;";
+		
 		auto nodeInfo = Graph::getInstance()->ShaderNodes[Name];
 		newGraphNode = std::make_shared<class::OutputNode>(nodeInfo);
 		break;
 	}
 	case (FunctionnodeT):{
 		
-		auto nodeInfo = Graph::getInstance()->FunctionNodes[Name];
-		newGraphNode = std::make_shared<class::FunctionNode>(nodeInfo);
-		break;
+		if (Name.compare("ArrayIndex") == 0) {
+			auto nodeInfo = Graph::getInstance()->FunctionNodes[Name];
+			newGraphNode = std::make_shared<class::ArrayIndex>(nodeInfo);
+			break;
+		}
+		else {
+			auto nodeInfo = Graph::getInstance()->FunctionNodes[Name];
+			newGraphNode = std::make_shared<class::FunctionNode>(nodeInfo);
+			break;
+		}
+		
 	}
 	case (ShadernodeT): {
 

@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="NodeSystem\ArrayIndex.h" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="NodeSystem\FunctionNode.h" />
     <ClInclude Include="GUI\GUIManager.h" />
@@ -47,6 +48,7 @@
     <ClInclude Include="Utility.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="NodeSystem\ArrayIndex.cpp" />
     <ClCompile Include="NodeSystem\FunctionNode.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="GUI\GUIManager.cpp" />

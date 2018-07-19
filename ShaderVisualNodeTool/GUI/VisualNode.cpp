@@ -407,7 +407,7 @@ void VisualNode::DrawInputNode(ImDrawList * drawList, ImVec2 offset)
 				ImGui::SetCursorScreenPos(OutputValPos);
 				ImGui::PushItemWidth(40);
 			
-				if (ImGui::InputInt("", &(GNode->value.i_var), 0.0f, 1.0f, 3)) {
+				if (ImGui::InputInt("", &(GNode->value.i_var), 0.0f, 0.0f, 0)) {
 					if (dynamic_cast<InputNode&>(*GNode).inputType == UniformVariable) { graph->UpdateUniforms(); }
 					else { Manager->ValueChanged = true; }
 				}

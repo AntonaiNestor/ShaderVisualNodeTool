@@ -4,8 +4,6 @@
 layout (triangles) in;
 layout (points, max_vertices = 256) out;
 
-
-
 //EXTREMELY IMPORTANT :: 
 // When I want to pass a per vertex varying from vertex to fragment 
 // Do it Like BELOW:
@@ -14,18 +12,6 @@ layout (points, max_vertices = 256) out;
 // 1 value -> FRAGMENT
 
 //$Varyings$
-
-
-//in VS_OUT {
-// in vec3 vFragPos[];
-//} gs_in[];
-
-//out GS_OUT {
-// out  vec3 gFragPos;
-//} gs_out;
-
-// -$
-//in vec3 FragPos;
 
 
 //Uniforms-Standard
@@ -40,22 +26,14 @@ uniform float time;
 
 // -$
 
-
-
 //$Constants$
 
 // -$
-
-
 
 void main() {    
 
 	//$Main$
 	
-
-	// -$
-
-
 	//Default Pass through shader 
 
 	//Per vertex section
@@ -63,15 +41,11 @@ void main() {
 	//the 3 needs to change according to the primitive list
 	for (int i = 0; i < 3 ; i ++)
 	{
-		//gFragPos = vFragPos[i]; 
-	    gl_Position = gl_in[i].gl_Position;
-
+		 gl_Position = gl_in[i].gl_Position;
 		
 		//$MainGeom$
 	
-
 		// -$
-
 
 		EmitVertex();
 	}

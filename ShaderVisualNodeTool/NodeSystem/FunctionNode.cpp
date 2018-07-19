@@ -3,6 +3,8 @@
 #include "InputNode.h"
 
 
+FunctionNode::FunctionNode()
+{}
 //std::string NodeName,std::vector<SlotInformation> slots,std::string functionCode
 
 FunctionNode::FunctionNode(FunctionNodeInformation nodeInfo)
@@ -129,11 +131,11 @@ FunctionNode::~FunctionNode()
 void FunctionNode::Compile(std::shared_ptr<Node> root)
 {
 
-	int counter = 0;
+	
 	std::string tempCode = StringCode;
 
 	auto Manager = Graph::getInstance();
-	int found = 0;
+	
 	
 	//go through all inputs and replace in the string code the names of the variables
 	for (int i = 0; i < Input.size();i++) {

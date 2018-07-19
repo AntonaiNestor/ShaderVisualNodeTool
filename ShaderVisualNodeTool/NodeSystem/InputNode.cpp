@@ -188,13 +188,14 @@ void InputNode::Compile(std::shared_ptr<Node> root) {
 					//if the attribute is connected to the same shadertype then do not have a prefix. Just write the name to the appropriate shader
 					// However since this is isn't a varying anymore we need to declare the valuetype as well
 					else if (connectedShaderType == CurrShaderType && !HasBeenWrittenToShader) {
+
 						HasBeenWrittenToShader = true;
 						AttribDeclaration = util::GetStringValueType(outputType, false) + name + DeclareAttribute(outslot, ShaderType(CurrShaderType));
 
 						//TODO FIX THIS ISSUE PLEASE. THIS IS SO UGLY. why do I even need another main segment for the geometry again? I do not seem to use it
 						if (ShaderType(CurrShaderType) == VERTEX)
 							dynamic_cast<OutputNode&>(*root).WriteToShaderCode(AttribDeclaration, MainSeg, VERTEX);
-						else if (ShaderType(CurrShaderType) == GEOMETRY)
+						else if (ShaderType(CurrShaderType) == GEOMETRY && connID!=0)
 							dynamic_cast<OutputNode&>(*root).WriteToShaderCode(AttribDeclaration, MainGeomSeg, GEOMETRY);
 
 						
@@ -524,7 +525,7 @@ std::string InputNode::DeclareAttribute(int index, ShaderType type)
 	case(GEOMETRY): {
 		switch (index) {
 		case (0):
-			return  " = gl_in[i].gl_Position ;";
+			return  "  = gl_in[i].gl_Position ;";
 			break;
 		case(1):
 			return  " = gl_InvocationID ;";

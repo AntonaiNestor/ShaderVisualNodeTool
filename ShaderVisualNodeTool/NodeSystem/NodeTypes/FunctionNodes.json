@@ -537,7 +537,38 @@
         "vec4 ExplodePos = $Position + vec4(ExplDir, 0.0);"
       ]
 
+    },
+    {
+      "NodeType": "Function Node",
+      "Name": "ArrayIndex",
+      "AvailableShaders": [
+        "Geometry"
+      ],
+      "Slots": [
+        {
+          "SlotType": "Input",
+          "SlotName": "$Array",
+          "VariableType": "vec4"
+        },
+        {
+          "SlotType": "Input",
+          "SlotName": "$Index",
+          "VariableType": "int"
+        },
+        {
+          "SlotType": "Output",
+          "SlotName": "ArrayIndex",
+          "VariableType": "vec4"
+        }
+      ],
+      "Code": [
+
+        "vec4 ArrayIndex = $Array  ;"
+
+      ]
+
     }
+
 
 
   ]

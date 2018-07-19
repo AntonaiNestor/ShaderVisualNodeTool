@@ -99,7 +99,7 @@
       "ShaderType": "Geometry",
       "Slots": [
         {
-          "SlotName": "VertexIPosition",
+          "SlotName": "gl_in[i].gl_Position ",
           "VariableType": "vec4"
         },
         {
