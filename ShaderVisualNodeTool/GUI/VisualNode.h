@@ -16,7 +16,7 @@ class GUIManager;
 struct ConnectionVCoords {
 
 	ImVec2 SlotCoords;
-	ConnectionVCoords* conn;
+	std::vector<ConnectionVCoords*> conn;
 	//ImVec2 ConnectedCoords;
 	bool connected;
 	bool drawn;
@@ -24,6 +24,8 @@ struct ConnectionVCoords {
 	//methods
 	ConnectionVCoords();
 	void SetCoords(ImVec2 slot, ConnectionVCoords* conNode);
+	void AddCoords(ImVec2 slot, ConnectionVCoords* conNode);
+	void RemoveCoords(ConnectionVCoords* conNode);
 	void UpdateConnection(ImVec2 dif);
 	void ResetConnection();
 };

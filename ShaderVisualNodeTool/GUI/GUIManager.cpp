@@ -129,17 +129,26 @@ void GUIManager::RenderDrawing(ImDrawList* drawlist)
 
 				 //first remove whatever connection existed already in both old slots
 				 
-				 if (StartNode->vInputs.at(StartIndex).conn != nullptr) {
+				/* if (StartNode->vInputs.at(StartIndex).conn != nullptr) {
 					 StartNode->vInputs.at(StartIndex).conn->ResetConnection();
-				 }
+				 }*/
 				 
-				 if (EndNode->vOutputs.at(EndIndex).conn != nullptr) {
+				/* if (EndNode->vOutputs.at(EndIndex).conn != nullptr) {
 					 EndNode->vOutputs.at(EndIndex).conn->ResetConnection();
+				 }*/
+
+				 if (!StartNode->vInputs.at(StartIndex).conn.empty()) {
+					 //Clear the slot of the other output slot
+
+					 StartNode->vInputs.at(StartIndex).conn.at(0)->RemoveCoords(&(StartNode->vInputs.at(StartIndex)));
+					 StartNode->vInputs.at(StartIndex).ResetConnection();
+					 // I do not need to clear this , it will be replaced
 				 }
+
 				 //and then put the new connection
 
-				 StartNode->vInputs.at(StartIndex).SetCoords(InitDrawingPos,&EndNode->vOutputs.at(EndIndex));
-				 EndNode->vOutputs.at(EndIndex).SetCoords(EndDrawingPos,&StartNode->vInputs.at(StartIndex));
+				 StartNode->vInputs.at(StartIndex).AddCoords(InitDrawingPos,&EndNode->vOutputs.at(EndIndex));
+				 EndNode->vOutputs.at(EndIndex).AddCoords(EndDrawingPos,&StartNode->vInputs.at(StartIndex));
 
 
 				 //Graph Node
@@ -151,16 +160,21 @@ void GUIManager::RenderDrawing(ImDrawList* drawlist)
 				 StartNode->GNode->Output.at(StartIndex).VariableType == EndNode->GNode->Input.at(EndIndex).VariableType){
 
 
-				 //TODO HERE : i have to allow for a list for output -> input
-				 if (EndNode->vInputs.at(EndIndex).conn != nullptr) {
-					 EndNode->vInputs.at(EndIndex).conn->ResetConnection();
+				 //if the input node we are trying to connect to has a connection already
+				 //remove that
+				 if (!EndNode->vInputs.at(EndIndex).conn.empty()) {
+					 //Clear the slot of the other output slot
+				
+					 EndNode->vInputs.at(EndIndex).conn.at(0)->RemoveCoords(&(EndNode->vInputs.at(EndIndex)));
+					 EndNode->vInputs.at(EndIndex).ResetConnection();
+					 // I do not need to clear this , it will be replaced
 				 }
-				 if (StartNode->vOutputs.at(StartIndex).conn != nullptr) {
+				/* if (StartNode->vOutputs.at(StartIndex).conn != nullptr) {
 					 StartNode->vOutputs.at(StartIndex).conn->ResetConnection();
-				 }
+				 }*/
 
-				 StartNode->vOutputs.at(StartIndex).SetCoords(InitDrawingPos, &EndNode->vInputs.at(EndIndex));
-				 EndNode->vInputs.at(EndIndex).SetCoords(EndDrawingPos, &StartNode->vOutputs.at(StartIndex));
+				 StartNode->vOutputs.at(StartIndex).AddCoords(InitDrawingPos, &EndNode->vInputs.at(EndIndex));
+				 EndNode->vInputs.at(EndIndex).AddCoords(EndDrawingPos, &StartNode->vOutputs.at(StartIndex));
 			//	 StartNode->GNode->ConnectNode(EndNode->GNode->shared_from_this(), EndIndex, StartIndex);
 				 Graph::getInstance()->CreateConnectionOutIn(StartNode->GNode->shared_from_this(), EndNode->GNode, StartIndex, EndIndex);
 			 }
@@ -181,12 +195,12 @@ void GUIManager::RenderDrawing(ImDrawList* drawlist)
 					 int previousEndIndex = x.ConnectionIndex;
 					
 					 Graph::getInstance()->RemoveConnection(previousEndNode,StartNode->GNode,previousEndIndex, StartIndex);
-					 StartNode->vInputs.at(StartIndex).conn->ResetConnection();
+					 StartNode->vInputs.at(StartIndex).conn.at(0)->RemoveCoords(&(StartNode->vInputs.at(StartIndex)));
 					 StartNode->vInputs.at(StartIndex).ResetConnection();
 					 
 				 }
 			 }
-			 else if (StartSlotType == Output) {
+			/* else if (StartSlotType == Output) {
 				 if (StartNode->vOutputs.at(StartIndex).connected){
 
 					 auto x = StartNode->GNode->Output.at(StartIndex);
@@ -198,7 +212,7 @@ void GUIManager::RenderDrawing(ImDrawList* drawlist)
 					 StartNode->vOutputs.at(StartIndex).conn->ResetConnection();
 					 StartNode->vOutputs.at(StartIndex).ResetConnection();
 				 }
-			 }
+			 }*/
 			
 		 }
 		 ResetGUITempInfo();
@@ -215,8 +229,8 @@ void GUIManager::RenderDrawing(ImDrawList* drawlist)
 void GUIManager::SetupGUI(GLFWwindow* window)
 {
 	// NodeView Panel position and size
-	NodeViewPos = ImVec2(500, 200);
-	NodeViewSize = ImVec2(800, 600);
+	NodeViewPos = ImVec2(100, 100);
+	NodeViewSize = ImVec2(1200, 900);
 
 	// Setup ImGui binding
 	
