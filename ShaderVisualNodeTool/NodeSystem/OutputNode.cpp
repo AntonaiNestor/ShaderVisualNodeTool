@@ -41,58 +41,105 @@ OutputNode::OutputNode(ShaderNodeInformation nodeInfo)
 
 	for (auto slot : nodeInfo.Slots) {
 
-		Connection newConnection;
-
-		newConnection.Name = slot.Name;
-		newConnection.VariableType = slot.VarType;
-
-
-		//The value init here might be wrong. These are special cases. The default code will handle everything
-		switch (slot.VarType) {
-
-		case (Bool): {
-			newConnection.Value.b_var = graph->DefaultBool;
-			break;
-		}
-		case(Float): {
-			newConnection.Value.f_var = { graph->DefaultFloat };
-			break;
-		}
-		case(Int): {
-			newConnection.Value.i_var = { graph->DefaultInt };
-			break;
-		}
-		case(Vec2): {
-			newConnection.Value.vec2_var = { graph->DefaultVec2 };
-			break;
-
-		}
-		case(Vec3): {
-			newConnection.Value.vec3_var = { graph->DefaultVec3 };
-			break;
-
-		}
-		case(Vec4): {
-			newConnection.Value.vec4_var = { graph->DefaultVec4 };
-			break;
-
-		}
-		case(Mat4): {
-			newConnection.Value.mat4_var = { graph->DefaultMat4 };
-			break;
-		}
-
-		default:
-
-			break;
-		}
+		
 
 		//Input slot
 		if (!slot.SlotType) {
+			InputConnection newConnection;
+
+			newConnection.Name = slot.Name;
+			newConnection.VariableType = slot.VarType;
+
+
+			//The value init here might be wrong. These are special cases. The default code will handle everything
+			switch (slot.VarType) {
+
+			case (Bool): {
+				newConnection.Value.b_var = graph->DefaultBool;
+				break;
+			}
+			case(Float): {
+				newConnection.Value.f_var = { graph->DefaultFloat };
+				break;
+			}
+			case(Int): {
+				newConnection.Value.i_var = { graph->DefaultInt };
+				break;
+			}
+			case(Vec2): {
+				newConnection.Value.vec2_var = { graph->DefaultVec2 };
+				break;
+
+			}
+			case(Vec3): {
+				newConnection.Value.vec3_var = { graph->DefaultVec3 };
+				break;
+
+			}
+			case(Vec4): {
+				newConnection.Value.vec4_var = { graph->DefaultVec4 };
+				break;
+
+			}
+			case(Mat4): {
+				newConnection.Value.mat4_var = { graph->DefaultMat4 };
+				break;
+			}
+
+			default:
+
+				break;
+			}
+
 			Input.push_back(newConnection);
 		}
 		//Output Slot
 		else {
+			OutputConnection newConnection;
+
+			newConnection.Name = slot.Name;
+			newConnection.VariableType = slot.VarType;
+
+
+			//The value init here might be wrong. These are special cases. The default code will handle everything
+			switch (slot.VarType) {
+
+			case (Bool): {
+				newConnection.Value.b_var = graph->DefaultBool;
+				break;
+			}
+			case(Float): {
+				newConnection.Value.f_var = { graph->DefaultFloat };
+				break;
+			}
+			case(Int): {
+				newConnection.Value.i_var = { graph->DefaultInt };
+				break;
+			}
+			case(Vec2): {
+				newConnection.Value.vec2_var = { graph->DefaultVec2 };
+				break;
+
+			}
+			case(Vec3): {
+				newConnection.Value.vec3_var = { graph->DefaultVec3 };
+				break;
+
+			}
+			case(Vec4): {
+				newConnection.Value.vec4_var = { graph->DefaultVec4 };
+				break;
+
+			}
+			case(Mat4): {
+				newConnection.Value.mat4_var = { graph->DefaultMat4 };
+				break;
+			}
+
+			default:
+
+				break;
+			}
 			Output.push_back(newConnection);
 		}
 	}

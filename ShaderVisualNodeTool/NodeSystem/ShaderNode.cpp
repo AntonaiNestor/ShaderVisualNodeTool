@@ -18,11 +18,7 @@ ShaderNode::ShaderNode(ShaderNodeInformation nodeInfo)
 	//slot creation 
 	for (auto slot : nodeInfo.Slots) {
 
-		Connection newConnection;
-
-		newConnection.Name = slot.Name;
-		newConnection.VariableType = slot.VarType;
-
+		
 
 		////The value init here might be wrong. These are special cases. 
 		////The default code will handle everything
@@ -30,10 +26,20 @@ ShaderNode::ShaderNode(ShaderNodeInformation nodeInfo)
 
 		//Input slot
 		if (!slot.SlotType) {
+			InputConnection newConnection;
+
+			newConnection.Name = slot.Name;
+			newConnection.VariableType = slot.VarType;
+
 			Input.push_back(newConnection);
 		}
 		//Output Slot
 		else {
+			OutputConnection newConnection;
+
+			newConnection.Name = slot.Name;
+			newConnection.VariableType = slot.VarType;
+
 			Output.push_back(newConnection);
 		}
 	}

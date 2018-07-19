@@ -16,14 +16,12 @@ InputNode::InputNode()
 
 
 	//output struct creation
-	Connection connect;
-	
-	//connect.Value = 1.0f;
+	OutputConnection connect;
 	connect.VariableType = Float;
 	connect.Name = "FloatVar";
 
 	Output.push_back(connect);
-	//Input.push_back(connect);
+	
 
 
 }
@@ -34,8 +32,8 @@ InputNode::InputNode(InputNodeInformation nodeInfo)
 {
 
 	auto graph = Graph::getInstance();
+
 	Type = BaseNodeType::InputnodeT;
-	//Currshadertype will be something to be included from the nodeinfo
 	inputType = InputNodeType(nodeInfo.InitInputType);
 	CurrShaderType = nodeInfo.ShaderType;
 	UniqueID = graph->AssignID();
@@ -43,13 +41,13 @@ InputNode::InputNode(InputNodeInformation nodeInfo)
 	HasCompiled = false;
 	Name = nodeInfo.Name;
 	
-	//output  slots
-	for (int i = 0 ; i<nodeInfo.SlotNames.size();i++){
+	//output  slots only is a given
+	for (int i = 0 ; i < nodeInfo.SlotNames.size(); i++){
 
 		//output struct creation
-		Connection connect;
-		connect.ConnectedNode = nullptr;
-		connect.ConnectionIndex = -1;
+		OutputConnection connect;
+		//connect.ConnectedNode = nullptr;
+		//connect.ConnectionIndex = -1;
 		connect.VariableType = nodeInfo.VarTypes[i];
 		connect.Enabled = true;
 		connect.Name = nodeInfo.SlotNames[i];
@@ -105,6 +103,7 @@ InputNode::InputNode(InputNodeInformation nodeInfo)
 				break;
 			}
 		}
+		//connection with empty lists on connected nodes and indices
 		Output.push_back(connect);
 	
 	}
@@ -143,96 +142,70 @@ void InputNode::Compile(std::shared_ptr<Node> root) {
 		//The varying maybe should be done with interface blocks.
 
 		//Go through all outputs of the attributes and create the necessary name declarations as varyings or not 
-		for (int i = 0; i < Output.size(); i++) {
+		for (int outslot = 0; outslot < Output.size(); outslot++) {
 			
-			if (Output[i].ConnectedNode!=nullptr)
-			{
-				//Assign unique name for this slot output
-				std::string name = Output.at(i).Name;
-				std::string slotName = std::to_string(this->UniqueID) + "->" + std::to_string(i);
-				ValueType outputType = Output.at(i).VariableType;
-				
-				name = Manager->AssignUniqueName(name, slotName);
-				
+			if (!Output[outslot].ConnectedNode.empty()) {
 
+				//Assign unique name for this slot output
+				std::string name = Output.at(outslot).Name;
+				std::string slotName = std::to_string(this->UniqueID) + "->" + std::to_string(outslot);
+				ValueType outputType = Output.at(outslot).VariableType;
+				name = Manager->AssignUniqueName(name, slotName);
 				std::string AttribDeclaration;
 
-				//if the output is connected to a type of shader that is greater than VERTEX, Input nodes do not have a specific shadertype.
-				// They either write to whatever the connected node is or to all or special cases likes this
+				bool HasCreatedVarying = false;
+				bool HasBeenWrittenToShader  = false;
+			
 
-				//TODO : When we have multiple outs, then I will need to check all of the connected node types
-				// The output value will need to possibly create a varying variable to be passed to the next node.
-				//Also I need to consider the error when you connect a geometry attribute to a vertex shader. That should through an error (it will automatically)
+				//for this specific slot, go through all connections
+				for (int connID = 0; connID < Output[outslot].ConnectedNode.size(); connID++) {
 				
-				//Case of varying creation
-				if (Output[i].ConnectedNode->CurrShaderType > CurrShaderType){
+					//Redundant check for null
 
-					//These attributes are always handled in the vertex shader so prefix is always "v"
-					//Edit : this will put the correct prefix depending on the shadertype 
-					std::string prefName = Manager->GetShaderPrefix(ShaderType(CurrShaderType),true) + name;
+					//if the output is connected to a type of shader that is greater than VERTEX, Input nodes do not have a specific shadertype.
+					// They either write to whatever the connected node is or to all or special cases likes this
 
-					AttribDeclaration = prefName + DeclareAttribute(i, ShaderType(CurrShaderType));
-					//switch (i) {
-					//	case (0):
-					//		VSattrDecl = prefName + DeclareAttribute(i, ShaderType(CurrShaderType));// " = aPos ;";
-					//		break;
-					//	case(1):
-					//		VSattrDecl = prefName + " = aNormal ;";
-					//		break;
-					//	case(2):
-					//		VSattrDecl = prefName + " = aTexCoords;";
-					//		break;
-					//	case(3):
-					//		VSattrDecl = prefName + " = aTangents;";
-					//		break;
-					//	case(4):
-					//		VSattrDecl = prefName + " = aBitangents;";
-					//		break;
-					//	default:
-					//		VSattrDecl = prefName + " = aPos ;";
-					//		break;
-					//}
+					//Also I need to consider the error when you connect a geometry attribute to a vertex shader. That should through an error (it will automatically)
 
-					//this handles the varying name declarations on top of the shaders as well as writing to the current shader the attribute declaration. 
-					//Not even sure why the geometry shader attributes would be used in the fragment shader but w/e
-					dynamic_cast<OutputNode&>(*root).CreateVaryingPipeline(ShaderType(CurrShaderType),util::GetStringValueType(outputType, false),name, AttribDeclaration);
+					//Case of varying creation
+					int connectedShaderType = Output[outslot].ConnectedNode[connID]->CurrShaderType;
+
+					//This will only create one varying for each output slot if it is needed
+					if (connectedShaderType > CurrShaderType && !HasCreatedVarying) {
+
+						HasCreatedVarying = true;
+
+						//Edit : this will put the correct prefix depending on the shadertype 
+						std::string prefName = Manager->GetShaderPrefix(ShaderType(CurrShaderType), true) + name;
+
+						AttribDeclaration = prefName + DeclareAttribute(outslot, ShaderType(CurrShaderType));
+				
+						//this handles the varying name declarations on top of the shaders as well as writing to the current shader the attribute declaration. 
+						//Not even sure why the geometry shader attributes would be used in the fragment shader but w/e
+						dynamic_cast<OutputNode&>(*root).CreateVaryingPipeline(ShaderType(CurrShaderType), util::GetStringValueType(outputType, false), name, AttribDeclaration);
+
+					}
+					//if the attribute is connected to the same shadertype then do not have a prefix. Just write the name to the appropriate shader
+					// However since this is isn't a varying anymore we need to declare the valuetype as well
+					else if (connectedShaderType == CurrShaderType && !HasBeenWrittenToShader) {
+						HasBeenWrittenToShader = true;
+						AttribDeclaration = util::GetStringValueType(outputType, false) + name + DeclareAttribute(outslot, ShaderType(CurrShaderType));
+
+						//TODO FIX THIS ISSUE PLEASE. THIS IS SO UGLY. why do I even need another main segment for the geometry again? I do not seem to use it
+						if (ShaderType(CurrShaderType) == VERTEX)
+							dynamic_cast<OutputNode&>(*root).WriteToShaderCode(AttribDeclaration, MainSeg, VERTEX);
+						else if (ShaderType(CurrShaderType) == GEOMETRY)
+							dynamic_cast<OutputNode&>(*root).WriteToShaderCode(AttribDeclaration, MainGeomSeg, GEOMETRY);
+
+						
+
+					}
 
 				}
-				//if the attribute is connected to the same shadertype then do not have a prefix. Just write the name 
-				// However since this is isn't a varying anymore we need to declare the valuetype as well
-				else if (Output[i].ConnectedNode->CurrShaderType == CurrShaderType) {
-					AttribDeclaration = util::GetStringValueType(outputType, false) + name + DeclareAttribute(i, ShaderType(CurrShaderType));
 
-					//TODO FIX THIS ISSUE PLEASE. THIS IS SO UGLY. why do I even need another main segment for the geometry again? I do not seem to use it
-					if (ShaderType(CurrShaderType) == VERTEX)
-						dynamic_cast<OutputNode&>(*root).WriteToShaderCode(AttribDeclaration, MainSeg, VERTEX);
-					else if (ShaderType(CurrShaderType)==GEOMETRY)
-						dynamic_cast<OutputNode&>(*root).WriteToShaderCode(AttribDeclaration, MainGeomSeg ,GEOMETRY);
-
-					/*switch (i) {
-					case (0):
-						AttribDeclaration = util::GetStringValueType(outputType, false) +  name + " = aPos ;";
-						break;
-					case(1):
-						AttribDeclaration = util::GetStringValueType(outputType, false) + name + " = aNormal ;";
-						break;
-					case(2):
-						AttribDeclaration = util::GetStringValueType(outputType, false) + name + " = aTexCoords;";
-						break;
-					case(3):
-						AttribDeclaration = util::GetStringValueType(outputType, false) + name + " = aTangents;";
-						break;
-					case(4):
-						AttribDeclaration = util::GetStringValueType(outputType, false) + name + " = aBitangents;";
-						break;
-					default:
-						AttribDeclaration = util::GetStringValueType(outputType, false) + name + " = aPos ;";
-						break;
-					}*/
-				
-				}
 
 			}
+			
 		}
 		
 
@@ -240,8 +213,25 @@ void InputNode::Compile(std::shared_ptr<Node> root) {
 	else if (inputType == ConstantVariable){
 		//Constant nodes will write to the immediate connected node type.
 		// TODO : This must repeat for all connected nodes don't forget
-		ShaderType writeType = ShaderType(Output[0].ConnectedNode->CurrShaderType);
-		dynamic_cast<OutputNode&>(*root).WriteToShaderCode(CodeString(), ConstantSeg, writeType);
+
+		//i know that size is 1 here standard but w/e
+		for (int i = 0; i < Output.size(); i++) {
+			//slot has not written to any type of shader
+			bool HasWrittenToShader[5] = { false,false,false,false,false };
+			for (int j = 0; j < Output[i].ConnectedNode.size(); j++) {
+				
+				ShaderType writeType = ShaderType(Output[i].ConnectedNode[j]->CurrShaderType);
+
+				if (!HasWrittenToShader[writeType]) {
+					dynamic_cast<OutputNode&>(*root).WriteToShaderCode(CodeString(), ConstantSeg, writeType);
+					HasWrittenToShader[writeType] = true;
+				}
+				
+			}
+
+		}
+
+		
 	}
 	// Also unique case but they are UniformMatrices
 	else if (inputType == TransformationMatrix) {
@@ -395,26 +385,26 @@ std::string InputNode::CodeString()
 			break;
 		}
 	}
-	else if (inputType == AttributeVariable) {
+	//else if (inputType == AttributeVariable) {
 
 
-		for (int i = 0; i < Output.size(); i++) {
-			//if the output is connected to something
-			if (Output[i].ConnectedNode != nullptr)
-			{
+	//	for (int i = 0; i < Output.size(); i++) {
+	//		//if the output is connected to something
+	//		if (Output[i].ConnectedNode != nullptr)
+	//		{
 
-				//Put cases here for uniforms and whatnot
+	//			//Put cases here for uniforms and whatnot
 
-				std::string name = Output.at(i).Name;
-				std::string slotName = std::to_string(this->UniqueID) + "->" + std::to_string(i);
-				ValueType outputType = Output.at(i).VariableType;
+	//			std::string name = Output.at(i).Name;
+	//			std::string slotName = std::to_string(this->UniqueID) + "->" + std::to_string(i);
+	//			ValueType outputType = Output.at(i).VariableType;
 
 
-				name = ManagerInstance->AssignUniqueName(name, slotName);
-			}
-		}
-	
-	}
+	//			name = ManagerInstance->AssignUniqueName(name, slotName);
+	//		}
+	//	}
+	//
+	//}
 	
 
 	return StringVal;
@@ -425,6 +415,8 @@ void InputNode::EditUniform()
 	//Program ID , this needs to be passed as a parameter maybe
 	auto ManagerInstance = Graph::getInstance();
 	Shader* program = ManagerInstance->daShader;
+
+	//Careful here in case there is an issue with the names 
 	ValueType outputType = Output.at(0).VariableType;
 	std::string name = Output.at(0).Name;
 	std::string slotName = std::to_string(this->UniqueID) + "->0";

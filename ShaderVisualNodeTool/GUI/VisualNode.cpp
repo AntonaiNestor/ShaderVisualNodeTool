@@ -7,23 +7,52 @@
 //struct implementations
 ConnectionVCoords::ConnectionVCoords()
 {
-	SlotCoords = ImVec2(); conn = nullptr; connected = false; drawn = false;
+	SlotCoords = ImVec2(); 
+	//conn = nullptr; 
+	//SlotCoords.push_back(ImVec2());
+	//conn.push_back(nullptr);
+	connected = false; drawn = false;
 }
 
 void ConnectionVCoords::SetCoords(ImVec2 slot,ConnectionVCoords* conNode)
 {
 	SlotCoords = slot;
-	conn = conNode;
+	conn[0] = conNode;
 	connected = true;
 }
 
+void ConnectionVCoords::AddCoords(ImVec2 slot, ConnectionVCoords * conNode)
+{
+	//adds a pair of coords and pointers to the current 
+	//redundant?
+	SlotCoords = slot;
+	conn.push_back(conNode);
+	connected = true;
+}
+
+void ConnectionVCoords::RemoveCoords(ConnectionVCoords * conNode)
+{
+	for (int i = 0; i < conn.size(); i++) {
+		if (conn.at(i) == conNode) {
+			conn.erase(conn.begin() + i) ;
+
+			if (conn.empty()) connected = false;
+			break; 
+		}
+	}
+}
+
 void ConnectionVCoords::UpdateConnection(ImVec2 dif) {
-	SlotCoords = SlotCoords + dif; 
+
+	
+		SlotCoords = SlotCoords + dif;
+	
+	
 }
 
 void ConnectionVCoords::ResetConnection() {
 
-	SlotCoords = ImVec2(); conn = nullptr; connected = false; drawn = false;
+	SlotCoords = ImVec2();  connected = false; drawn = false; conn.clear();
 }
 
 
@@ -68,14 +97,7 @@ VisualNode::VisualNode(std::shared_ptr<Node> Gnode, ImVec2 position )
 
 	int maxSlotSize = std::max(GNode->Input.size(),GNode->Output.size());
 	VNodeSize = ImVec2(200, 50+ 25 * maxSlotSize);
-	/*if (GNode->Type == OutputNode) {
 
-		VNodeSize = ImVec2(200, 200);
-	}
-
-	else {
-	
-	}*/
 		
 	
 
@@ -136,9 +158,15 @@ void VisualNode::DisplayNode(ImDrawList * drawList,ImVec2 offset)
 		for (int i = 0; i < vOutputs.size(); i++) {
 			//if there is a connection in the graph then draw a line
 			//but i could just check the visual node contents as well. DOUBLE INFORMATION ANTONY
-			if (vOutputs.at(i).connected) {
-				DrawHermite(drawList, vOutputs.at(i).SlotCoords, vOutputs.at(i).conn->SlotCoords, 20);
+
+			auto outCoords = vOutputs.at(i);
+			for (int ConnIndex = 0; ConnIndex < outCoords.conn.size(); ConnIndex++) {
+				//TODO check if connected makes sense here
+
+				//INDICES PROBABLY WRONG HERE but maybe the 1-1 connection is fine
+				DrawHermite(drawList, outCoords.SlotCoords, outCoords.conn[ConnIndex]->SlotCoords, 20);
 			}
+			
 		}
 
 		//Input - Currently not used

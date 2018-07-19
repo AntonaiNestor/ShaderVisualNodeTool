@@ -101,6 +101,7 @@ public:
 
 
 	//adjacency list for nodes
+	//Does not save double info, only which nodes are connected to
 	std::vector<std::vector<int>> AdjacencyList;
 	
 	//Root of the graph

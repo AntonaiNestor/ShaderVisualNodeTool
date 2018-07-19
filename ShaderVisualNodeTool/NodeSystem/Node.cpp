@@ -10,10 +10,20 @@ void Node::ConnectNode(std::shared_ptr<Node> ConnectedNode, int ConnectedIndex, 
 	try {
 
 		//connect this node's output index slot to Node ConnectedNode
+		//Multiple outputs means, that the list of Outputs simply adds a new 
+		//Connection on its list.
 		
-		Output.at(OutputIndex).ConnectedNode = ConnectedNode;
-		Output.at(OutputIndex).ConnectionIndex = ConnectedIndex;
+		//Output.at(OutputIndex).ConnectedNode = ConnectedNode;
+		//Output.at(OutputIndex).ConnectionIndex = ConnectedIndex;
 		
+		/*OutputConnection NewConnection;
+		NewConnection.ConnectedNode = ConnectedNode;
+		NewConnection.ConnectionIndex = ConnectedIndex;*/
+
+		//pushback in the output list of the slot the pointer and the index
+		Output.at(OutputIndex).ConnectedNode.push_back(ConnectedNode);
+		Output.at(OutputIndex).ConnectionIndex.push_back(ConnectedIndex);
+
 
 		//connect ConnectedNode's input index slot with this node's output slot
 		
