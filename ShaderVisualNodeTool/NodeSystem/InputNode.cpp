@@ -1,27 +1,10 @@
 #include "InputNode.h"
 #include "OutputNode.h"
+#include "TextureNode.h"
 #include <iostream>
 
 InputNode::InputNode()
 {
-	//general node attributes
-	Name = "Float";
-	Type = BaseNodeType::InputnodeT;
-	inputType = InputNodeType::ConstantVariable;
-	UniqueID = Graph::getInstance()->AssignID();
-	//varname might be important to check before assigning
-	//varName = "ConstantFloat";
-	//value = DefaultValue;
-	HasCompiled = false;
-
-
-	//output struct creation
-	OutputConnection connect;
-	connect.VariableType = Float;
-	connect.Name = "FloatVar";
-
-	Output.push_back(connect);
-	
 
 
 }
@@ -311,7 +294,7 @@ std::string InputNode::CodeString()
 		}
 
 		case(Sampler2D): {
-			StringVal += "Sampler ";
+			StringVal += "sampler2D " + name + " ;";
 			break;
 
 		}
@@ -370,42 +353,12 @@ std::string InputNode::CodeString()
 			StringVal += "mat4 " + name + "= mat4 (1.0f);";
 			break;
 		}
-
-		case(Sampler2D): {
-			StringVal += "Sampler ";
-			break;
-
-		}
-		case(SamplerCube): {
-			StringVal += "SamplerCube ";
-			break;
-
-		}
 		default:
 
 			break;
 		}
 	}
-	//else if (inputType == AttributeVariable) {
-
-
-	//	for (int i = 0; i < Output.size(); i++) {
-	//		//if the output is connected to something
-	//		if (Output[i].ConnectedNode != nullptr)
-	//		{
-
-	//			//Put cases here for uniforms and whatnot
-
-	//			std::string name = Output.at(i).Name;
-	//			std::string slotName = std::to_string(this->UniqueID) + "->" + std::to_string(i);
-	//			ValueType outputType = Output.at(i).VariableType;
-
-
-	//			name = ManagerInstance->AssignUniqueName(name, slotName);
-	//		}
-	//	}
-	//
-	//}
+	
 	
 
 	return StringVal;
@@ -433,7 +386,6 @@ void InputNode::EditUniform()
 	case(Bool): {
 		//bool value = Output[0].Value.b_var;
 		glUniform1i(uloc,value.b_var);
-		
 		break;
 	}
 
@@ -472,6 +424,8 @@ void InputNode::EditUniform()
 	}
 
 	case(Sampler2D): {
+		//hmmmmmm
+		glUniform1i(uloc, dynamic_cast<TextureNode&>(*this).TextureSlot);
 		break;
 
 	}

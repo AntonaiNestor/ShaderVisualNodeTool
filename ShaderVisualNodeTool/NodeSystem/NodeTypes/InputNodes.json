@@ -99,7 +99,7 @@
       "ShaderType": "Geometry",
       "Slots": [
         {
-          "SlotName": "gl_in[i].gl_Position ",
+          "SlotName": "gl_in[i].gl_Position  ",
           "VariableType": "vec4"
         },
         {
@@ -121,6 +121,18 @@
         {
           "SlotName": "Model",
           "VariableType": "mat4"
+        }
+      ]
+    },
+    {
+      "NodeType": "Input Node",
+      "InitVariableType": "Uniform",
+      "Name": "TextureLoad",
+      "ShaderType": "Default",
+      "Slots": [
+        {
+          "SlotName": "Texture",
+          "VariableType": "sampler2D"
         }
       ]
     }

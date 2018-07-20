@@ -6,12 +6,14 @@
 #include "InputNode.h"
 #include "TimeNode.h"
 #include "OutputNode.h"
+#include "TextureNode.h"
 
 
 Graph::Graph()
 {
 	ID = 0;
 	NameCounter = 0;
+	TextureCounter = 0;
 
 	//populate the vector of string with 5 empty ones
 	
@@ -247,6 +249,11 @@ int Graph::AssignID()
 	return ID++;
 }
 
+unsigned int Graph::AssignTextureID()
+{
+	return TextureCounter++;
+}
+
 std::string Graph::GiveName()
 {
 	return std::to_string(NameCounter++);
@@ -262,7 +269,8 @@ void Graph::AddNode(std::shared_ptr<Node> node) {
 
 
 	//REMOVE FROM HERE
-	if (typeid(*node) == typeid(TimeNode) ){
+	if (typeid(*node) == typeid(TimeNode) ||
+		typeid(*node) == typeid(TextureNode)){
 		UniformNodes.push_back(node);
 	}
 }

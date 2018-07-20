@@ -567,6 +567,36 @@
 
       ]
 
+    },
+    {
+      "NodeType": "Function Node",
+      "Name": "SampleTexture",
+      "AvailableShaders": [
+        "Fragment"
+      ],
+      "Slots": [
+        {
+          "SlotType": "Input",
+          "SlotName": "$Texture",
+          "VariableType": "sampler2D"
+        },
+        {
+          "SlotType": "Input",
+          "SlotName": "$TexCoords",
+          "VariableType": "vec2"
+        },
+        {
+          "SlotType": "Output",
+          "SlotName": "TexColor",
+          "VariableType": "vec4"
+        }
+      ],
+      "Code": [
+
+        "vec4 TexColor = texture( $Texture, $TexCoords) ;"
+
+      ]
+
     }
 
 

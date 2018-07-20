@@ -5,6 +5,7 @@
 #include "../NodeSystem/FunctionNode.h"
 #include "../NodeSystem/TimeNode.h"
 #include "../NodeSystem/ArrayIndex.h"
+#include "../NodeSystem/TextureNode.h"
 
 #include <iostream>
 
@@ -56,11 +57,15 @@ void GUIManager::CreateNode(ImVec2 pos, BaseNodeType type , std::string Name)
 			newGraphNode = std::make_shared<TimeNode>();
 			
 		}
+		else if (Name.compare("TextureLoad")== 0){
+			auto nodeInfo = Graph::getInstance()->InputNodes[Name];
+			newGraphNode = std::make_shared<TextureNode>(nodeInfo);
+		}
 		else {
 			auto nodeInfo = Graph::getInstance()->InputNodes[Name];
 			newGraphNode = std::make_shared<InputNode>(nodeInfo);
 		}
-	
+
 		break;
 	}
 	case (OutputnodeT):{

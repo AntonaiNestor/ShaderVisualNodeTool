@@ -166,10 +166,10 @@ ValueType util::stringToValueType(std::string strVal) {
 	else if (strVal.compare("mat4") == 0) {
 		return ValueType::Mat4;
 	}
-	else if (strVal.compare("Sampler2D") == 0) {
+	else if (strVal.compare("sampler2D") == 0) {
 		return ValueType::Sampler2D;
 	}
-	else if (strVal.compare("SamplerCube") == 0) {
+	else if (strVal.compare("samplerCube") == 0) {
 		return ValueType::SamplerCube;
 	}
 	else {

@@ -17,7 +17,7 @@ layout (location = 4) in vec3 aBitangents;
 
 
 //out vec3 vFragPos;
-
+//out vec2 vTexCoords;
 
 
 // -$
@@ -56,7 +56,7 @@ void main()
 
 
 	//Main - Default
-
+	//vTexCoords= aTexCoords;
     gl_Position = (Projection* View* Model* vec4(aPos, 1.0)) ; 
 	//$MainGeom$
 

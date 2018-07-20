@@ -119,186 +119,7 @@ int main()
 	//LOAD TEXTURE 
 	
 
-	// set up vertex data (and buffer(s)) and configure vertex attributes
-	// ------------------------------------------------------------------
-	//std::vector<float>  verts = {
-	//	-0.5f, -0.5f, 0.0f,  // bottom left
-	//	0.5f, -0.5f, 0.0f,  // bottom right
-	//	-0.5f,  0.5f, 0.0f,   // top left 
-	//	0.5f,  0.5f, 0.0f,  // top right
-	//	
-	//};
-
-	//std::vector<float> verts = {
-	//	
-	//	// front
-	////  |---Position---|-TexCoords-|
-	//	-0.5, -0.5,  0.5, 0.0, 0.0,	 //bot left 
-	//	0.5, -0.5, 0.5, 1.0, 0.0,	// bot right
-	//	0.5,  0.5,  0.5, 1.0, 1.0,	// top right
-	//	-0.5, 0.5, 0.5, 0.0, 1.0,	// top left
-	//	// back
-	//	-0.5, -0.5, -0.5, 1.0, 0.0, //bot left
-	//	0.5, -0.5, -0.5,  0.0, 0.0, // bot right
-	//	0.5,  0.5, -0.5, 0.0, 1.0,//top right
-	//	-0.5,  0.5, -0.5, 1.0, 1.0// top left
-	//
-	//};
-	//std::vector<float> verts = {
-
-
-	//	//  |---Position---|-TexCoords-|
-
-	//	// front bottom left 
-	//	-0.5, -0.5,  0.5, 0.0, 0.0,  //0
-	//	-0.5, -0.5,  0.5, 1.0, 0.0, // 1
-	//	-0.5, -0.5,  0.5, 0.0, 1.0, // 2
-
-	//	//front bot right
-	//	0.5, -0.5, 0.5, 1.0, 0.0,//3	
-	//	0.5, -0.5, 0.5, 0.0, 0.0,//4
-	//	0.5, -0.5, 0.5, 1.0, 1.0,//5
-	//	
-	//	//front top left
-	//	-0.5, 0.5, 0.5, 0.0, 1.0, //6
-	//	-0.5, 0.5, 0.5, 1.0, 1.0, //7
-	//	-0.5, 0.5, 0.5, 0.0, 0.0, //8
-
-
-	//	//front top right
-	//	0.5,  0.5,  0.5, 1.0, 1.0, //9
-	//	0.5,  0.5,  0.5, 0.0, 1.0, //10
-	//	0.5,  0.5,  0.5, 1.0, 0.0, //11
-
-	//	//back bot right
-	//	0.5, -0.5, -0.5,  0.0, 0.0, //12
-	//	0.5, -0.5, -0.5,  1.0, 0.0, //13
-	//	0.5, -0.5, -0.5,  1.0, 0.0, //14
-	//
-	//	// back bot left
-	//	-0.5, -0.5, -0.5, 1.0, 0.0, //15
-	//	-0.5, -0.5, -0.5, 0.0, 0.0, //16
-	//	-0.5, -0.5, -0.5, 0.0, 0.0, //17
-	//	
-	//	//back top left
-	//	-0.5,  0.5, -0.5, 1.0, 1.0, //18
-	//	-0.5,  0.5, -0.5, 0.0, 1.0, //19
-	//	-0.5,  0.5, -0.5, 0.0, 1.0, //20
-
-	//	//back top right
-
-	//	0.5,  0.5, -0.5, 0.0, 1.0, //21
-	//	0.5,  0.5, -0.5, 1.0, 1.0, //22
-	//	0.5,  0.5, -0.5, 1.0, 1.0  //23
-	//};
-
-	/*std::vector<float> verts = {
-		-0.5f, -0.5f, -0.5f,
-		0.5f, -0.5f, -0.5f,
-		0.5f,  0.5f, -0.5f,
-		0.5f,  0.5f, -0.5f,
-		-0.5f,  0.5f, -0.5f,
-		-0.5f, -0.5f, -0.5f,
-
-		-0.5f, -0.5f,  0.5f,
-		0.5f, -0.5f,  0.5f,
-		0.5f,  0.5f,  0.5f,
-		0.5f,  0.5f,  0.5f,
-		-0.5f,  0.5f,  0.5f,
-		-0.5f, -0.5f,  0.5f,
-
-		-0.5f,  0.5f,  0.5f,
-		-0.5f,  0.5f, -0.5f,
-		-0.5f, -0.5f, -0.5f,
-		-0.5f, -0.5f, -0.5f,
-		-0.5f, -0.5f,  0.5f,
-		-0.5f,  0.5f,  0.5f,
-
-		0.5f,  0.5f,  0.5f,
-		0.5f,  0.5f, -0.5f,
-		0.5f, -0.5f, -0.5f,
-		0.5f, -0.5f, -0.5f,
-		0.5f, -0.5f,  0.5f,
-		0.5f,  0.5f,  0.5f,
-
-		-0.5f, -0.5f, -0.5f,
-		0.5f, -0.5f, -0.5f,
-		0.5f, -0.5f,  0.5f,
-		0.5f, -0.5f,  0.5f,
-		-0.5f, -0.5f,  0.5f,
-		-0.5f, -0.5f, -0.5f,
-
-		-0.5f,  0.5f, -0.5f,
-		0.5f,  0.5f, -0.5f,
-		0.5f,  0.5f,  0.5f,
-		0.5f,  0.5f,  0.5f,
-		-0.5f,  0.5f,  0.5f,
-		-0.5f,  0.5f, -0.5f
-	};*/
-	//std::vector<float> normals = {
-
-	//	// front
-	//	0.0, 0.0,  1.0,
-	//	0.5, -0.5, 0.5,
-	//	0.5, 0.5,  0.5,
-	//	-0.5,  0.5,  0.5,
-	//	// back
-	//	-0.5, -0.5, -0.5,
-	//	0.5, -0.5, -0.5,
-	//	0.5,  0.5, -0.5,
-	//	-0.5,  0.5, -0.5,
-
-	//};
-
-
 	
-	//std::vector<unsigned int> indices = {  
-	//	// note that we start from 0
-	//	// front
-	//	0, 1, 2,
-	//	2, 3, 0,
-	//	// top
-	//	1, 5, 6,
-	//	6, 2, 1,
-	//	// back
-	//	7, 6, 5,
-	//	5, 4, 7,
-	//	// bottom
-	//	4, 0, 3,
-	//	3, 7, 4,
-	//	// left
-	//	4, 5, 1,
-	//	1, 0, 4,
-	//	// right
-	//	3, 2, 6,
-	//	6, 7, 3,  
-	//};
-
-	//std::vector<unsigned int> indices = {
-	//	//front 
-	//	0, 3, 6,
-	//	3, 9, 6,
-
-	//	//back
-	//	12,15,21,
-	//	15,18,21,
-
-	//	//left
-	//	16,1,19,
-	//	1,7,19,
-
-	//	//right
-	//	4,13,10,
-	//	13,22,10,
-
-	//	//top
-	//	8,11,20,
-	//	11,23,20,
-	//	//bot
-	//	17,14,2,
-	//	14,5,2
-
-	//}; 
 
 //UNION TESTS
 	utest example = {1.0f};
@@ -314,10 +135,13 @@ int main()
 	std::cout << example1.f << std::endl;
 	
 	std::string str = "test";
-	std::cout << str << std::endl;
+	std::cout << str + " Const char" << std::endl;
 	str.clear();
 	std::cout << str << std::endl;
 	std::cout << str.compare("");
+
+
+
 //------------------------------------------
 
 	////is it even beneficial to convert to vec3? 
@@ -325,9 +149,10 @@ int main()
 
 	// LOAD MODEL
 	//Make Path relevant
-	char path[] = "D:/Graphics Libraries/Resources/Suzanne.obj";
+	char path[] = "D:/Graphics Libraries/Resources/Suzanne1.obj";
 	Shader shader("Shaders/SimpleVertexShader.vert", "Shaders/SimpleFragmentShader.fs","Shaders/GeometryPassTriangles.gs");
-
+	
+	
 	//// return a mesh object created from the extracted mesh data
 	// Mesh test1(vertices, indices);
 
@@ -571,9 +396,7 @@ int main()
 
 			//SET UNIFORMS AGAIN
 			
-			
-
-
+		
 			glm::mat4 view;
 			glm::mat4 projection;
 		
@@ -603,13 +426,15 @@ int main()
 
 			shader.Use();
 
-			glm::mat4 model = glm::mat4()* glm::translate(glm::vec3(2.0f,0.0f,0.0f));
+			glm::mat4 model = glm::mat4()* glm::translate(glm::vec3(3.0f,0.0f,0.0f));
 			unsigned int modelLoc = glGetUniformLocation(shader.ID, "Model");
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
 			glm::mat4 MVP = projection * view * model;
 			unsigned int MVPLoc = glGetUniformLocation(shader.ID, "MVP");
 			glUniformMatrix4fv(MVPLoc, 1, GL_FALSE, glm::value_ptr(MVP));
+
+			glUniform1i(glGetUniformLocation(shader.ID, "myTexture1"), 0);
 
 			//// retrieve the matrix uniform locations
 

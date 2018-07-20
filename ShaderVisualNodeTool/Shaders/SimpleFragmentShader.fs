@@ -11,6 +11,7 @@ layout( location = 0 ) out vec4 FragColor;
 //} fs_in;
 //$Varyings$
 
+//in vec2 gTexCoords;
 
 // -$
 
@@ -29,7 +30,8 @@ uniform float test;
 uniform mat4 view;
 uniform vec4 InputCol;
 
-
+//uniform sampler2D myTexture1;
+//uniform Sampler2D myTexture2;
 
 //$Uniforms$
 
@@ -50,7 +52,7 @@ void main()
 	vec3 result = ambient * vec3(1.0,1.0,1.0);
 	
 	FragColor = InputCol;
-
+	//FragColor = texture(myTexture1, gTexCoords);
 	//vec3 FragPos = gFragPos;
 	//$MainGeom$
 	// -$

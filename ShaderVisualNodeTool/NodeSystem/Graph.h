@@ -88,7 +88,14 @@ public:
 
 	//application time
 	float time;
+
+	//Texture Counter
+	unsigned int TextureCounter;
 	
+	//Resource filepath
+	//TODO MAKE THIS RELEVANT PATH
+	std::string ResourcesPath = "D:/Graphics Libraries/Resources/";
+
 	//Input Node Types
 	std::map <std::string, InputNodeInformation> InputNodes;
 
@@ -140,6 +147,9 @@ public:
 
 	//Assigns unique ID to newly created nodes
 	int AssignID();
+
+	unsigned int AssignTextureID();
+
 	std::string GiveName();
 
 	void ResetNameCounter();

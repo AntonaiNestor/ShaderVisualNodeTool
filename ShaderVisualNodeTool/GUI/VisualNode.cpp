@@ -3,6 +3,8 @@
 #include <algorithm>
 #include "../NodeSystem/InputNode.h"
 #include "../NodeSystem/TimeNode.h"
+#include "../NodeSystem/TextureNode.h"
+#include <string.h>
 
 //struct implementations
 ConnectionVCoords::ConnectionVCoords()
@@ -451,6 +453,39 @@ void VisualNode::DrawInputNode(ImDrawList * drawList, ImVec2 offset)
 					else { Manager->ValueChanged = true; }
 				
 				}
+				break;
+			}
+			case (Sampler2D): {
+				//need to display a button and a string input
+				OutputValPos = ImVec2(NodeRelevantPos.x + 10, OutputPos.y - 0.25*OutputMargin);
+				ImGui::SetCursorScreenPos(OutputValPos);
+			
+				// SO STUPID
+				std::string tempString = dynamic_cast<TextureNode&>(*GNode).FileName;
+				static char *str = nullptr;
+				str = new char[tempString.size() + 1];
+				strncpy_s(str, tempString.size() + 1, tempString.data(), 128);
+				
+				ImGui::BeginGroup();
+				//load texture button
+				if (ImGui::Button("Load Texture")) {
+					dynamic_cast<TextureNode&>(*GNode).LoadTexture();
+
+				}
+				ImGui::PushItemWidth(100);
+				//input filename
+				if (ImGui::InputText("FileName", str,15)) {
+					/*if (dynamic_cast<InputNode&>(*GNode).inputType == UniformVariable) {
+						graph->UpdateUniforms();
+					}
+					else { Manager->ValueChanged = true; }*/
+
+					dynamic_cast<TextureNode&>(*GNode).FileName = str;
+				}
+				ImGui::PopItemWidth();
+				ImGui::EndGroup();
+
+
 				break;
 			}
 
