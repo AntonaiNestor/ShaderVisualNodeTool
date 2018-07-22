@@ -11,6 +11,7 @@ public:
 	~TextureNode();
 
 
+	bool TextureGenerated;
 	std::string FileName ;
 	unsigned int TextureSlot;
 	unsigned int TextureID;

@@ -165,20 +165,24 @@ void FunctionNode::Compile(std::shared_ptr<Node> root)
 		}
 		else {
 			//bool is a unique case because it needs special replacement if it is not connected to anything 
-			if (Input[i].VariableType != Bool) {
-				tempCode = Graph::getInstance()->ReplaceVarNames(tempCode, Input.at(i).Name, util::GetStringValueType(Input[i].VariableType, true));
-			}
-			else {
+
+			if (Input[i].VariableType == Bool) {
 
 				if (Input[i].Value.b_var == false) {
-				
-					tempCode = Graph::getInstance()->ReplaceVarNames(tempCode, Input.at(i).Name,"false");
+
+					tempCode = Graph::getInstance()->ReplaceVarNames(tempCode, Input.at(i).Name, "false");
 				}
 				else {
 					tempCode = Graph::getInstance()->ReplaceVarNames(tempCode, Input.at(i).Name, "true");
-					
+
 				}
-			
+
+			}
+			else if (Input[i].VariableType == Sampler2D){
+				//TODO default value 
+			}
+			else {
+				tempCode = Graph::getInstance()->ReplaceVarNames(tempCode, Input.at(i).Name, util::GetStringValueType(Input[i].VariableType, true));
 			}
 			
 		}

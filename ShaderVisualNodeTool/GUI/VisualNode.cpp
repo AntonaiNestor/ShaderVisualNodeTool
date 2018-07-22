@@ -162,9 +162,11 @@ void VisualNode::DisplayNode(ImDrawList * drawList,ImVec2 offset)
 			//but i could just check the visual node contents as well. DOUBLE INFORMATION ANTONY
 
 			auto outCoords = vOutputs.at(i);
+			//Exception throws here because of deleting connections I think
+			//Something is not deleted correctly
 			for (int ConnIndex = 0; ConnIndex < outCoords.conn.size(); ConnIndex++) {
 				//TODO check if connected makes sense here
-
+				
 				//INDICES PROBABLY WRONG HERE but maybe the 1-1 connection is fine
 				DrawHermite(drawList, outCoords.SlotCoords, outCoords.conn[ConnIndex]->SlotCoords, 20);
 			}
@@ -461,11 +463,13 @@ void VisualNode::DrawInputNode(ImDrawList * drawList, ImVec2 offset)
 				ImGui::SetCursorScreenPos(OutputValPos);
 			
 				// SO STUPID
-				std::string tempString = dynamic_cast<TextureNode&>(*GNode).FileName;
-				static char *str = nullptr;
+				//std::string tempString = ;
+				/*static char *str = nullptr;
 				str = new char[tempString.size() + 1];
-				strncpy_s(str, tempString.size() + 1, tempString.data(), 128);
-				
+				strncpy_s(str, tempString.size() + 1, tempString.data(), 128);*/
+				//;
+				//static char str[128] = tempString.c_str();
+				auto temp = (char*)dynamic_cast<TextureNode&>(*GNode).FileName.c_str();
 				ImGui::BeginGroup();
 				//load texture button
 				if (ImGui::Button("Load Texture")) {
@@ -474,14 +478,16 @@ void VisualNode::DrawInputNode(ImDrawList * drawList, ImVec2 offset)
 				}
 				ImGui::PushItemWidth(100);
 				//input filename
-				if (ImGui::InputText("FileName", str,15)) {
+				if (ImGui::InputText("FileName",temp,15)) {
 					/*if (dynamic_cast<InputNode&>(*GNode).inputType == UniformVariable) {
 						graph->UpdateUniforms();
 					}
 					else { Manager->ValueChanged = true; }*/
 
-					dynamic_cast<TextureNode&>(*GNode).FileName = str;
+					dynamic_cast<TextureNode&>(*GNode).FileName = (std::string)temp;
 				}
+
+
 				ImGui::PopItemWidth();
 				ImGui::EndGroup();
 

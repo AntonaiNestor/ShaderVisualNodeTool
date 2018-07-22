@@ -10,10 +10,11 @@ TextureNode::TextureNode(InputNodeInformation nodeInfo)
 	inputType = InputNodeType(nodeInfo.InitInputType);
 	CurrShaderType = nodeInfo.ShaderType;
 	UniqueID = graph->AssignID();
-	TextureID = graph->AssignTextureID();
+	//TextureID = ;
+	TextureSlot = graph->AssignTextureID(); //this should be called slot and it should be handled by the renderer
 	HasCompiled = false;
 	Name = nodeInfo.Name;
-
+	TextureGenerated = false;
 
 
 
@@ -28,17 +29,6 @@ TextureNode::TextureNode(InputNodeInformation nodeInfo)
 		connect.Enabled = true;
 		connect.Name = nodeInfo.SlotNames[i];
 
-		//TODO : Default texture!
-		//	connect.Value.mat4_var = graph->DefaultMat4;
-		//	value.mat4_var = graph->DefaultMat4;
-		//	break;
-		//}
-		//case (Sampler2D): {
-		//	//Name = "Texture";
-
-		//	break;
-		//}
-		//
 		//connection with empty lists on connected nodes and indices
 		Output.push_back(connect);
 	}
@@ -51,7 +41,8 @@ TextureNode::TextureNode(InputNodeInformation nodeInfo)
 
 TextureNode::~TextureNode()
 {
-
+	//Delete texture and clear the name!
+	
 }
 
 
@@ -64,8 +55,12 @@ void TextureNode::LoadTexture()
 
 	auto ResPath = Graph::getInstance()->ResourcesPath;
 	
-
-	glGenTextures(1, &TextureID);
+	//Every node generates nnly one texture object and is associated with one texture slot
+	
+	if (!TextureGenerated) {
+		glGenTextures(1, &TextureID);
+		TextureGenerated = true;
+	}
 	glActiveTexture(GL_TEXTURE0 + TextureSlot);
 	glBindTexture(GL_TEXTURE_2D, TextureID);
 	// set the texture wrapping/filtering options (on the currently bound texture object)
@@ -77,8 +72,8 @@ void TextureNode::LoadTexture()
 	// load and generate the texture
 	int width, height, nrChannels;
 
-	std::string temp = ResPath + FileName;
-	unsigned char *data = stbi_load((ResPath+FileName).c_str(), &width, &height, &nrChannels, 0);
+	std::string temp = ResPath+FileName;
+	unsigned char *data = stbi_load((temp).c_str(), &width, &height, &nrChannels, 0);
 	//If data was successfully received all good, otherwise load the default and show error message
 	if (data)
 	{
@@ -88,8 +83,10 @@ void TextureNode::LoadTexture()
 	}
 	else
 	{
-		data = stbi_load((ResPath+"Default.png").c_str(), &width, &height, &nrChannels, 0);
-
+		std::string def = ResPath+ "Default.png";
+		data = stbi_load(def.c_str(), &width, &height, &nrChannels, 0);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
 		if (!data) {
 			std::cout << "Double Trouble " << std::endl;
 		}

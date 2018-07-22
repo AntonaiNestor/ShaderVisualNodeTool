@@ -424,7 +424,7 @@ void InputNode::EditUniform()
 	}
 
 	case(Sampler2D): {
-		//hmmmmmm
+		//TODO Default value for input nodes when sampler
 		glUniform1i(uloc, dynamic_cast<TextureNode&>(*this).TextureSlot);
 		break;
 

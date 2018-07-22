@@ -762,7 +762,8 @@ void Graph::CreateProgramUniform(std::string Varname)
 void Graph::UpdateUniforms()
 {
 	for (auto unode : UniformNodes) {
-		if (typeid(*unode) == typeid(InputNode)) {
+
+		if (typeid(*unode) == typeid(InputNode) || typeid(*unode) == typeid(TextureNode)) {
 			dynamic_cast<InputNode&>(*unode).EditUniform();
 		}
 		else if (typeid(*unode) == typeid(TimeNode)) {

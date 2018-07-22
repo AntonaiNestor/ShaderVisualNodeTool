@@ -149,7 +149,7 @@ int main()
 
 	// LOAD MODEL
 	//Make Path relevant
-	char path[] = "D:/Graphics Libraries/Resources/Suzanne1.obj";
+	char path[] = "D:/Graphics Libraries/Resources/Cube.obj";
 	Shader shader("Shaders/SimpleVertexShader.vert", "Shaders/SimpleFragmentShader.fs","Shaders/GeometryPassTriangles.gs");
 	
 	
@@ -401,7 +401,7 @@ int main()
 			glm::mat4 projection;
 		
 
-			view = glm::lookAt(glm::vec3(0.0f, 0.0f, 5.0f), //camera pos
+			view = glm::lookAt(glm::vec3(0.0f, 3.0f, 5.0f), //camera pos
 				glm::vec3(0.0f, 0.0f, 0.0f), //camera target
 				glm::vec3(0.0f, 1.0f, 0.0f)); //up
 
@@ -425,8 +425,8 @@ int main()
 			glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(projection));
 
 			shader.Use();
-
-			glm::mat4 model = glm::mat4()* glm::translate(glm::vec3(3.0f,0.0f,0.0f));
+			
+			glm::mat4 model = glm::translate(glm::vec3(3.5f, 0.0f, 0.0f));// * glm::rotate(glm::radians(45.0f),glm::vec3(1.0f, 0.0f, 0.0f));
 			unsigned int modelLoc = glGetUniformLocation(shader.ID, "Model");
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
