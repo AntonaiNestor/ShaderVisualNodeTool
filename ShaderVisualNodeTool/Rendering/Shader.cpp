@@ -1,5 +1,5 @@
 #include "Shader.h"
-
+#include "../NodeSystem/Graph.h"
 
 Shader::Shader(const char* vertexPath, const char* fragmentPath) {
 
@@ -164,9 +164,18 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath, const char* geo
 
 		// shader Program
 		ID = glCreateProgram();
+		//Geometry out set
+		//glProgramParameteri(ID,  , Graph::getInstance()->VertexTopologyOut);
+		glProgramParameteri(ID, GL_GEOMETRY_VERTICES_OUT, Graph::getInstance()->GeomMaxVerticesOut);
+		glProgramParameteri(ID, GL_GEOMETRY_INPUT_TYPE, Graph::getInstance()->VertexTopologyOut);
+		glProgramParameteri(ID, GL_GEOMETRY_OUTPUT_TYPE, Graph::getInstance()->GeomTopologyOut);
+		
+
 		glAttachShader(ID, vertex);
 		glAttachShader(ID, geometry);
 		glAttachShader(ID, fragment);
+
+		
 
 		glLinkProgram(ID);
 		CheckCompileErrors(ID, "PROGRAM");
@@ -456,12 +465,27 @@ void Shader::EditShader(std::string newVertex, std::string newGeometry, std::str
 	CheckCompileErrors(fragment, "FRAGMENT");
 
 
+	
+
 	// shader Program creation and shader attachments
 	glDeleteProgram(ID);
 	ID = glCreateProgram();
+
+
+	//Geometry out set
+	//std::cout << Graph::getInstance()->GeomTopologyOut << std::endl;
+	glProgramParameteri(ID, GL_GEOMETRY_VERTICES_OUT, Graph::getInstance()->GeomMaxVerticesOut);
+	glProgramParameteri(ID, GL_GEOMETRY_INPUT_TYPE, Graph::getInstance()->VertexTopologyOut);
+	glProgramParameteri(ID, GL_GEOMETRY_OUTPUT_TYPE, Graph::getInstance()->GeomTopologyOut);
+
+
 	glAttachShader(ID, vertex);
 	glAttachShader(ID, geometry);
 	glAttachShader(ID, fragment);
+
+
+
+
 	glLinkProgram(ID);
 	CheckCompileErrors(ID, "PROGRAM");
 	// delete the shaders as they're linked into our program now and no longer necessary

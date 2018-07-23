@@ -28,7 +28,7 @@
         {
           "SlotType": "Input",
           "SlotName": "NumOutVertices",
-          "VariableType": "float"
+          "VariableType": "int"
         },
         {
           "SlotType": "Input",

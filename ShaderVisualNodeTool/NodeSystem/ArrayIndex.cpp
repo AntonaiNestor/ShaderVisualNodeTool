@@ -15,6 +15,13 @@ ArrayIndex::~ArrayIndex()
 void ArrayIndex::Compile(std::shared_ptr<Node> root)
 {
 	//only compile changes	
+
+	//I believe this works for any type of array declaration. Apart from the where to write the shadercode ofcourse
+	// which for now it is simply only written at MainGeomSeg
+	//
+
+	//If the incoming name is of the form xx[i] then the name generation should work
+
 	std::string tempCode = StringCode;
 	auto Manager = Graph::getInstance();
 
@@ -41,6 +48,7 @@ void ArrayIndex::Compile(std::shared_ptr<Node> root)
 	outName = Manager->AssignUniqueName(outName, outSlotName);
 	tempCode = Graph::getInstance()->ReplaceVarNames(tempCode, tempOutName, outName);
 
+	//Meant only to be used in the Geometry for now
 	dynamic_cast<OutputNode&>(*root).WriteToShaderCode(tempCode, MainGeomSeg, ShaderType(CurrShaderType));
 
 

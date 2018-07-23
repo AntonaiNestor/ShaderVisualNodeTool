@@ -325,7 +325,7 @@ void VisualNode::DrawInputNode(ImDrawList * drawList, ImVec2 offset)
 		}
 
 		//if this is a transformation matrix node 
-	    if (displayMat  ) {
+	    if (displayMat ) {
 			ImGui::PushItemWidth(80);
 			ImGui::SetCursorScreenPos(ImVec2(NodeRelevantPos.x, NodeRelevantPos.y + 1 + TITLE_BOX_HEIGHT));
 
@@ -366,12 +366,17 @@ void VisualNode::DrawInputNode(ImDrawList * drawList, ImVec2 offset)
 
 
 	ImGui::PopID();
+
+
+
+
+
+
 	//Display all Output buttons and circles 
 	for (int i = 0; i < vOutputs.size(); i++) {
 
 		ImVec2 OutputPos(ImVec2(NodeRelevantPos.x + VNodeSize.x, NodeRelevantPos.y + TITLE_BOX_HEIGHT + 10 +  OutputMargin * (i + 1)));
 		drawList->AddCircleFilled(OutputPos, 5, ImColor(255, 255, 255), 12);
-
 
 
 		ImGui::PushID(i+GNode->UniqueID);
@@ -552,6 +557,9 @@ void VisualNode::DrawInputNode(ImDrawList * drawList, ImVec2 offset)
 		}
 
 	}
+
+
+
 
 }
 
@@ -823,6 +831,59 @@ void VisualNode::DrawOutputNode(ImDrawList * drawList, ImVec2 offset)
 
 	float InputMargin = ((NodeRelevantPos.y + VNodeSize.y) - (NodeRelevantPos.y + TITLE_BOX_HEIGHT)) / (vInputs.size() + 1);
 	//float OutputMargin = ((NodeRelevantPos.y + VNodeSize.y) - (NodeRelevantPos.y + TITLE_BOX_HEIGHT)) / (vOutputs.size() + 1);
+
+
+	//For geometry shadernode specifically add a menu before the inputs names
+
+	if (GNode->CurrShaderType == GEOMETRY) {
+
+		const char* topologyOption[3] = { "points", "line_strip", "triangle_strip" };
+		int primOut[3] = { GL_POINTS,GL_LINE_STRIP,GL_TRIANGLE_STRIP };
+		const char*  curr_choice;
+
+		int type = 0;
+		auto graph = Graph::getInstance();
+		glGetProgramiv(graph->daShader->ID, GL_GEOMETRY_OUTPUT_TYPE, &type);
+		//std::cout << GL_TRIANGLE_STRIP << std::endl;
+
+		if (type == GL_POINTS) {
+			curr_choice = topologyOption[0];
+			//std::cout << "Points!" << std::endl;
+		}
+		else if (type == GL_LINE_STRIP) {
+			curr_choice = topologyOption[1];
+
+		}
+		else if (type == GL_TRIANGLE_STRIP) {
+			curr_choice = topologyOption[2];
+		}
+
+		//Display a dropdown menu with the available topologies
+		if (ImGui::BeginCombo("a" + GNode->UniqueID, curr_choice, 1)) // The second parameter is the label previewed before opening the combo.
+		{
+			for (int n = 0; n < 3; n++)
+			{
+				bool is_selected = !(curr_choice == topologyOption[n]);
+				if (ImGui::Selectable(topologyOption[n], is_selected)) {
+
+					//depending on your selection, choose different uniform name to use
+					//GNode->Output.at(0).Name = Matrices[n];
+					graph->GeomTopologyOut = primOut[n];
+				//	glProgramParameteri(graph->daShader->ID, GL_GEOMETRY_OUTPUT_TYPE, primOut[n]);
+					Manager->ValueChanged = true;
+
+					//std::cout << GNode->Output.at(0).Name << std::endl;
+				}
+
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();   // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
+			}
+			ImGui::EndCombo();
+		}
+	}
+
+	
+
 
 	//
 	////Display all Input buttons and circles 

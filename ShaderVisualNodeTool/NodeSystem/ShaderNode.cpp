@@ -84,7 +84,10 @@ void ShaderNode::Compile(std::shared_ptr<Node> root)
 			//write on the main function of the appropriate shader the declaration
 
 			//stupid way of writing in the main geom seg
-			if (shadeType == GEOMETRY) {
+			if (shadeType == GEOMETRY && i==0) {
+				dynamic_cast<OutputNode&>(*root).WriteToShaderCode(tempCode, MainSeg, shadeType);
+			}
+			else if (shadeType == GEOMETRY && i != 0) {
 				dynamic_cast<OutputNode&>(*root).WriteToShaderCode(tempCode, MainGeomSeg, shadeType);
 			}
 			else {

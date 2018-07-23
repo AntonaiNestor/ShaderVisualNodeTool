@@ -119,6 +119,11 @@ public:
 	std::vector<std::string> Identifiers = {"$Version$","$Varyings$","$Uniforms$","$Constants$" ,"$Main$","$MainGeom$" };
 
 	Shader* daShader;
+	//Very nice that this is independent from the shadercode
+	int GeomTopologyOut = GL_POINTS;
+	int GeomMaxVerticesOut = 256;
+	int VertexTopologyOut = GL_TRIANGLES;
+	
 
 	//Global map for variable name convertion
 	std::map <std::string, std::string> SlotToVariableMap;

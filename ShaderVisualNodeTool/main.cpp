@@ -149,7 +149,7 @@ int main()
 
 	// LOAD MODEL
 	//Make Path relevant
-	char path[] = "D:/Graphics Libraries/Resources/Cube.obj";
+	char path[] = "D:/Graphics Libraries/Resources/Suzanne.obj";
 	Shader shader("Shaders/SimpleVertexShader.vert", "Shaders/SimpleFragmentShader.fs","Shaders/GeometryPassTriangles.gs");
 	
 	
@@ -456,6 +456,8 @@ int main()
 			glUseProgram(0);
 
 			ourModel.Draw(shader);
+			
+			//std::cout << GL_GEOMETRY_OUTPUT_TYPE << std::endl;
 			
 			//ourModel.Draw(otherShader);
 			//ourModel.Draw(shader);
