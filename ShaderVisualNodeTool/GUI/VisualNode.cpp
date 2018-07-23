@@ -858,7 +858,14 @@ void VisualNode::DrawOutputNode(ImDrawList * drawList, ImVec2 offset)
 			curr_choice = topologyOption[2];
 		}
 
+
+		//ImGui::BeginGroup();
 		//Display a dropdown menu with the available topologies
+		ImVec2 MenuPos(ImVec2(NodeRelevantPos.x, NodeRelevantPos.y + TITLE_BOX_HEIGHT ));
+		
+		ImGui::SetCursorScreenPos(MenuPos);
+		ImGui::PushItemWidth(120);
+
 		if (ImGui::BeginCombo("a" + GNode->UniqueID, curr_choice, 1)) // The second parameter is the label previewed before opening the combo.
 		{
 			for (int n = 0; n < 3; n++)
@@ -948,6 +955,8 @@ void VisualNode::DrawOutputNode(ImDrawList * drawList, ImVec2 offset)
 
 
 	}
+
+	//ImGui::EndGroup();
 	ImGui::PopID();
 
 
