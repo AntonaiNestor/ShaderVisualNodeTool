@@ -57,10 +57,10 @@ public:
 	Shader(const char* vertexPath, const char* fragmentPath);
 
 	//Vertex + geometry + Fragment
-	Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath);
+	Shader(const char* vertexPath, const char* geometryPath, const char* fragmentPath);
 
 	// Vertex + Tcs + Tes + Geometry + Fragment
-	Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath, const char* tcsPath, const char* tesPath);
+	Shader(const char* vertexPath,const char* tcsPath, const char* tesPath, const char* geometryPath, const char* fragmentPath );
 
 
 

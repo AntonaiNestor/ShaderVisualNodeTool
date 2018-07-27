@@ -149,15 +149,15 @@ int main()
 
 	// LOAD MODEL
 	//Make Path relevant
-	char path[] = "D:/Graphics Libraries/Resources/Cube.obj";
+	char path[] = "D:/Graphics Libraries/Resources/Suzanne.obj";
 	//char path[] = "D:/Graphics Libraries/Resources/Suzanne.obj";
 	//Shader shader("Shaders/SimpleVertexShader.vert", "Shaders/SimpleFragmentShader.fs");
-	Shader shader("Shaders/SimpleVertexShader.vert", "Shaders/SimpleFragmentShader.fs","Shaders/GeometryPassTriangles.gs");
-	/*Shader shader("Shaders/SimpleVertexShader.vert",
-		"Shaders/SimpleFragmentShader.fs",
-		"Shaders/GeometryPassTriangles.gs",
+	//Shader shader("Shaders/SimpleVertexShader.vert", "Shaders/SimpleFragmentShader.fs","Shaders/GeometryPassTriangles.gs");
+	Shader shader("Shaders/SimpleVertexShader.vert",
 		"Shaders/SimpleTesControl.tcs",
-		"Shaders/SimpleTesEval.tes");*/
+		"Shaders/SimpleTesEval.tes",
+		"Shaders/GeometryPassTriangles.gs",
+		"Shaders/SimpleFragmentShader.fs");
 	
 	//// return a mesh object created from the extracted mesh data
 	// Mesh test1(vertices, indices);
@@ -167,8 +167,6 @@ int main()
 
 	 //First we create the UBO for the matrices required in the vertex shader which is 
 	 //shared between the programs
-
-
 
 	 // create transformations
 	
@@ -260,7 +258,7 @@ int main()
 	//General GL options
 	glEnable(GL_PROGRAM_POINT_SIZE);
 	glEnable(GL_DEPTH_TEST);
-	//glPatchParameteri(GL_PATCH_VERTICES, 3);
+	glPatchParameteri(GL_PATCH_VERTICES, 3);
 
 
 
@@ -458,8 +456,8 @@ int main()
 			int vertexColorLocation = glGetUniformLocation(shader.ID, "InputCol");
 			glUniform4f(vertexColorLocation, color[0], color[1], color[2], color[3]);
 			//shader.setFloat("test",0.5);
-			shader.SetFloat("TessLevelInner", 1.0);
-			shader.SetFloat("TessLevelOuter", 1.0);
+			//shader.SetFloat("TessLevelInner", 1.0);
+			//shader.SetFloat("TessLevelOuter", 1.0);
 			shader.SetFloat("time", glfwGetTime());
 			glUseProgram(0);
 

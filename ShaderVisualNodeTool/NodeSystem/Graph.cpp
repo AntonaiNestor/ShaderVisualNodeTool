@@ -586,8 +586,8 @@ void Graph::ChangeShader(Shader* shader)
 	//change shader will edit the shadercodes existing in the root "fragment shader" 
 	//YOU MONSTER
 
-	shader->EditShader(dynamic_cast<OutputNode&>(*root).shaderCode[0], dynamic_cast<OutputNode&>(*root).shaderCode[1], dynamic_cast<OutputNode&>(*root).shaderCode[2]) ;
-	//shader->EditShader(dynamic_cast<OutputNode&>(*root).shaderCode[0], dynamic_cast<OutputNode&>(*root).shaderCode[1], dynamic_cast<OutputNode&>(*root).shaderCode[2], dynamic_cast<OutputNode&>(*root).shaderCode[3], dynamic_cast<OutputNode&>(*root).shaderCode[4]);
+	//shader->EditShader(dynamic_cast<OutputNode&>(*root).shaderCode[0], dynamic_cast<OutputNode&>(*root).shaderCode[1], dynamic_cast<OutputNode&>(*root).shaderCode[2]) ;
+	shader->EditShader(dynamic_cast<OutputNode&>(*root).shaderCode[0], dynamic_cast<OutputNode&>(*root).shaderCode[1], dynamic_cast<OutputNode&>(*root).shaderCode[2], dynamic_cast<OutputNode&>(*root).shaderCode[3], dynamic_cast<OutputNode&>(*root).shaderCode[4]);
 }
 
 void Graph::PrintConnections()

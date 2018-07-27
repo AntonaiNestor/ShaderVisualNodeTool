@@ -102,7 +102,7 @@ void Mesh::Draw(Shader shader) {
 	glBindVertexArray(VAO);
 	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	
-	glDrawElements(GL_TRIANGLES, Indices.size(), GL_UNSIGNED_INT, 0);
+	glDrawElements(Graph::getInstance()->DrawingTopology, Indices.size(), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 
 	// TODO : If statements here for cases :

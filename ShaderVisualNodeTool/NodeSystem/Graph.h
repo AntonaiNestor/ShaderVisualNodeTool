@@ -122,7 +122,8 @@ public:
 	//Very nice that this is independent from the shadercode
 	int GeomTopologyOut = GL_TRIANGLE_STRIP;
 	int GeomMaxVerticesOut = 256;
-	int VertexTopologyOut = GL_TRIANGLES;
+	int DrawingTopology = GL_PATCHES; //DEFAULT TO PATCHES IF THERE IS TESSELATION
+	int VertexOutTopology = GL_TRIANGLES;
 	int PatchSize = 3;
 	
 

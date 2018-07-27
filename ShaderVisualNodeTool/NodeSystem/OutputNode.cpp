@@ -18,9 +18,13 @@ OutputNode::OutputNode(ShaderNodeInformation nodeInfo)
 	DefaultCode[0] = nodeInfo.DefaultCode[0];
 	DefaultCode[1] = nodeInfo.DefaultCode[1];
 	DefaultCode[2] = nodeInfo.DefaultCode[2];
+	DefaultCode[3] = nodeInfo.DefaultCode[3];
+	DefaultCode[4] = nodeInfo.DefaultCode[4];
 	shaderCode[0] = DefaultCode[0];
 	shaderCode[1] = DefaultCode[1];
 	shaderCode[2] = DefaultCode[2];
+	shaderCode[3] = DefaultCode[3];
+	shaderCode[4] = DefaultCode[4];
 	HasCompiled = false;
 
 
@@ -34,13 +38,10 @@ OutputNode::OutputNode(ShaderNodeInformation nodeInfo)
 	}
 
 
-	//std::string strArray[]{ "$color" };
 	//output struct creation
 
 	//these should be initialised either by json or depending on type , even though they will be standarised more or less
 	// However it will be easier to create from json, except from the default code. That should be in the application once
-	
-
 	for (auto slot : nodeInfo.Slots) {
 
 		
@@ -146,7 +147,6 @@ OutputNode::OutputNode(ShaderNodeInformation nodeInfo)
 		}
 	}
 
-	
 }
 
 
@@ -273,6 +273,8 @@ void OutputNode::AssembleShaderCode()
 	
 	auto graph = Graph::getInstance();
 
+	//Overall same thing
+	//6 
 	for (int i = 0; i < graph->Identifiers.size() ; i++) {
 		
 		// && 
@@ -312,27 +314,22 @@ void OutputNode::AssembleShaderCode()
 
 void OutputNode::ClearShaderCode()
 {
-	
+
 	//clear shaderCode -- can skip this i think
-	shaderCode[0].clear();
-	shaderCode[1].clear();
-	shaderCode[2].clear();
-	shaderCode[3].clear();
-	shaderCode[4].clear();
-	//clear sections
-	for (int i = 0; i < 6; i++) {
-		CodeSections[0][i].clear();
-		CodeSections[1][i].clear();
-		CodeSections[2][i].clear();
-		CodeSections[3][i].clear();
-		CodeSections[4][i].clear();
+
+	for (int i = 0; i < 5; i++) {
+		//reset shadercode to default shader code
+		shaderCode[i].clear();
+		shaderCode[i] = DefaultCode[i];
+
+		//clear all the codesections for each shader
+		for (int j = 0; j < 6; j++) {
+			CodeSections[i][j].clear();
+		}
+		
 	}
-	//initialize shadercode to skeleton code
-	shaderCode[0] = DefaultCode[0];
-	shaderCode[1] = DefaultCode[1];
-	shaderCode[2] = DefaultCode[2];
-	shaderCode[3] = DefaultCode[3];
-	shaderCode[4] = DefaultCode[4];
+
+
 
 }
 

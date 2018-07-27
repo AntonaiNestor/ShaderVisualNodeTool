@@ -18,10 +18,7 @@ layout (triangles) in;
 //Uniforms-Standard
 uniform mat4 Model;
 uniform mat4 MVP ;
-uniform float test;
-uniform mat4 view;
-uniform vec4 InputCol;
-uniform float time;
+
 
 //$Uniforms$
 
@@ -34,8 +31,6 @@ int NumOutVertices = 3;
 // -$
 
 void main() {    
-
-	
 
 	//$Main$
 	
