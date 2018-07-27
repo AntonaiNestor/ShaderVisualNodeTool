@@ -120,9 +120,10 @@ public:
 
 	Shader* daShader;
 	//Very nice that this is independent from the shadercode
-	int GeomTopologyOut = GL_POINTS;
+	int GeomTopologyOut = GL_TRIANGLE_STRIP;
 	int GeomMaxVerticesOut = 256;
 	int VertexTopologyOut = GL_TRIANGLES;
+	int PatchSize = 3;
 	
 
 	//Global map for variable name convertion

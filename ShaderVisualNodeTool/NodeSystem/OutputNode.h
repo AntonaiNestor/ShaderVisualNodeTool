@@ -10,9 +10,9 @@ public:
 
 
 	//temporarily the output node knows all three shaders 
-	std::string DefaultCode[3];
-	std::string shaderCode[3];
-	std::vector<std::string> CodeSections[3]; //array of vectors
+	std::string DefaultCode[5];
+	std::string shaderCode[5];
+	std::vector<std::string> CodeSections[5]; //array of vectors
 	ShaderType Stype;
 
 	std::string CreateVaryingPipeline(ShaderType type ,std::string varType, std::string varName,std::string assignValue );

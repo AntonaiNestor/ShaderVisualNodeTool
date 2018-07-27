@@ -56,8 +56,11 @@ void main()
 
 
 	//Main - Default
-	//vTexCoords= aTexCoords;
+	
+
+
     gl_Position = (Projection* View* Model* vec4(aPos, 1.0)) ; 
+
 	//$MainGeom$
 
 	// -$

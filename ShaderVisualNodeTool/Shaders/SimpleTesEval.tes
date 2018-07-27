@@ -5,6 +5,7 @@
 uniform mat4 Model;
 uniform mat4 View;
 uniform mat4 Projection;
+
 layout(triangles, equal_spacing) in;
 float marg=0.0;
 

@@ -477,19 +477,21 @@ void Graph::ReadNodeTypes(std::string FilePath)
 			//TEMPORARY PROBABLY
 			tempNode.ShadeType = FRAGMENT;
 			tempNode.DefaultCode[0] = daShader->vertCode;
-			tempNode.DefaultCode[1] = daShader->geomCode;
-			tempNode.DefaultCode[2] = daShader->fragCode;
+			tempNode.DefaultCode[1] = daShader->tessControlCode;
+			tempNode.DefaultCode[2] = daShader->tessEvalCode;
+			tempNode.DefaultCode[3] = daShader->geomCode;
+			tempNode.DefaultCode[4] = daShader->fragCode;
 			//type and default code from graph according to name
 			if (name.compare("Vertex") == 0) {
 				tempNode.ShadeType = VERTEX;
 				//tempNode.DefaultCode = daShader->vertCode;
 			}
 			else if (name.compare("Tess Eval") == 0) {
-				tempNode.ShadeType = FRAGMENT;
+				tempNode.ShadeType = TESSELATION_EVALUATION;
 				//tempNode.DefaultCode = daShader->fragCode;
 			}
 			else if (name.compare("Tess Control") == 0) {
-				tempNode.ShadeType = FRAGMENT;
+				tempNode.ShadeType = TESSELATION_CONTROL;
 				//tempNode.DefaultCode = daShader->fragCode;
 			}
 			else if (name.compare("Geometry") == 0) {
@@ -582,7 +584,10 @@ void Graph::CompileGraph(std::shared_ptr<Node> CurrentNode , std::shared_ptr<Nod
 void Graph::ChangeShader(Shader* shader)
 {
 	//change shader will edit the shadercodes existing in the root "fragment shader" 
-	shader->EditShader(dynamic_cast<OutputNode&>(*root).shaderCode[0], dynamic_cast<OutputNode&>(*root).shaderCode[1], dynamic_cast<OutputNode&>(*root).shaderCode[2]);
+	//YOU MONSTER
+
+	shader->EditShader(dynamic_cast<OutputNode&>(*root).shaderCode[0], dynamic_cast<OutputNode&>(*root).shaderCode[1], dynamic_cast<OutputNode&>(*root).shaderCode[2]) ;
+	//shader->EditShader(dynamic_cast<OutputNode&>(*root).shaderCode[0], dynamic_cast<OutputNode&>(*root).shaderCode[1], dynamic_cast<OutputNode&>(*root).shaderCode[2], dynamic_cast<OutputNode&>(*root).shaderCode[3], dynamic_cast<OutputNode&>(*root).shaderCode[4]);
 }
 
 void Graph::PrintConnections()

@@ -29,6 +29,8 @@ OutputNode::OutputNode(ShaderNodeInformation nodeInfo)
 		CodeSections[0].push_back("");
 		CodeSections[1].push_back("");
 		CodeSections[2].push_back("");
+		CodeSections[3].push_back("");
+		CodeSections[4].push_back("");
 	}
 
 
@@ -198,14 +200,23 @@ void OutputNode::WriteToShaderCode(std::string code, ShaderSection section , Sha
 			shaderIndex = 0;
 			break;
 		}
-		case(GEOMETRY): {
+		case(TESSELATION_CONTROL): {
 			shaderIndex = 1;
 			break;
 		}
-		case(FRAGMENT): {
+		case(TESSELATION_EVALUATION): {
 			shaderIndex = 2;
 			break;
 		}
+		case(GEOMETRY): {
+			shaderIndex = 3;
+			break;
+		}
+		case(FRAGMENT): {
+			shaderIndex = 4;
+			break;
+		}
+	
 	}
 
 	//Neat! way to go enums!
@@ -265,7 +276,7 @@ void OutputNode::AssembleShaderCode()
 	for (int i = 0; i < graph->Identifiers.size() ; i++) {
 		
 		// && 
-		for (int j = 0; j < 3; j++) {
+		for (int j = 0; j < 5; j++) {
 			//if the identifier exists then 
 			
 			if (((shaderCode[j]).find(graph->Identifiers[i]) != std::string::npos) && CodeSections[j][i].compare("")) {
@@ -281,13 +292,21 @@ void OutputNode::AssembleShaderCode()
 	std::cout << shaderCode[0] << std::endl;
 	std::cout << "------------------ " << std::endl;
 
-	//this should go in the loop and cout all shaders
-	std::cout << "--Geometry shader--- : " << std::endl;
+	std::cout << "--TC shader--- : " << std::endl;
 	std::cout << shaderCode[1] << std::endl;
 	std::cout << "------------------ " << std::endl;
 
-	std::cout << "----Fragment shader ---- : " << std::endl;
+	std::cout << "--TE shader--- : " << std::endl;
 	std::cout << shaderCode[2] << std::endl;
+	std::cout << "------------------ " << std::endl;
+
+	//this should go in the loop and cout all shaders
+	std::cout << "--Geometry shader--- : " << std::endl;
+	std::cout << shaderCode[3] << std::endl;
+	std::cout << "------------------ " << std::endl;
+
+	std::cout << "----Fragment shader ---- : " << std::endl;
+	std::cout << shaderCode[4] << std::endl;
 	std::cout << "------------------ " << std::endl;
 }
 
@@ -298,16 +317,22 @@ void OutputNode::ClearShaderCode()
 	shaderCode[0].clear();
 	shaderCode[1].clear();
 	shaderCode[2].clear();
+	shaderCode[3].clear();
+	shaderCode[4].clear();
 	//clear sections
 	for (int i = 0; i < 6; i++) {
 		CodeSections[0][i].clear();
 		CodeSections[1][i].clear();
 		CodeSections[2][i].clear();
+		CodeSections[3][i].clear();
+		CodeSections[4][i].clear();
 	}
 	//initialize shadercode to skeleton code
 	shaderCode[0] = DefaultCode[0];
 	shaderCode[1] = DefaultCode[1];
 	shaderCode[2] = DefaultCode[2];
+	shaderCode[3] = DefaultCode[3];
+	shaderCode[4] = DefaultCode[4];
 
 }
 

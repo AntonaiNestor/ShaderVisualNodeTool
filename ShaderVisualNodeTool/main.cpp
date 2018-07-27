@@ -149,9 +149,15 @@ int main()
 
 	// LOAD MODEL
 	//Make Path relevant
-	char path[] = "D:/Graphics Libraries/Resources/Suzanne.obj";
+	char path[] = "D:/Graphics Libraries/Resources/Cube.obj";
+	//char path[] = "D:/Graphics Libraries/Resources/Suzanne.obj";
+	//Shader shader("Shaders/SimpleVertexShader.vert", "Shaders/SimpleFragmentShader.fs");
 	Shader shader("Shaders/SimpleVertexShader.vert", "Shaders/SimpleFragmentShader.fs","Shaders/GeometryPassTriangles.gs");
-	
+	/*Shader shader("Shaders/SimpleVertexShader.vert",
+		"Shaders/SimpleFragmentShader.fs",
+		"Shaders/GeometryPassTriangles.gs",
+		"Shaders/SimpleTesControl.tcs",
+		"Shaders/SimpleTesEval.tes");*/
 	
 	//// return a mesh object created from the extracted mesh data
 	// Mesh test1(vertices, indices);
@@ -220,8 +226,8 @@ int main()
 	 int vertexColorLocation = glGetUniformLocation(shader.ID, "InputCol");
 	 glUniform4f(vertexColorLocation, color[0], color[1], color[2], color[3]);
 	 //shader.setFloat("test",0.5);
-	 shader.SetFloat("TessLevelInner", 1.0);
-	 shader.SetFloat("TessLevelOuter", 1.0);
+	 shader.SetFloat("TessLevelInner", 2.0);
+	 shader.SetFloat("TessLevelOuter", 2.0);
 	 shader.SetFloat("time", glfwGetTime());
 	 glUseProgram(0);
 
@@ -254,7 +260,7 @@ int main()
 	//General GL options
 	glEnable(GL_PROGRAM_POINT_SIZE);
 	glEnable(GL_DEPTH_TEST);
-	glPatchParameteri(GL_PATCH_VERTICES, 3);
+	//glPatchParameteri(GL_PATCH_VERTICES, 3);
 
 
 
@@ -381,6 +387,8 @@ int main()
 			//new
 			graph->time = time ;
 			//std::cout << graph->time << std::endl;
+
+
 			//Render GUI
 			GUI->RenderGUI();
 
@@ -401,7 +409,7 @@ int main()
 			glm::mat4 projection;
 		
 
-			view = glm::lookAt(glm::vec3(0.0f, 3.0f, 5.0f), //camera pos
+			view = glm::lookAt(glm::vec3(0.0f, 5.0f, 5.0f), //camera pos
 				glm::vec3(0.0f, 0.0f, 0.0f), //camera target
 				glm::vec3(0.0f, 1.0f, 0.0f)); //up
 
@@ -426,7 +434,7 @@ int main()
 
 			shader.Use();
 			
-			glm::mat4 model = glm::translate(glm::vec3(3.5f, 0.0f, 0.0f));// * glm::rotate(glm::radians(45.0f),glm::vec3(1.0f, 0.0f, 0.0f));
+			glm::mat4 model = glm::translate(glm::vec3(4.5f, 0.0f, 0.0f));// * glm::rotate(glm::radians(45.0f),glm::vec3(1.0f, 0.0f, 0.0f));
 			unsigned int modelLoc = glGetUniformLocation(shader.ID, "Model");
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
@@ -466,6 +474,8 @@ int main()
 
 
 			GUI->RenderCall();
+
+
 			//ImGui::Render();
 			//ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 
