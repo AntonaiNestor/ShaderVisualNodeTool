@@ -1,8 +1,6 @@
 //$Version$ 
 #version 330 core
 
-
-//ASK MORTEN ABOUT THIS
 layout (triangles) in;
 //layout (triangle_strip, max_vertices = 256) out;
 
@@ -14,6 +12,9 @@ layout (triangles) in;
 // 1 value -> FRAGMENT
 
 //$Varyings$
+
+in vec2 TETex[];
+out vec2 GTex;
 
 //Uniforms-Standard
 uniform mat4 Model;
@@ -43,7 +44,7 @@ void main() {
 	//the 3 needs to change according to the primitive list
 	for (int i = 0; i < 3 ; i ++)
 	{
-		
+		GTex = TETex[i];
 		 gl_Position = gl_in[i].gl_Position;
 		
 		//$MainGeom$

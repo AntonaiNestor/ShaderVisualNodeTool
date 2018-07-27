@@ -154,27 +154,73 @@ OutputNode::~OutputNode()
 {
 }
 
+//MOVE THIS TO RENDERER CHOLO
 std::string OutputNode::CreateVaryingPipeline(ShaderType type,std::string varType, std::string varName, std::string assignValue)
 {
 	//the varying string that need to be written in the VS and the FS
 	std::string varyingNameVS = "out " + varType + "v" + varName + " ;";
 	std::string varyingNameFS = "in " + varType + "g" + varName + " ;";
-	std::string varyingNameGSin = "in " + varType + "v" + varName + "[]" + " ;";
+	std::string varyingNameGSin = "in " + varType + "te" + varName + "[]" + " ;";
 	std::string varyingNameGSout = "out " + varType + "g" + varName + " ;";
-	std::string varyingDeclGS = "g" + varName + " = " + "v" + varName + "[i]" + " ;";
-	std::string varyingDeclGSE = "g" + varName  + assignValue + " ;"; 
+
+	std::string varyingDeclGS = "g" + varName + " = " + "te" + varName + "[i]" + " ;";
+	std::string varyingDeclGSE = "g" + varName  + assignValue + " ;"; //what is this?
+
+	std::string varyingDeclTCS = "tc" + varName + " = " + "v" + varName + "[]" + " ;";
+	std::string varyingDeclTCSE = "tc" + varName + assignValue + " ;"; //what is this?
+
+	std::string varyingDeclTES = "te" + varName + " = " + "tc" + varName + "[]" + " ;";
+	std::string varyingDeclTESE = "te" + varName + assignValue + " ;"; //what is this?
+
+	std::string varyingNameTCSin = "in " + varType + "v" + varName + " ;";
+	std::string varyingNameTCSout = "out " + varType + "tc" + varName + " ;";
+	std::string varyingNameTESin = "in " + varType + "tc" + varName + " ;";
+	std::string varyingNameTESout = "out " + varType + "te" + varName + " ;";
 	//assign value contains the = 
 	//write in VS ,GS and  FS
 
 	//If you are creating a varying from the vertex shader then do all the rest 
 	if (type == VERTEX) {
+		//Vertex
 		WriteToShaderCode(varyingNameVS, VaryingSeg, VERTEX);
+
+		//In function nodes, the actual declaration in the main segment is handled in their compile function. 
+		WriteToShaderCode(assignValue, MainSeg, VERTEX);
+		//TCS
+		WriteToShaderCode(varyingNameTCSin, VaryingSeg, TESSELATION_CONTROL);
+		WriteToShaderCode(varyingNameTCSout, VaryingSeg, TESSELATION_CONTROL);
+		WriteToShaderCode(varyingDeclTCS, MainSeg, TESSELATION_CONTROL);
+		//TES
+		WriteToShaderCode(varyingNameTESin, VaryingSeg, TESSELATION_EVALUATION);
+		WriteToShaderCode(varyingNameTESout, VaryingSeg, TESSELATION_EVALUATION);
+		WriteToShaderCode(varyingDeclTES, MainSeg, TESSELATION_EVALUATION);
+		//Geometry
 		WriteToShaderCode(varyingNameGSin, VaryingSeg, GEOMETRY);
 		WriteToShaderCode(varyingNameGSout, VaryingSeg, GEOMETRY);
 		WriteToShaderCode(varyingDeclGS, MainGeomSeg, GEOMETRY);
 
-		//In function nodes, the actual declaration in the main segment is handled in their compile function. Correct?
-		WriteToShaderCode(assignValue, MainSeg, VERTEX);
+		
+	}
+	else if (type == TESSELATION_CONTROL) {
+		WriteToShaderCode(varyingNameTCSout, VaryingSeg, TESSELATION_CONTROL);
+		WriteToShaderCode(varyingDeclTCSE, MainSeg, TESSELATION_CONTROL);
+		//TES
+		WriteToShaderCode(varyingNameTESin, VaryingSeg, TESSELATION_EVALUATION);
+		WriteToShaderCode(varyingNameTESout, VaryingSeg, TESSELATION_EVALUATION);
+		WriteToShaderCode(varyingDeclTES, MainSeg, TESSELATION_EVALUATION);
+		//Geometry
+		WriteToShaderCode(varyingNameGSin, VaryingSeg, GEOMETRY);
+		WriteToShaderCode(varyingNameGSout, VaryingSeg, GEOMETRY);
+		WriteToShaderCode(varyingDeclGS, MainGeomSeg, GEOMETRY);
+	}
+
+	else if (type == TESSELATION_EVALUATION) {
+		WriteToShaderCode(varyingNameTESout, VaryingSeg, TESSELATION_EVALUATION);
+		WriteToShaderCode(varyingDeclTESE, MainSeg, TESSELATION_EVALUATION);
+		//Geometry
+		WriteToShaderCode(varyingNameGSin, VaryingSeg, GEOMETRY);
+		WriteToShaderCode(varyingNameGSout, VaryingSeg, GEOMETRY);
+		WriteToShaderCode(varyingDeclGS, MainGeomSeg, GEOMETRY);
 	}
 	else if (type == GEOMETRY) {
 		WriteToShaderCode(varyingNameGSout, VaryingSeg, GEOMETRY);
@@ -186,7 +232,6 @@ std::string OutputNode::CreateVaryingPipeline(ShaderType type,std::string varTyp
 	WriteToShaderCode(varyingNameFS, VaryingSeg, FRAGMENT);
 	
     
-
 	return ""; //return the new name? no because depending on the shader it will be used in then 
 }
 

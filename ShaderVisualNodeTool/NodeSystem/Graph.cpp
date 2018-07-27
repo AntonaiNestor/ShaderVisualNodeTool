@@ -727,17 +727,17 @@ std::string Graph::GetShaderPrefix(ShaderType type, bool usecase)
 		return "v";
 		break;
 	}
-	//case(VERTEX): {
-	//	return "v";
-	//	break;
-	//}
-	//case(VERTEX): {
-	//	return "v";
-	//	break;
-	//}
+	case(TESSELATION_CONTROL): {
+		return  usecase ? "tc" : "v";
+		break;
+	}
+	case(TESSELATION_EVALUATION): {
+		return  usecase ? "te" : "tc";
+		break;
+	}
 	case(GEOMETRY): {
 		//this will change 
-		return  usecase ? "g" : "v";
+		return  usecase ? "g" : "te";
 		break;
 	}
 	case(FRAGMENT): {
@@ -757,9 +757,8 @@ std::string Graph::GetShaderPrefix(ShaderType type, bool usecase)
 void Graph::CreateProgramUniform(std::string Varname)
 {
 	dynamic_cast<OutputNode&>(*root).WriteToShaderCode(Varname, UniformSeg, VERTEX);
-	/*
-		TESSELATION HERE	
-	*/
+	dynamic_cast<OutputNode&>(*root).WriteToShaderCode(Varname, UniformSeg, TESSELATION_CONTROL);
+	dynamic_cast<OutputNode&>(*root).WriteToShaderCode(Varname, UniformSeg, TESSELATION_EVALUATION);
 	dynamic_cast<OutputNode&>(*root).WriteToShaderCode(Varname, UniformSeg, GEOMETRY);
 	dynamic_cast<OutputNode&>(*root).WriteToShaderCode(Varname, UniformSeg, FRAGMENT);
 }
