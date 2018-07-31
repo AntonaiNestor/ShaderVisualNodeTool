@@ -6,8 +6,8 @@
 layout(vertices = 3) out;
 
 //$Varyings$
-in vec2 Vtex[];
-out vec2 TCTex[];
+//in vec2 Vtex[];
+//out vec2 TCTex[];
 
 //$Uniforms$
 uniform float TessLevelInner;
@@ -21,8 +21,11 @@ uniform float TessLevelOuter;
 
 void main(){
 
-   gl_out[gl_InvocationID].gl_Position = gl_in[gl_InvocationID].gl_Position;
-   TCTex[gl_InvocationID]= Vtex[gl_InvocationID];
+
+	gl_out[gl_InvocationID].gl_Position = gl_in[gl_InvocationID].gl_Position;
+
+   // + vec4(-2.0f,0.0f,0.0f,0.0f);
+   //TCTex[gl_InvocationID] = Vtex[gl_InvocationID];
  
     if (gl_InvocationID == 0) {
 		gl_TessLevelInner[0] = TessLevelInner;

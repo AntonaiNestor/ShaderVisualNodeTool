@@ -330,15 +330,15 @@ void VisualNode::DrawInputNode(ImDrawList * drawList, ImVec2 offset)
 			ImGui::SetCursorScreenPos(ImVec2(NodeRelevantPos.x, NodeRelevantPos.y + 1 + TITLE_BOX_HEIGHT));
 
 			//This needs to move to a central position
-			std::string Matrices[4] = {"Model", "View", "Projection","MVP"};
-			const char* MatricesCC[4] = { "Model", "View", "Projection","MVP" };
+			std::string Matrices[5] = {"Model", "View", "Projection","MV","MVP"};
+			const char* MatricesCC[5] = { "Model", "View", "Projection","MV","MVP" };
 			const char*  curr_choice = (GNode->Output[0].Name).c_str() ;
 
 			//Display a dropdown menu with the available matrices to choose from. For now it iwll only be Model,Projection,View,MVP
 			if (ImGui::BeginCombo("a" + GNode->UniqueID, curr_choice, 1)) // The second parameter is the label previewed before opening the combo.
 			{
 
-				for (int n = 0; n < 4; n++)
+				for (int n = 0; n < 5; n++)
 				{
 					bool is_selected = !(GNode->Output[0].Name.compare(Matrices[n]));
 					if (ImGui::Selectable(MatricesCC[n], is_selected)) {

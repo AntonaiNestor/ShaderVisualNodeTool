@@ -158,24 +158,29 @@ OutputNode::~OutputNode()
 std::string OutputNode::CreateVaryingPipeline(ShaderType type,std::string varType, std::string varName, std::string assignValue)
 {
 	//the varying string that need to be written in the VS and the FS
-	std::string varyingNameVS = "out " + varType + "v" + varName + " ;";
-	std::string varyingNameFS = "in " + varType + "g" + varName + " ;";
-	std::string varyingNameGSin = "in " + varType + "te" + varName + "[]" + " ;";
-	std::string varyingNameGSout = "out " + varType + "g" + varName + " ;";
+	std::string varyingNameVS = "out " + varType + " v" + varName + " ;";
+	std::string varyingNameFS = "in " + varType + " g" + varName + " ;";
+	std::string varyingNameGSin = "in " + varType + " te" + varName + "[]" + " ;";
+	std::string varyingNameGSout = "out " + varType + " g" + varName + " ;";
 
-	std::string varyingDeclGS = "g" + varName + " = " + "te" + varName + "[i]" + " ;";
+	std::string varyingDeclGS = "g" + varName + " = " + " te" + varName + "[i]" + " ;";
 	std::string varyingDeclGSE = "g" + varName  + assignValue + " ;"; //what is this?
 
-	std::string varyingDeclTCS = "tc" + varName + " = " + "v" + varName + "[]" + " ;";
-	std::string varyingDeclTCSE = "tc" + varName + assignValue + " ;"; //what is this?
+	//pretty hardcoded with the gl_invocationID but it is pretty standard
+	std::string varyingDeclTCS = "tc" + varName + " [gl_InvocationID]" +" = " + " v" + varName + "[gl_InvocationID]" + " ;";
+	std::string varyingDeclTCSE = "tc" + varName+ "[]" + assignValue + " ;"; //what is this?
 
-	std::string varyingDeclTES = "te" + varName + " = " + "tc" + varName + "[]" + " ;";
+	//this is problematic, I need to think of a better way
+	std::string varyingDeclTES = "te" + varName + "+= "+ " tc" + varName + "[i]" +" * gl_TessCoord[i];";
+	std::string varyingDeclTESinit = "te" + varName + "= " + util::GetStringZeroValueType(util::stringToValueType(varType)) +  ";";
+	//std::string varyingDeclTES = "te" + varName + "= " + "tc" + varName + "[i]" + ";";
 	std::string varyingDeclTESE = "te" + varName + assignValue + " ;"; //what is this?
 
-	std::string varyingNameTCSin = "in " + varType + "v" + varName + " ;";
-	std::string varyingNameTCSout = "out " + varType + "tc" + varName + " ;";
-	std::string varyingNameTESin = "in " + varType + "tc" + varName + " ;";
-	std::string varyingNameTESout = "out " + varType + "te" + varName + " ;";
+	std::string varyingNameTCSin = "in " + varType + " v" + varName + "[]" + " ;"; //dealing with structs as input output
+	std::string varyingNameTCSout = "out " + varType + " tc" + varName + "[]" + " ;";
+	std::string varyingNameTESin = "in " + varType + " tc" + varName + "[]" + " ;"; //only input is a struct
+	std::string varyingNameTESout = "out " + varType + " te" + varName + " ;";
+
 	//assign value contains the = 
 	//write in VS ,GS and  FS
 
@@ -193,7 +198,8 @@ std::string OutputNode::CreateVaryingPipeline(ShaderType type,std::string varTyp
 		//TES
 		WriteToShaderCode(varyingNameTESin, VaryingSeg, TESSELATION_EVALUATION);
 		WriteToShaderCode(varyingNameTESout, VaryingSeg, TESSELATION_EVALUATION);
-		WriteToShaderCode(varyingDeclTES, MainSeg, TESSELATION_EVALUATION);
+		WriteToShaderCode(varyingDeclTESinit, MainSeg, TESSELATION_EVALUATION);
+		WriteToShaderCode(varyingDeclTES, MainGeomSeg, TESSELATION_EVALUATION);
 		//Geometry
 		WriteToShaderCode(varyingNameGSin, VaryingSeg, GEOMETRY);
 		WriteToShaderCode(varyingNameGSout, VaryingSeg, GEOMETRY);

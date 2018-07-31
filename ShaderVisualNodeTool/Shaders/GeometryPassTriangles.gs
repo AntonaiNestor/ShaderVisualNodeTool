@@ -13,11 +13,12 @@ layout (triangles) in;
 
 //$Varyings$
 
-in vec2 TETex[];
-out vec2 GTex;
+//in vec2 TETex[];
+//out vec2 GTex;
 
 //Uniforms-Standard
 uniform mat4 Model;
+uniform mat4 MV;
 uniform mat4 MVP ;
 
 
@@ -44,7 +45,7 @@ void main() {
 	//the 3 needs to change according to the primitive list
 	for (int i = 0; i < 3 ; i ++)
 	{
-		GTex = TETex[i];
+		//GTex = TETex[i];
 		 gl_Position = gl_in[i].gl_Position;
 		
 		//$MainGeom$

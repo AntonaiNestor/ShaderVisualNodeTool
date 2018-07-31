@@ -12,7 +12,7 @@ layout (location = 4) in vec3 aBitangents;
 //$Varyings$
 
 
-out vec2 Vtex;
+//out vec2 Vtex;
 // -$
 
 //Uniform Buffer Object - Be mindful of the memory layout for different hardware maybe
@@ -25,6 +25,7 @@ layout (std140) uniform Matrices
 
 //Uniforms-Standard
 uniform mat4 Model;
+uniform mat4 MV;
 uniform mat4 MVP ;
 
 //$Uniforms$
@@ -39,7 +40,7 @@ uniform mat4 MVP ;
 void main()
 {
 
-	Vtex=aTexCoords;
+	//Vtex=aTexCoords;
 
 	//Main - Default
     gl_Position = (Projection* View* Model* vec4(aPos, 1.0)) ; 

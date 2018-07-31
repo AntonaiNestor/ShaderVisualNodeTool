@@ -20,13 +20,14 @@ layout (std140) uniform Matrices
 
 //Uniforms-Standard
 uniform mat4 Model;
+uniform mat4 MV;
 uniform mat4 MVP ;
 uniform float test;
 uniform mat4 view;
 uniform vec4 InputCol;
 
 //$Uniforms$
-in vec2 GTex;
+//in vec2 GTex;
 // -$
 
 

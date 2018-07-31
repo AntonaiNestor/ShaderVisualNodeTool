@@ -134,11 +134,11 @@ int main()
 	example1= example;
 	std::cout << example1.f << std::endl;
 	
-	std::string str = "test";
+	std::string str = "vec3";
 	std::cout << str + " Const char" << std::endl;
-	str.clear();
+	//str.clear();
 	std::cout << str << std::endl;
-	std::cout << str.compare("");
+	std::cout << str.compare("vec3");
 
 
 
@@ -149,8 +149,8 @@ int main()
 
 	// LOAD MODEL
 	//Make Path relevant
-	char path[] = "D:/Graphics Libraries/Resources/Suzanne.obj";
-	//char path[] = "D:/Graphics Libraries/Resources/Suzanne.obj";
+	char path[] = "D:/Graphics Libraries/Resources/Suzanne1.obj";
+	//char path[] = "D:/Graphics Libraries/Resources/Cube.obj";
 	//Shader shader("Shaders/SimpleVertexShader.vert", "Shaders/SimpleFragmentShader.fs");
 	//Shader shader("Shaders/SimpleVertexShader.vert", "Shaders/SimpleFragmentShader.fs","Shaders/GeometryPassTriangles.gs");
 	Shader shader("Shaders/SimpleVertexShader.vert",
@@ -314,7 +314,7 @@ int main()
 	graph->ReadNodeTypes("NodeSystem/NodeTypes");
 
 
-	GUI->CreateNode(ImVec2(400, 300), OutputnodeT,"Fragment");
+	GUI->CreateNode(ImVec2(500, 300), OutputnodeT,"Fragment");
 	//GUI->CreateNode(ImVec2(200, 300 ) , ShadernodeT,"Vertex");
 	graph->root = graph->NodeList.at(0);
 
@@ -407,7 +407,7 @@ int main()
 			glm::mat4 projection;
 		
 
-			view = glm::lookAt(glm::vec3(0.0f, 5.0f, 5.0f), //camera pos
+			view = glm::lookAt(glm::vec3(0.0f, 0.0f, 5.0f), //camera pos
 				glm::vec3(0.0f, 0.0f, 0.0f), //camera target
 				glm::vec3(0.0f, 1.0f, 0.0f)); //up
 
@@ -432,13 +432,17 @@ int main()
 
 			shader.Use();
 			
-			glm::mat4 model = glm::translate(glm::vec3(4.5f, 0.0f, 0.0f));// * glm::rotate(glm::radians(45.0f),glm::vec3(1.0f, 0.0f, 0.0f));
+			glm::mat4 model = glm::translate(glm::vec3(3.5f, 0.0f, 0.0f)) * glm::scale(glm::vec3(1.5f, 1.5f, 1.5f)); // * glm::rotate(glm::radians(45.0f),glm::vec3(1.0f, 0.0f, 0.0f));
 			unsigned int modelLoc = glGetUniformLocation(shader.ID, "Model");
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
 			glm::mat4 MVP = projection * view * model;
 			unsigned int MVPLoc = glGetUniformLocation(shader.ID, "MVP");
 			glUniformMatrix4fv(MVPLoc, 1, GL_FALSE, glm::value_ptr(MVP));
+
+			glm::mat4 MV = view * model;
+			unsigned int MVLoc = glGetUniformLocation(shader.ID, "MV");
+			glUniformMatrix4fv(MVLoc, 1, GL_FALSE, glm::value_ptr(MV));
 
 			glUniform1i(glGetUniformLocation(shader.ID, "myTexture1"), 0);
 

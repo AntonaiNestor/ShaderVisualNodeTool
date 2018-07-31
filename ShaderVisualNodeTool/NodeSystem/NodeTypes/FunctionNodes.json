@@ -489,12 +489,12 @@
         },
         {
           "SlotType": "Output",
-          "SlotName": "Vec3DividedbyW",
+          "SlotName": "DividedbyW",
           "VariableType": "vec3"
         }
       ],
       "Code": [
-        " vec3 Vec3DividedbyW =vec3( $vec4) / $vec4.w ;"
+        " vec3 DividedbyW =vec3( $vec4) / $vec4.w ;"
       ]
 
     },
@@ -594,6 +594,38 @@
       "Code": [
 
         "vec4 TexColor = texture( $Texture, $TexCoords) ;"
+
+      ]
+
+    },
+    {
+      "NodeType": "Function Node",
+      "Name": "MultiplyVec4",
+      "AvailableShaders": [
+        "Vertex",
+        "Geometry",
+        "Fragment"
+      ],
+      "Slots": [
+        {
+          "SlotType": "Input",
+          "SlotName": "$vec1",
+          "VariableType": "vec4"
+        },
+        {
+          "SlotType": "Input",
+          "SlotName": "$vec2",
+          "VariableType": "vec4"
+        },
+        {
+          "SlotType": "Output",
+          "SlotName": "Vec4MultResult",
+          "VariableType": "vec4"
+        }
+      ],
+      "Code": [
+
+        "vec4 Vec4MultResult = $vec1 * $vec2 ;"
 
       ]
 

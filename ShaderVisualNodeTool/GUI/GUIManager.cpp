@@ -243,7 +243,7 @@ void GUIManager::RenderDrawing(ImDrawList* drawlist)
 void GUIManager::SetupGUI(GLFWwindow* window)
 {
 	// NodeView Panel position and size
-	NodeViewPos = ImVec2(100, 100);
+	NodeViewPos = ImVec2(10, 100);
 	NodeViewSize = ImVec2(1200, 900);
 
 	// Setup ImGui binding

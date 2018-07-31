@@ -92,7 +92,7 @@ std::string util::GetStringValueType(ValueType type, bool defaultValue)
 			break;
 		}
 		case(Float): {
-			StringVal = "1.0f ";
+			StringVal = "1.0f";
 			break;
 		}
 		case(Int): {
@@ -100,32 +100,32 @@ std::string util::GetStringValueType(ValueType type, bool defaultValue)
 			break;
 		}
 		case(Vec2): {
-			StringVal = "vec2(1.0f,1.0f) ";
+			StringVal = "vec2(1.0f,1.0f)";
 			break;
 
 		}
 		case(Vec3): {
-			StringVal = "vec3(1.0f,1.0f,1.0f) ";
+			StringVal = "vec3(1.0f,1.0f,1.0f)";
 			break;
 
 		}
 		case(Vec4): {
-			StringVal = "vec4(1.0f,1.0f,1.0f,1.0f) ";
+			StringVal = "vec4(1.0f,1.0f,1.0f,1.0f)";
 			break;
 
 		}
 		case(Mat4): {
-			StringVal = "mat4 ";
+			StringVal = "mat4()";
 			break;
 		}
 
 		case(Sampler2D): {
-			StringVal = "Sampler ";
+			StringVal = "Sampler";
 			break;
 
 		}
 		case(SamplerCube): {
-			StringVal = "SamplerCube ";
+			StringVal = "SamplerCube";
 			break;
 
 		}
@@ -142,34 +142,90 @@ std::string util::GetStringValueType(ValueType type, bool defaultValue)
 	
 }
 
+std::string util::GetStringZeroValueType(ValueType type)
+{
+	std::string StringVal;
+	switch (type) {
+
+	case(Bool): {
+		StringVal = "false";
+		break;
+	}
+	case(Float): {
+		StringVal = "0.0f ";
+		break;
+	}
+	case(Int): {
+		StringVal = "0";
+		break;
+	}
+	case(Vec2): {
+		StringVal = "vec2(0.0f,0.0f) ";
+		break;
+
+	}
+	case(Vec3): {
+		StringVal = "vec3(0.0f,0.0f,0.0f) ";
+		break;
+
+	}
+	case(Vec4): {
+		StringVal = "vec4(0.0f,0.0f,0.0f,0.0f) ";
+		break;
+
+	}
+	case(Mat4): {
+		StringVal = "mat4() ";
+		break;
+	}
+
+	case(Sampler2D): {
+		StringVal = "Sampler ";
+		break;
+
+	}
+	case(SamplerCube): {
+		StringVal = "SamplerCube ";
+		break;
+
+	}
+	default:
+
+		break;
+	}
+
+	return StringVal;
+}
+
 
 ValueType util::stringToValueType(std::string strVal) {
+
 	//The comparison feels weird, the upper case and lower case affects a lot
-	if (strVal.compare("bool") == 0) {
+	if (strVal.compare("bool") == 0 || strVal.compare("Bool") == 0 || strVal.compare("bool ") == 0) {
 		return ValueType::Bool;
 	}
-	else if (strVal.compare("float") == 0) {
+	else if (strVal.compare("float") == 0 || strVal.compare("Float") == 0 || strVal.compare("float ") == 0) {
 		return ValueType::Float;
 	}
-	else if (strVal.compare("int") == 0) {
+	else if (strVal.compare("int") == 0|| strVal.compare("Int") == 0 || strVal.compare("int ") == 0) {
 		return ValueType::Int;
 	}
-	else if (strVal.compare("vec2") == 0) {
+	else if (strVal.compare("vec2") == 0 || strVal.compare("Vec2") == 0 || strVal.compare("vec2 ") == 0) {
 		return ValueType::Vec2;
 	}
-	else if (strVal.compare("vec3") == 0) {
+	else if (strVal.compare("vec3") == 0 || strVal.compare("Vec3") == 0 || strVal.compare("vec3 ") == 0) {
 		return ValueType::Vec3;
 	}
-	else if (strVal.compare("vec4") == 0) {
+	else if (strVal.compare("vec4") == 0 || strVal.compare("Vec4") == 0 || strVal.compare("vec4 ") == 0) {
 		return ValueType::Vec4;
 	}
-	else if (strVal.compare("mat4") == 0) {
+	else if (strVal.compare("mat4") == 0 || strVal.compare("Mat4") == 0 || strVal.compare("mat4 ") == 0) {
 		return ValueType::Mat4;
 	}
-	else if (strVal.compare("sampler2D") == 0) {
+	else if (strVal.compare("sampler2D") == 0 || strVal.compare("Sampler2D") == 0 || strVal.compare("sampler2D ") == 0) {
 		return ValueType::Sampler2D;
 	}
-	else if (strVal.compare("samplerCube") == 0) {
+	else if (strVal.compare("samplerCube") == 0 || strVal.compare("SamplerCube") == 0) {
 		return ValueType::SamplerCube;
 	}
 	else {
