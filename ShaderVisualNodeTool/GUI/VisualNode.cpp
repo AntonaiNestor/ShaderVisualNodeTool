@@ -844,11 +844,10 @@ void VisualNode::DrawOutputNode(ImDrawList * drawList, ImVec2 offset)
 		int type = 0;
 		auto graph = Graph::getInstance();
 		glGetProgramiv(graph->daShader->ID, GL_GEOMETRY_OUTPUT_TYPE, &type);
-		//std::cout << GL_TRIANGLE_STRIP << std::endl;
-
+		
 		if (type == GL_POINTS) {
 			curr_choice = topologyOption[0];
-			//std::cout << "Points!" << std::endl;
+			
 		}
 		else if (type == GL_LINE_STRIP) {
 			curr_choice = topologyOption[1];
@@ -859,7 +858,7 @@ void VisualNode::DrawOutputNode(ImDrawList * drawList, ImVec2 offset)
 		}
 
 
-		//ImGui::BeginGroup();
+		
 		//Display a dropdown menu with the available topologies
 		ImVec2 MenuPos(ImVec2(NodeRelevantPos.x, NodeRelevantPos.y + TITLE_BOX_HEIGHT ));
 		
@@ -887,6 +886,126 @@ void VisualNode::DrawOutputNode(ImDrawList * drawList, ImVec2 offset)
 			}
 			ImGui::EndCombo();
 		}
+	}
+	else if (GNode->CurrShaderType == TESSELATION_CONTROL) {
+	
+		//Display a dropdown menu with the available topologies
+		ImVec2 MenuPos(ImVec2(NodeRelevantPos.x+10, NodeRelevantPos.y + TITLE_BOX_HEIGHT));
+
+		ImGui::SetCursorScreenPos(MenuPos);
+		ImGui::PushItemWidth(30);
+
+		if (ImGui::InputInt("NumVerticesOut", &(Graph::getInstance()->TCSVertNumberOut), 0, 0, 0.0f)) {
+			Manager->ValueChanged = true;
+		}
+
+		ImVec2 PatchPos(ImVec2(NodeRelevantPos.x + 10, NodeRelevantPos.y + VNodeSize.y - InputMargin + 5));
+		ImGui::SetCursorScreenPos(PatchPos);
+		ImGui::PushItemWidth(30);
+
+		if (ImGui::InputInt("PatchSize", &(Graph::getInstance()->PatchSize), 0, 0, 0.0f)) {
+			Manager->ValueChanged = true;
+		}
+	}
+	else if (GNode->CurrShaderType == TESSELATION_EVALUATION) {
+	
+	
+		auto graph = Graph::getInstance();
+		
+
+		//Display a dropdown menu with the available topologies
+
+		int Menu1Size = 100;
+		int Menu2Size = 100;
+		int Menu3Size = 50;
+
+		ImVec2 MenuPos1(ImVec2(NodeRelevantPos.x, NodeRelevantPos.y + TITLE_BOX_HEIGHT));
+		ImVec2 MenuPos2(ImVec2(NodeRelevantPos.x + Menu1Size, NodeRelevantPos.y + TITLE_BOX_HEIGHT));
+		ImVec2 MenuPos3(ImVec2(NodeRelevantPos.x + Menu1Size + Menu2Size, NodeRelevantPos.y + TITLE_BOX_HEIGHT));
+
+		//Menu 1
+		ImGui::SetCursorScreenPos(MenuPos1);
+		ImGui::PushItemWidth(Menu1Size);
+		ImGui::PushID( GNode->UniqueID + MenuPos1.x);
+		if (ImGui::BeginCombo("a" + GNode->UniqueID, graph->TESGenPrimMode, 1)) // The second parameter is the label previewed before opening the combo.
+		{
+			for (int n = 0; n < 3; n++)
+			{
+				bool is_selected = !(graph->TESGenPrimMode == graph->GeneratedPrimitiveMode[n]);
+				if (ImGui::Selectable(graph->GeneratedPrimitiveMode[n], is_selected)) {
+
+					//depending on your selection, choose different uniform name to use
+					//GNode->Output.at(0).Name = Matrices[n];
+					graph->TESGenPrimMode = graph->GeneratedPrimitiveMode[n];
+					//	glProgramParameteri(graph->daShader->ID, GL_GEOMETRY_OUTPUT_TYPE, primOut[n]);
+					Manager->ValueChanged = true;
+
+				}
+
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();   // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
+			}
+			ImGui::EndCombo();
+		}
+		ImGui::PopItemWidth();
+		ImGui::PopID();
+
+
+		//Menu 2
+		ImGui::SetCursorScreenPos(MenuPos2);
+		ImGui::PushItemWidth(Menu2Size);
+		ImGui::PushID(GNode->UniqueID + MenuPos2.x);
+		if (ImGui::BeginCombo("b" + GNode->UniqueID, graph->TESGenSpacing, 1)) // The second parameter is the label previewed before opening the combo.
+		{
+			for (int n = 0; n < 3; n++)
+			{
+				bool is_selected = !(graph->TESGenSpacing == graph->GeneratedSpacing[n]);
+				if (ImGui::Selectable(graph->GeneratedSpacing[n], is_selected)) {
+
+					//depending on your selection, choose different uniform name to use
+					//GNode->Output.at(0).Name = Matrices[n];
+					graph->TESGenSpacing = graph->GeneratedSpacing[n];
+					//	glProgramParameteri(graph->daShader->ID, GL_GEOMETRY_OUTPUT_TYPE, primOut[n]);
+					Manager->ValueChanged = true;
+
+				}
+
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();   // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
+			}
+			ImGui::EndCombo();
+		}
+		ImGui::PopItemWidth();
+		ImGui::PopID();
+
+
+		//Menu 3
+		ImGui::SetCursorScreenPos(MenuPos3);
+		ImGui::PushItemWidth(Menu3Size);
+		ImGui::PushID(GNode->UniqueID + MenuPos3.x);
+		if (ImGui::BeginCombo("c" + GNode->UniqueID, graph->TESVertexOrder, 1)) // The second parameter is the label previewed before opening the combo.
+		{
+			for (int n = 0; n < 2; n++)
+			{
+				bool is_selected = !(graph->TESVertexOrder == graph->VertexOrder[n]);
+				if (ImGui::Selectable(graph->VertexOrder[n], is_selected)) {
+
+					//depending on your selection, choose different uniform name to use
+					//GNode->Output.at(0).Name = Matrices[n];
+					graph->TESVertexOrder = graph->VertexOrder[n];
+					//	glProgramParameteri(graph->daShader->ID, GL_GEOMETRY_OUTPUT_TYPE, primOut[n]);
+					Manager->ValueChanged = true;
+
+				}
+
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();   // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
+			}
+			ImGui::EndCombo();
+		}
+		ImGui::PopItemWidth();
+		ImGui::PopID();
+		
 	}
 
 	

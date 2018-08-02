@@ -78,8 +78,6 @@ void ShaderNode::Compile(std::shared_ptr<Node> root)
 			auto SlotName = std::to_string(Input.at(i).ConnectedNode->UniqueID) + "->" + std::to_string(Input.at(i).ConnectionIndex);
 			tempCode = Manager->ReplaceVarNames(tempCode, "$", shaderNamePrefix + Manager->VarToSlotMap[SlotName]);
 
-			//redundant 
-			//Input.at(i).Value = Input.at(i).ConnectedNode->Output.at(0).Value;
 
 			//write on the main function of the appropriate shader the declaration
 
@@ -90,6 +88,7 @@ void ShaderNode::Compile(std::shared_ptr<Node> root)
 			else if (shadeType == GEOMETRY && i != 0) {
 				dynamic_cast<OutputNode&>(*root).WriteToShaderCode(tempCode, MainGeomSeg, shadeType);
 			}
+			
 			else {
 				dynamic_cast<OutputNode&>(*root).WriteToShaderCode(tempCode, MainSeg, shadeType);
 			}

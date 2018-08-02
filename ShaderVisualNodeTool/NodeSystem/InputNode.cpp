@@ -129,7 +129,8 @@ void InputNode::Compile(std::shared_ptr<Node> root) {
 			
 			if (!Output[outslot].ConnectedNode.empty()) {
 
-				//Assign unique name for this slot output
+				//Assign unique name for this slot output. Here we should ensure that this is unique cause if you have multiple of these nodes then names that correspond
+				// to GL variables will break
 				std::string name = Output.at(outslot).Name;
 				std::string slotName = std::to_string(this->UniqueID) + "->" + std::to_string(outslot);
 				ValueType outputType = Output.at(outslot).VariableType;
@@ -178,8 +179,14 @@ void InputNode::Compile(std::shared_ptr<Node> root) {
 						//TODO FIX THIS ISSUE PLEASE. THIS IS SO UGLY. why do I even need another main segment for the geometry again? I do not seem to use it
 						if (ShaderType(CurrShaderType) == VERTEX)
 							dynamic_cast<OutputNode&>(*root).WriteToShaderCode(AttribDeclaration, MainSeg, VERTEX);
-						else if (ShaderType(CurrShaderType) == GEOMETRY && connID!=0)
+						else if (ShaderType(CurrShaderType) == TESSELATION_CONTROL && outslot != 0)
+							dynamic_cast<OutputNode&>(*root).WriteToShaderCode(AttribDeclaration, MainSeg, TESSELATION_CONTROL);
+						else if (ShaderType(CurrShaderType) == TESSELATION_EVALUATION && outslot != 0)
+							dynamic_cast<OutputNode&>(*root).WriteToShaderCode(AttribDeclaration, MainSeg, TESSELATION_EVALUATION);
+						else if (ShaderType(CurrShaderType) == GEOMETRY && outslot !=0)
 							dynamic_cast<OutputNode&>(*root).WriteToShaderCode(AttribDeclaration, MainGeomSeg, GEOMETRY);
+						else if (ShaderType(CurrShaderType) == FRAGMENT )
+							dynamic_cast<OutputNode&>(*root).WriteToShaderCode(AttribDeclaration, MainSeg, FRAGMENT);
 
 						
 
@@ -475,7 +482,52 @@ std::string InputNode::DeclareAttribute(int index, ShaderType type)
 
 		break;
 	}
+	case(TESSELATION_CONTROL): {
+		switch (index) {
+		case (0): //THIS CASE WILL NOT BE TRIGGERED
+			return  "  = gl_in[i].gl_Position ;";
+			break;
+		case(1):
+			return  " = gl_PatchVerticesIn ;";
+			break;
+		case(2):
+			return  " = gl_PrimitiveID ;";
+			break;
+		case(3):
+			return  " = gl_InvocationID ;";
+			break;
+		default:
+			return  " ";
+			break;
 
+
+		}
+		break;
+
+	}
+	case(TESSELATION_EVALUATION): {
+		switch (index) {
+		case (0)://THIS CASE WILL NOT BE TRIGGERED
+			return  "  = gl_in[i].gl_Position ;";
+			break;
+		case(1):
+			return  " = gl_PatchVerticesIn ;";
+			break;
+		case(2):
+			return  " = gl_PrimitiveID ;";
+			break;
+		case(3):
+			return  " = gl_TessCoord ;";
+			break;
+		default:
+			return  " ";
+			break;
+
+
+		}
+		break;
+
+	}
 	case(GEOMETRY): {
 		switch (index) {
 		case (0):
@@ -485,10 +537,27 @@ std::string InputNode::DeclareAttribute(int index, ShaderType type)
 			return  " = gl_InvocationID ;";
 			break;
 		case(2):
-			return  " =  gl_PrimitiveIDIn ;";
+			return  " = gl_PrimitiveIDIn ;";
 			break;
-		case(3):
-			return  " = gl_in[i].gl_PointSize ;";
+		default:
+			return  " ";
+			break;
+
+
+		}
+		break;
+
+	}
+	case(FRAGMENT): {
+		switch (index) {
+		case (0):
+			return  "  = gl_FragCoord ;";
+			break;
+		case(1):
+			return  " = gl_FrontFacing ;";
+			break;
+		case(2):
+			return  " =  gl_PointCoord ;";
 			break;
 		default:
 			return  " ";

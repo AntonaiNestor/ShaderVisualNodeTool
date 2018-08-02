@@ -43,7 +43,7 @@ void main() {
 	if (NumOutVertices > 6){ NumOutVertices = 6;}
 
 	//the 3 needs to change according to the primitive list
-	for (int i = 0; i < 3 ; i ++)
+	for (int i = 0; i < NumOutVertices ; i ++)
 	{
 		//GTex = TETex[i];
 		 gl_Position = gl_in[i].gl_Position;

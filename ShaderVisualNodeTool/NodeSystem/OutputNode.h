@@ -18,6 +18,7 @@ public:
 	std::string CreateVaryingPipeline(ShaderType type ,std::string varType, std::string varName,std::string assignValue );
 	void WriteToShaderCode(std::string code, ShaderSection section, ShaderType type);
 	void AssembleShaderCode();
+	void EditLayoutQualifiers();
 	void ClearShaderCode();
 	void Compile(std::shared_ptr<Node> root);
 	std::string CodeString();

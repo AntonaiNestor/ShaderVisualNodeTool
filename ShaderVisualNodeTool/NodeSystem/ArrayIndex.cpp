@@ -49,8 +49,12 @@ void ArrayIndex::Compile(std::shared_ptr<Node> root)
 	tempCode = Graph::getInstance()->ReplaceVarNames(tempCode, tempOutName, outName);
 
 	//Meant only to be used in the Geometry for now
-	dynamic_cast<OutputNode&>(*root).WriteToShaderCode(tempCode, MainGeomSeg, ShaderType(CurrShaderType));
-
+	if (CurrShaderType == GEOMETRY) {
+		dynamic_cast<OutputNode&>(*root).WriteToShaderCode(tempCode, MainGeomSeg, ShaderType(CurrShaderType));
+	}
+	else {
+		dynamic_cast<OutputNode&>(*root).WriteToShaderCode(tempCode, MainSeg, ShaderType(CurrShaderType));
+	}
 
 	HasCompiled = true;
 }

@@ -542,6 +542,10 @@
       "NodeType": "Function Node",
       "Name": "ArrayIndex",
       "AvailableShaders": [
+        "Vertex",
+        "Tess_Control",
+        "Tess_Eval",
+        "Fragment",
         "Geometry"
       ],
       "Slots": [

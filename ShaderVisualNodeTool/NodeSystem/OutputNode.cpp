@@ -340,6 +340,9 @@ void OutputNode::AssembleShaderCode()
 		}
 		
 	}
+
+	EditLayoutQualifiers();
+
 	//this should go in the loop and cout all shaders
 	std::cout << "--Vertex shader--- : " << std::endl;
 	std::cout << shaderCode[0] << std::endl;
@@ -361,6 +364,32 @@ void OutputNode::AssembleShaderCode()
 	std::cout << "----Fragment shader ---- : " << std::endl;
 	std::cout << shaderCode[4] << std::endl;
 	std::cout << "------------------ " << std::endl;
+}
+
+void OutputNode::EditLayoutQualifiers()
+{
+
+	auto graph = Graph::getInstance();
+	//Precompile change layouts and replace other options
+	//Maybe this should be part of the assemble code in the graph
+	std::string TCSlayout = "layout( vertices = " + std::to_string(graph->TCSVertNumberOut) + " ) out ;";
+	shaderCode[1] = graph->ReplaceLine(shaderCode[1], "@", TCSlayout);
+
+
+	//WHAT THE HELL?
+	//You need to have at least a std::string in your + appends when initing for it to accept it
+	// std::string TESlayout ="layout(" + (std::string)(",") + ",";
+	std::string TESlayout = "layout(";
+	TESlayout += graph->TESGenPrimMode;
+	TESlayout += ",";
+	TESlayout += graph->TESGenSpacing;
+	TESlayout += ",";
+	TESlayout += graph->TESVertexOrder;
+	TESlayout += ") out ;";
+
+	shaderCode[2] = graph->ReplaceLine(shaderCode[2], "@", TESlayout);
+
+
 }
 
 void OutputNode::ClearShaderCode()

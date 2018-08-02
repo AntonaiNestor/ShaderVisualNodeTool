@@ -50,8 +50,8 @@ const unsigned int SCR_WIDTH = 1920;
 const unsigned int SCR_HEIGHT = 1080;
 bool pressed=false;
 //testing, these should not be global
-float InnerTesselationLevel = 1.0;
-float OuterTesselationLevel = 1.0;
+float InnerTesselationLevel = 2.0;
+float OuterTesselationLevel = 2.0;
 const char* shaderStageName = nullptr;
 int Options = 0;
 
@@ -72,6 +72,7 @@ union utest {
 
 int main()
 {
+
 	// glfw: initialize and configure
 	// ------------------------------
 	//glfwInit();
@@ -128,17 +129,17 @@ int main()
 
 	bool testbool = true;
 
-	std::cout << std::to_string(example.f) << std::endl;
-	testbool = false;
-	std::cout << std::to_string(testbool) << std::endl;
-	example1= example;
-	std::cout << example1.f << std::endl;
-	
-	std::string str = "vec3";
-	std::cout << str + " Const char" << std::endl;
-	//str.clear();
-	std::cout << str << std::endl;
-	std::cout << str.compare("vec3");
+	//std::cout << std::to_string(example.f) << std::endl;
+	//testbool = false;
+	//std::cout << std::to_string(testbool) << std::endl;
+	//example1= example;
+	//std::cout << example1.f << std::endl;
+	//
+	//std::string str = "vec3";
+	//std::cout << str + " Const char" << std::endl;
+	////str.clear();
+	//std::cout << str << std::endl;
+	//std::cout << str.compare("vec3");
 
 
 
@@ -224,8 +225,8 @@ int main()
 	 int vertexColorLocation = glGetUniformLocation(shader.ID, "InputCol");
 	 glUniform4f(vertexColorLocation, color[0], color[1], color[2], color[3]);
 	 //shader.setFloat("test",0.5);
-	 shader.SetFloat("TessLevelInner", 2.0);
-	 shader.SetFloat("TessLevelOuter", 2.0);
+	 shader.SetFloat("TessLevelInner", 1.0);
+	 shader.SetFloat("TessLevelOuter", 1.0);
 	 shader.SetFloat("time", glfwGetTime());
 	 glUseProgram(0);
 
@@ -258,7 +259,7 @@ int main()
 	//General GL options
 	glEnable(GL_PROGRAM_POINT_SIZE);
 	glEnable(GL_DEPTH_TEST);
-	glPatchParameteri(GL_PATCH_VERTICES, 3);
+	
 
 
 
@@ -283,6 +284,14 @@ int main()
 	std::string code;
 
 	
+	/*std::string testCode = "bla bla bla\n //@  \n  layout(vertices = 3) out;  \n bla bla";
+	std::cout << testCode << std::endl << std::endl;
+	std::string newstr = "layout (vertices = 4) out ;";
+	testCode = graph->ReplaceLine(testCode, "@", newstr);
+	std::cout << testCode << std::endl;
+	std::string newstr1 = "layout (vertices = 5) out ;";
+	testCode = graph->ReplaceLine(testCode, "@", newstr1);
+	std::cout << testCode << std::endl;*/
 
 
 	bool windowOpen = true;
@@ -298,12 +307,6 @@ int main()
 	GUIManager* GUI = GUIManager::getInstance();
 
 	GUI->SetupGUI(window);
-
-	/*GUI->CreateNode(ImVec2(100,100),InputNode,"float");
-	GUI->CreateNode(ImVec2(100,200),InputNode,"float");
-	GUI->CreateNode(ImVec2(100,300), InputNode,"float");
-	GUI->CreateNode(ImVec2(100,400), InputNode, "float");*/
-	//GUI->CreateNode(ImVec2(250,200),FunctionNode,"Addition");
 
 
 
@@ -460,8 +463,8 @@ int main()
 			int vertexColorLocation = glGetUniformLocation(shader.ID, "InputCol");
 			glUniform4f(vertexColorLocation, color[0], color[1], color[2], color[3]);
 			//shader.setFloat("test",0.5);
-			//shader.SetFloat("TessLevelInner", 1.0);
-			//shader.SetFloat("TessLevelOuter", 1.0);
+			shader.SetFloat("TessLevelInner", InnerTesselationLevel);
+			shader.SetFloat("TessLevelOuter", OuterTesselationLevel);
 			shader.SetFloat("time", glfwGetTime());
 			glUseProgram(0);
 
@@ -536,29 +539,35 @@ void processInput(GLFWwindow *window,Shader *shader)
 
 
 	//inrease Inner tess level
-	if (glfwGetKey(window, GLFW_KEY_U) == GLFW_RELEASE) {
-		InnerTesselationLevel++;
-		shader->SetFloat("TessLevelInner", InnerTesselationLevel);
+	if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS) {
+		InnerTesselationLevel = 2;
+		std::cout << "Inner Tess = " << InnerTesselationLevel << std::endl;
+		//shader->SetFloat("TessLevelInner", InnerTesselationLevel);
 	}
 		
 	//decrease Inner tess level
-	if (glfwGetKey(window, GLFW_KEY_J) == GLFW_RELEASE) {
-		if (InnerTesselationLevel>1.0)
-			InnerTesselationLevel--;
-		shader->SetFloat("TessLevelInner", InnerTesselationLevel);
+	if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS) {
+		if (InnerTesselationLevel>1.0){
+			InnerTesselationLevel = 1;
+			std::cout << "Inner Tess = " << InnerTesselationLevel << std::endl;
+			//shader->SetFloat("TessLevelInner", InnerTesselationLevel);
+		}
 	}
 		
 	//increase Outer tess level
-	if (glfwGetKey(window, GLFW_KEY_I) == GLFW_RELEASE)
+	if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
 	{
-		OuterTesselationLevel++;
-		shader->SetFloat("TessLevelOuter", OuterTesselationLevel);
+		OuterTesselationLevel = 2 ;
+		std::cout << "Outer Tess = " << OuterTesselationLevel << std::endl;
+		//shader->SetFloat("TessLevelOuter", OuterTesselationLevel);
 	}
 	//decreate Outer Tess Level
-	if (glfwGetKey(window, GLFW_KEY_K) == GLFW_RELEASE) {
-		if (OuterTesselationLevel>1.0)
-			OuterTesselationLevel--;
-		shader->SetFloat("TessLevelOuter", OuterTesselationLevel);
+	if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS) {
+		if (OuterTesselationLevel>1.0){
+			OuterTesselationLevel =1 ;
+			std::cout << "Outer Tess = " << OuterTesselationLevel << std::endl;
+		//	shader->SetFloat("TessLevelOuter", OuterTesselationLevel);
+		}
 	}
 		
 }

@@ -23,6 +23,38 @@
     },
     {
       "NodeType": "ShaderNode",
+      "Name": "Tess_Control",
+      "Slots": [
+        {
+          "SlotType": "Input",
+          "SlotName": " ControlPointPos",
+          "VariableType": "vec4"
+        },
+        {
+          "SlotType": "Input",
+          "SlotName": " TesselationOuterLevels",
+          "VariableType": "vec4"
+        },
+        {
+          "SlotType": "Input",
+          "SlotName": "TesselationInnerLevels",
+          "VariableType": "vec2"
+        }
+      ]
+    },
+    {
+      "NodeType": "ShaderNode",
+      "Name": "Tess_Eval",
+      "Slots": [
+        {
+          "SlotType": "Input",
+          "SlotName": "TesselatedPointPos",
+          "VariableType": "vec4"
+        }
+      ]
+    },
+    {
+      "NodeType": "ShaderNode",
       "Name": "Geometry",
       "Slots": [
         {

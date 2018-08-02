@@ -268,6 +268,13 @@ Shader::Shader(const char* vertexPath, const char* tcsPath, const char* tesPath,
 		unsigned int vertex, fragment, geometry, tcs, tes;
 		int success;
 		char infoLog[512];
+
+
+
+
+		// shader Program
+		ID = glCreateProgram();
+
 		// vertex shader
 		vertex = glCreateShader(GL_VERTEX_SHADER);
 		glShaderSource(vertex, 1, &vShaderCode, NULL);
@@ -295,8 +302,6 @@ Shader::Shader(const char* vertexPath, const char* tcsPath, const char* tesPath,
 		CheckCompileErrors(fragment, "FRAGMENT");
 		
 
-
-
 		fragCode = fragmentCode;
 		vertCode = vertexCode;
 		geomCode = geometryCode;
@@ -310,13 +315,28 @@ Shader::Shader(const char* vertexPath, const char* tcsPath, const char* tesPath,
 		ShaderObjIDs[3] = geometry;
 		ShaderObjIDs[4] = fragment;
 
-		// shader Program
-		ID = glCreateProgram();
 
+		//
+		//THESE DON'T WORK FOR SOME REASON
+		//int temp = 0;
+		//std::cout << temp << std::endl;
+		//glGetProgramiv(ID, GL_TESS_GEN_MODE, &temp);
+		//std::cout << temp << "  " << GL_TRIANGLES << std::endl;
+		//glProgramParameteri(ID, GL_TESS_GEN_MODE, GL_ISOLINES);
+
+		//glGetProgramiv(ID, GL_TESS_GEN_MODE, &temp);
+		//std::cout << temp << "  " << GL_TRIANGLES << std::endl;
+
+
+		//glProgramParameteri(ID, GL_TESS_GEN_SPACING, GL_EQUAL);
+		//glProgramParameteri(ID, GL_TESS_GEN_VERTEX_ORDER, GL_CCW);
+		//glProgramParameteri(ID, GL_TESS_GEN_POINT_MODE, false);
+		glProgramParameteri(ID, GL_TESS_CONTROL_OUTPUT_VERTICES, Graph::getInstance()->TCSVertNumberOut);
 		glProgramParameteri(ID, GL_GEOMETRY_VERTICES_OUT, Graph::getInstance()->GeomMaxVerticesOut);
 		glProgramParameteri(ID, GL_GEOMETRY_INPUT_TYPE, Graph::getInstance()->VertexOutTopology);
 		glProgramParameteri(ID, GL_GEOMETRY_OUTPUT_TYPE, Graph::getInstance()->GeomTopologyOut);
-		//glPatchParameteri(GL_PATCH_VERTICES, Graph::getInstance()->PatchSize);
+		glUseProgram(ID);
+		glPatchParameteri(GL_PATCH_VERTICES, Graph::getInstance()->PatchSize);
 
 		glAttachShader(ID, vertex);
 		glAttachShader(ID, tcs);
@@ -326,6 +346,7 @@ Shader::Shader(const char* vertexPath, const char* tcsPath, const char* tesPath,
 
 		glLinkProgram(ID);
 		CheckCompileErrors(ID, "PROGRAM");
+
 		// delete the shaders as they're linked into our program now and no longer necessary
 		/*glDeleteShader(vertex);
 		glDeleteShader(fragment);
@@ -333,6 +354,7 @@ Shader::Shader(const char* vertexPath, const char* tcsPath, const char* tesPath,
 		glDeleteShader(tcs);
 		glDeleteShader(tes);*/
 	
+		
 }
 
 
@@ -460,7 +482,6 @@ void Shader::EditShader(std::string newVertex, std::string newGeometry, std::str
 
 
 	const char* vShaderCode = tempVert.c_str();
-
 	const char* fShaderCode = tempFrag.c_str();
 	const char* gShaderCode = tempGeom.c_str();
 
@@ -498,6 +519,7 @@ void Shader::EditShader(std::string newVertex, std::string newGeometry, std::str
 	glProgramParameteri(ID, GL_GEOMETRY_INPUT_TYPE, Graph::getInstance()->DrawingTopology);
 	glProgramParameteri(ID, GL_GEOMETRY_OUTPUT_TYPE, Graph::getInstance()->GeomTopologyOut);
 
+
     glAttachShader(ID, vertex); 
 	glAttachShader(ID, geometry); 
 	glAttachShader(ID, fragment); 
@@ -525,6 +547,8 @@ void Shader::EditShader(std::string newVertex, std::string newTcs, std::string n
 {
 	//this should be more generic, but for now all we do is just 
 
+
+
 	std::string tempVert = newVertex;
 	std::string tempTcs = newTcs;
 	std::string tempTes = newTes;
@@ -538,6 +562,10 @@ void Shader::EditShader(std::string newVertex, std::string newTcs, std::string n
 	const char* fShaderCode = tempFrag.c_str();
 	const char* gShaderCode = tempGeom.c_str();
 	
+
+	
+
+
 	// 2. compile shaders
 	unsigned int vertex, fragment, geometry, tcs, tes;
 	int success;
@@ -575,10 +603,15 @@ void Shader::EditShader(std::string newVertex, std::string newTcs, std::string n
 
 	//Geometry out set
 	//std::cout << Graph::getInstance()->GeomTopologyOut << std::endl;
+	glProgramParameteri(ID,GL_TESS_GEN_MODE, GL_TRIANGLES);
+	glProgramParameteri(ID, GL_TESS_GEN_POINT_MODE, false);
+	glProgramParameteri(ID, GL_TESS_GEN_SPACING, GL_EQUAL);
 	glProgramParameteri(ID, GL_GEOMETRY_VERTICES_OUT, Graph::getInstance()->GeomMaxVerticesOut);
 	glProgramParameteri(ID, GL_GEOMETRY_INPUT_TYPE, Graph::getInstance()->VertexOutTopology);
 	glProgramParameteri(ID, GL_GEOMETRY_OUTPUT_TYPE, Graph::getInstance()->GeomTopologyOut);
-	//glPatchParameteri(GL_PATCH_VERTICES, Graph::getInstance()->PatchSize);
+
+	glUseProgram(ID);
+	glPatchParameteri(GL_PATCH_VERTICES, Graph::getInstance()->PatchSize);
 
 	/*if (CheckCompileErrors(vertex, "VERTEX")) { ; std::cout << "Attaching vertex" << std::endl; }
 	if (CheckCompileErrors(vertex, "TESSELATION CONTROL")) { glAttachShader(ID, tcs); std::cout << "Attaching tcs" << std::endl;}

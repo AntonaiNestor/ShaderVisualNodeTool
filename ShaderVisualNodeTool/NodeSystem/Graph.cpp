@@ -486,12 +486,12 @@ void Graph::ReadNodeTypes(std::string FilePath)
 				tempNode.ShadeType = VERTEX;
 				//tempNode.DefaultCode = daShader->vertCode;
 			}
-			else if (name.compare("Tess Eval") == 0) {
-				tempNode.ShadeType = TESSELATION_EVALUATION;
+			else if (name.compare("Tess_Control") == 0) {
+				tempNode.ShadeType = TESSELATION_CONTROL;
 				//tempNode.DefaultCode = daShader->fragCode;
 			}
-			else if (name.compare("Tess Control") == 0) {
-				tempNode.ShadeType = TESSELATION_CONTROL;
+			else if (name.compare("Tess_Eval") == 0) {
+				tempNode.ShadeType = TESSELATION_EVALUATION;
 				//tempNode.DefaultCode = daShader->fragCode;
 			}
 			else if (name.compare("Geometry") == 0) {
@@ -589,6 +589,10 @@ void Graph::ChangeShader(Shader* shader)
 	//shader->EditShader(dynamic_cast<OutputNode&>(*root).shaderCode[0], dynamic_cast<OutputNode&>(*root).shaderCode[1], dynamic_cast<OutputNode&>(*root).shaderCode[2]) ;
 	shader->EditShader(dynamic_cast<OutputNode&>(*root).shaderCode[0], dynamic_cast<OutputNode&>(*root).shaderCode[1], dynamic_cast<OutputNode&>(*root).shaderCode[2], dynamic_cast<OutputNode&>(*root).shaderCode[3], dynamic_cast<OutputNode&>(*root).shaderCode[4]);
 }
+
+
+
+
 
 void Graph::PrintConnections()
 {
@@ -714,6 +718,20 @@ std::string Graph::ReplaceVarNames(std::string code, std::string oldName, std::s
 		start_pos += newName.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
 	}
 	return code;
+}
+
+std::string Graph::ReplaceLine(std::string shaderCode, std::string identifier, std::string newLine)
+{
+	int endLineSize = 2;
+	int posInit = shaderCode.find(identifier);
+	int identifierEndline = shaderCode.find("\n", posInit);
+	int posEnd = shaderCode.find("\n",identifierEndline+1);
+
+	
+
+	shaderCode.replace(identifierEndline + 1, (posEnd ) - (identifierEndline +1), newLine);
+
+	return shaderCode;
 }
 
 //usecase : 0 -> read

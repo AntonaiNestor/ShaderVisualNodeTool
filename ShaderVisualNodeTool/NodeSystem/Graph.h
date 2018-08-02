@@ -74,7 +74,7 @@ public:
 
 	//default  variable values for initialization
 	const char* VariableTypes[5] = { "Constant", "Uniform", "Global","Attribute","TransformationMatrix"};
-	const char* ShaderTypes[5] = {"Vertex","Tesselation Control","Tesselation Eval", "Geometry","Fragment"};
+	const char* ShaderTypes[5] = {"Vertex","Tess_Control","Tess_Eval", "Geometry","Fragment"};
 	bool DefaultBool = false;
 	float DefaultFloat = 1.0f;
 	int DefaultInt = 1;
@@ -125,6 +125,21 @@ public:
 	int DrawingTopology = GL_PATCHES; //DEFAULT TO PATCHES IF THERE IS TESSELATION
 	int VertexOutTopology = GL_TRIANGLES;
 	int PatchSize = 3;
+	//TCS info
+	int TCSVertNumberOut = 3;
+	
+	//TES layout info
+	const char* GeneratedPrimitiveMode[3] = { "isolines", "triangles", "quads" };
+	const char* GeneratedSpacing[3] = { "equal_spacing", "fractional_even_spacing", "fractional_odd_spacing" };
+	const char* VertexOrder[2] = { "cw", "ccw" };
+
+	const char*  TESGenPrimMode = GeneratedPrimitiveMode[1];
+	const char* TESGenSpacing = GeneratedSpacing[0];
+	const char*	 TESVertexOrder = VertexOrder[1];
+	/*int TESGenPrimMode = GL_TRIANGLES;
+	int TESGenSpacing = GL_EQUAL;
+	int TESVertexOrder = GL_CCW;*/
+	bool TESPointMode = false;
 	
 
 	//Global map for variable name convertion
@@ -164,6 +179,7 @@ public:
 	//Depth first backwards traversal and compilation of the nodes
 	void CompileGraph(std::shared_ptr<Node> CurrentNode , std::shared_ptr<Node> rootNode);
 	void ChangeShader(Shader* shader);
+	
 	void PrintConnections();
 	void ResetGraph();
 	void UpdateGraph();
@@ -172,7 +188,7 @@ public:
 	std::string AssignUniqueName(std::string initName, std::string slotName);
 	void ReplaceUniqueName(std::string newName,std::string slotName);
 	std::string ReplaceVarNames(std::string code, std::string oldName, std::string newName);
-
+	std::string ReplaceLine(std::string shaderCode, std::string identifier, std::string newLine);
 	//this shouldn't be part of the graph
 	std::string GetShaderPrefix(ShaderType type,bool usecase);
 	void CreateProgramUniform(std::string Varname);

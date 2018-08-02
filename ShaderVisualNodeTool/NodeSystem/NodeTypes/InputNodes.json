@@ -114,6 +114,75 @@
     },
     {
       "NodeType": "Input Node",
+      "InitVariableType": "Attribute",
+      "Name": "TCSAttributes",
+      "ShaderType": "Tess_Control",
+      "Slots": [
+        {
+          "SlotName": "gl_in[i].gl_Position ",
+          "VariableType": "vec4"
+        },
+        {
+          "SlotName": "TCPatchVertexSize",
+          "VariableType": "int"
+        },
+        {
+          "SlotName": "PrimitiveID",
+          "VariableType": "int"
+        },
+        {
+          "SlotName": "InvocationID",
+          "VariableType": "int"
+        }
+      ]
+    },
+    {
+      "NodeType": "Input Node",
+      "InitVariableType": "Attribute",
+      "Name": "TESAttributes",
+      "ShaderType": "Tess_Eval",
+      "Slots": [
+        {
+          "SlotName": "gl_in[i].gl_Position  ",
+          "VariableType": "vec4"
+        },
+        {
+          "SlotName": "TEPatchVertexSize",
+          "VariableType": "int"
+        },
+        {
+          "SlotName": "PrimitiveID",
+          "VariableType": "int"
+        },
+        {
+          "SlotName": "TessCoordinates",
+          "VariableType": "vec3"
+        }
+
+      ]
+    },
+    {
+      "NodeType": "Input Node",
+      "InitVariableType": "Attribute",
+      "Name": "FragmentAttributes",
+      "ShaderType": "Fragment",
+      "Slots": [
+        {
+          "SlotName": "FragCoord ",
+          "VariableType": "vec4"
+        },
+        {
+          "SlotName": "FrontFacing",
+          "VariableType": "bool"
+        },
+        {
+          "SlotName": "PointCoords",
+          "VariableType": "vec2"
+        }
+      ]
+    },
+    {
+      "NodeType": "Input Node",
       "InitVariableType": "TransformationMatrix",
       "Name": "TransformationMatrix",
       "ShaderType": "Default",
