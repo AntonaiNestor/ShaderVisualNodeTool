@@ -336,19 +336,37 @@ void GUIManager::RenderGUI() {
 			//Function Nodes submenu
 			if (ImGui::BeginMenu("Function Node")) {
 
-
-				for (std::map<std::string,FunctionNodeInformation>::iterator iter = graph->FunctionNodes.begin(); iter != graph->FunctionNodes.end(); ++iter)
-				{
-					
+				int counter = 0;
+				for (auto subcategory : graph->FunctionNodeTypes) {
 					//new menu entry
-					if (ImGui::MenuItem((iter->first).c_str())) {
-						
-						//call constructor for function node
-						CreateNode(MousePos,FunctionnodeT,iter->first);
-					}
+					if (ImGui::BeginMenu(subcategory.c_str()) ) {
 
-				
+						for (auto node : graph->FunctionSubCategories.at(counter)) {
+
+							//new menu entry
+							if (ImGui::MenuItem(node.c_str())) {
+
+								//call constructor for function node
+								CreateNode(MousePos, FunctionnodeT, node);
+							}
+						}
+						ImGui::EndMenu();
+					}
+					counter++;
 				}
+
+				//for (std::map<std::string,FunctionNodeInformation>::iterator iter = graph->FunctionNodes.begin(); iter != graph->FunctionNodes.end(); ++iter)
+				//{
+				//	
+				//	//new menu entry
+				//	if (ImGui::MenuItem((iter->first).c_str())) {
+				//		
+				//		//call constructor for function node
+				//		CreateNode(MousePos,FunctionnodeT,iter->first);
+				//	}
+
+				//
+				//}
 			
 
 				ImGui::EndMenu();

@@ -2,10 +2,14 @@
   "NodeTypes": [
     {
       "NodeType": "Function Node",
-      "Name": "Addition",
+      "Name": "AdditionFloat",
+      "Category": "Mathematical",
       "AvailableShaders": [
         "Vertex",
-        "Fragment"
+        "Tess_Control",
+        "Tess_Eval",
+        "Fragment",
+        "Geometry"
       ],
       "Slots": [
         {
@@ -20,23 +24,159 @@
         },
         {
           "SlotType": "Output",
-          "SlotName": "AddResult",
+          "SlotName": "FAdd",
           "VariableType": "float"
         }
 
       ],
       "Code": [
-        "float AddResult = $a + $b ; ",
-        "//Testing Multiple Lines"
+        "float FAdd = $a + $b ; "
+      ]
+    },
+    {
+      "NodeType": "Function Node",
+      "Name": "AdditionInt",
+      "Category": "Mathematical",
+      "AvailableShaders": [
+        "Vertex",
+        "Tess_Control",
+        "Tess_Eval",
+        "Fragment",
+        "Geometry"
+      ],
+      "Slots": [
+        {
+          "SlotType": "Input",
+          "SlotName": "$a",
+          "VariableType": "int"
+        },
+        {
+          "SlotType": "Input",
+          "SlotName": "$b",
+          "VariableType": "int"
+        },
+        {
+          "SlotType": "Output",
+          "SlotName": "IAdd",
+          "VariableType": "int"
+        }
+
+      ],
+      "Code": [
+        "int IAdd = $a + $b ; "
+      ]
+    },
+    {
+      "NodeType": "Function Node",
+      "Name": "AdditionVec2",
+      "Category": "Mathematical",
+      "AvailableShaders": [
+        "Vertex",
+        "Tess_Control",
+        "Tess_Eval",
+        "Fragment",
+        "Geometry"
+      ],
+      "Slots": [
+        {
+          "SlotType": "Input",
+          "SlotName": "$a",
+          "VariableType": "vec2"
+        },
+        {
+          "SlotType": "Input",
+          "SlotName": "$b",
+          "VariableType": "vec2"
+        },
+        {
+          "SlotType": "Output",
+          "SlotName": "Vec2Add",
+          "VariableType": "vec2"
+        }
+
+      ],
+      "Code": [
+        "vec2 Vec2Add = $a + $b ; "
+      ]
+    },
+    {
+      "NodeType": "Function Node",
+      "Name": "AdditionVec3",
+      "Category": "Mathematical",
+      "AvailableShaders": [
+        "Vertex",
+        "Tess_Control",
+        "Tess_Eval",
+        "Fragment",
+        "Geometry"
+      ],
+      "Slots": [
+        {
+          "SlotType": "Input",
+          "SlotName": "$a",
+          "VariableType": "vec3"
+        },
+        {
+          "SlotType": "Input",
+          "SlotName": "$b",
+          "VariableType": "vec3"
+        },
+        {
+          "SlotType": "Output",
+          "SlotName": "Vec3Add",
+          "VariableType": "vec3"
+        }
+
+      ],
+      "Code": [
+        "vec3 Vec3Add = $a + $b ; "
       ]
 
     },
     {
       "NodeType": "Function Node",
-      "Name": "Multiplication",
+      "Name": "AdditionVec4",
+      "Category": "Mathematical",
       "AvailableShaders": [
         "Vertex",
-        "Fragment"
+        "Tess_Control",
+        "Tess_Eval",
+        "Fragment",
+        "Geometry"
+      ],
+      "Slots": [
+        {
+          "SlotType": "Input",
+          "SlotName": "$a",
+          "VariableType": "vec4"
+        },
+        {
+          "SlotType": "Input",
+          "SlotName": "$b",
+          "VariableType": "vec4"
+        },
+        {
+          "SlotType": "Output",
+          "SlotName": "Vec4Add",
+          "VariableType": "vec4"
+        }
+
+      ],
+      "Code": [
+        "vec3 Vec4Add = $a + $b ; "
+      ]
+
+    },
+    {
+      "NodeType": "Function Node",
+      "Name": "MultiplyFloat",
+      "Category": "Mathematical",
+      "AvailableShaders": [
+        "Vertex",
+        "Tess_Control",
+        "Tess_Eval",
+        "Fragment",
+        "Geometry"
       ],
       "Slots": [
         {
@@ -51,33 +191,168 @@
         },
         {
           "SlotType": "Output",
-          "SlotName": "MultResult",
+          "SlotName": "FMult",
           "VariableType": "float"
         }
 
       ],
       "Code": [
-        "float MultResult = $a * $b ; ",
-        "//Testing Multiple Lines"
+        "float FMult = $a * $b ; "
       ]
 
     },
     {
       "NodeType": "Function Node",
-      "Name": "Power",
+      "Name": "MultiplyInt",
+      "Category": "Mathematical",
       "AvailableShaders": [
         "Vertex",
-        "Fragment"
+        "Tess_Control",
+        "Tess_Eval",
+        "Fragment",
+        "Geometry"
       ],
       "Slots": [
         {
           "SlotType": "Input",
           "SlotName": "$a",
-          "VariableType": "float"
+          "VariableType": "int"
         },
         {
           "SlotType": "Input",
           "SlotName": "$b",
+          "VariableType": "int"
+        },
+        {
+          "SlotType": "Output",
+          "SlotName": "IMult",
+          "VariableType": "int"
+        }
+
+      ],
+      "Code": [
+        "int IMult = $a * $b ; "
+      ]
+    },
+    {
+      "NodeType": "Function Node",
+      "Name": "MultiplyVec2",
+      "Category": "Mathematical",
+      "AvailableShaders": [
+        "Vertex",
+        "Tess_Control",
+        "Tess_Eval",
+        "Fragment",
+        "Geometry"
+      ],
+      "Slots": [
+        {
+          "SlotType": "Input",
+          "SlotName": "$a",
+          "VariableType": "vec2"
+        },
+        {
+          "SlotType": "Input",
+          "SlotName": "$b",
+          "VariableType": "vec2"
+        },
+        {
+          "SlotType": "Output",
+          "SlotName": "Vec2Mult",
+          "VariableType": "vec2"
+        }
+
+      ],
+      "Code": [
+        "vec2 Vec2Mult = $a * $b ; "
+      ]
+    },
+    {
+      "NodeType": "Function Node",
+      "Name": "MultiplyVec3",
+      "Category": "Mathematical",
+      "AvailableShaders": [
+        "Vertex",
+        "Tess_Control",
+        "Tess_Eval",
+        "Fragment",
+        "Geometry"
+      ],
+      "Slots": [
+        {
+          "SlotType": "Input",
+          "SlotName": "$a",
+          "VariableType": "vec3"
+        },
+        {
+          "SlotType": "Input",
+          "SlotName": "$b",
+          "VariableType": "vec3"
+        },
+        {
+          "SlotType": "Output",
+          "SlotName": "Vec3Mult",
+          "VariableType": "vec3"
+        }
+
+      ],
+      "Code": [
+        "vec3 Vec3Mult = $a * $b ; "
+      ]
+    },
+    {
+      "NodeType": "Function Node",
+      "Name": "MultiplyVec4",
+      "Category": "Mathematical",
+      "AvailableShaders": [
+        "Vertex",
+        "Tess_Control",
+        "Tess_Eval",
+        "Fragment",
+        "Geometry"
+      ],
+      "Slots": [
+        {
+          "SlotType": "Input",
+          "SlotName": "$a",
+          "VariableType": "vec4"
+        },
+        {
+          "SlotType": "Input",
+          "SlotName": "$b",
+          "VariableType": "vec4"
+        },
+        {
+          "SlotType": "Output",
+          "SlotName": "Vec4Mult",
+          "VariableType": "vec4"
+        }
+
+      ],
+      "Code": [
+        "vec4 Vec4Mult = $a * $b ; "
+      ]
+    },
+    {
+      "NodeType": "Function Node",
+      "Name": "PowerFloat",
+      "Category": "Mathematical",
+      "AvailableShaders": [
+        "Vertex",
+        "Tess_Control",
+        "Tess_Eval",
+        "Fragment",
+        "Geometry"
+      ],
+      "Slots": [
+        {
+          "SlotType": "Input",
+          "SlotName": "$base",
+          "VariableType": "float"
+        },
+        {
+          "SlotType": "Input",
+          "SlotName": "$power",
           "VariableType": "float"
         },
         {
@@ -88,15 +363,483 @@
 
       ],
       "Code": [
-        "float PowResult = pow($a , $b) ; ",
-        "//Testing Multiple Lines"
+        "float PowResult = pow($a , $b) ; "
       ]
-
     },
+    {
+      "NodeType": "Function Node",
+      "Name": "ScaleVec2",
+      "Category": "Mathematical",
+      "AvailableShaders": [
+        "Vertex",
+        "Tess_Control",
+        "Tess_Eval",
+        "Fragment",
+        "Geometry"
+      ],
+      "Slots": [
+        {
+          "SlotType": "Input",
+          "SlotName": "$scalar",
+          "VariableType": "float"
+        },
+        {
+          "SlotType": "Input",
+          "SlotName": "$vec2",
+          "VariableType": "vec2"
+        },
+        {
+          "SlotType": "Output",
+          "SlotName": "ScaledVec2",
+          "VariableType": "vec2"
+        }
 
+      ],
+      "Code": [
+        "vec2 ScaledVec2 = $scalar * $vec2 ; "
+      ]
+    },
+    {
+      "NodeType": "Function Node",
+      "Name": "ScaleVec3",
+      "Category": "Mathematical",
+      "AvailableShaders": [
+        "Vertex",
+        "Tess_Control",
+        "Tess_Eval",
+        "Fragment",
+        "Geometry"
+      ],
+      "Slots": [
+        {
+          "SlotType": "Input",
+          "SlotName": "$scalar",
+          "VariableType": "float"
+        },
+        {
+          "SlotType": "Input",
+          "SlotName": "$vec3",
+          "VariableType": "vec3"
+        },
+        {
+          "SlotType": "Output",
+          "SlotName": "ScaledVec3",
+          "VariableType": "vec3"
+        }
+
+      ],
+      "Code": [
+        "vec3 ScaledVec3 = $scalar * $vec3 ; "
+      ]
+    },
+    {
+      "NodeType": "Function Node",
+      "Name": "ScaleVec4",
+      "Category": "Mathematical",
+      "AvailableShaders": [
+        "Vertex",
+        "Tess_Control",
+        "Tess_Eval",
+        "Fragment",
+        "Geometry"
+      ],
+      "Slots": [
+        {
+          "SlotType": "Input",
+          "SlotName": "$scalar",
+          "VariableType": "float"
+        },
+        {
+          "SlotType": "Input",
+          "SlotName": "$vec4",
+          "VariableType": "vec4"
+        },
+        {
+          "SlotType": "Output",
+          "SlotName": "ScaledVec4",
+          "VariableType": "vec4"
+        }
+
+      ],
+      "Code": [
+        "vec4 ScaledVec4 = $scalar * $vec4 ; "
+      ]
+    },
+    {
+      "NodeType": "Function Node",
+      "Name": "DotProductVec3",
+      "Category": "Mathematical",
+      "AvailableShaders": [
+        "Vertex",
+        "Tess_Control",
+        "Tess_Eval",
+        "Fragment",
+        "Geometry"
+      ],
+      "Slots": [
+        {
+          "SlotType": "Input",
+          "SlotName": "$vector1",
+          "VariableType": "vec3"
+        },
+        {
+          "SlotType": "Input",
+          "SlotName": "$vector2",
+          "VariableType": "vec3"
+        },
+        {
+          "SlotType": "Output",
+          "SlotName": "DotVec3",
+          "VariableType": "vec3"
+        }
+
+      ],
+      "Code": [
+        "vec3 DotVec3 = dot( $vector1 , $vector2 ) ; "
+      ]
+    },
+    {
+      "NodeType": "Function Node",
+      "Name": "DotProductVec4",
+      "Category": "Mathematical",
+      "AvailableShaders": [
+        "Vertex",
+        "Tess_Control",
+        "Tess_Eval",
+        "Fragment",
+        "Geometry"
+      ],
+      "Slots": [
+        {
+          "SlotType": "Input",
+          "SlotName": "$vector1",
+          "VariableType": "vec4"
+        },
+        {
+          "SlotType": "Input",
+          "SlotName": "$vector2",
+          "VariableType": "vec4"
+        },
+        {
+          "SlotType": "Output",
+          "SlotName": "DotVec4",
+          "VariableType": "vec4"
+        }
+
+      ],
+      "Code": [
+        "vec4 DotVec3 = dot( $vector1 , $vector2 ) ; "
+      ]
+    },
+    {
+      "NodeType": "Function Node",
+      "Name": "CrossProduct",
+      "Category": "Mathematical",
+      "AvailableShaders": [
+        "Vertex",
+        "Tess_Control",
+        "Tess_Eval",
+        "Fragment",
+        "Geometry"
+      ],
+      "Slots": [
+        {
+          "SlotType": "Input",
+          "SlotName": "$vector1",
+          "VariableType": "vec3"
+        },
+        {
+          "SlotType": "Input",
+          "SlotName": "$vector2",
+          "VariableType": "vec3"
+        },
+        {
+          "SlotType": "Output",
+          "SlotName": "CrossProdResult",
+          "VariableType": "vec3"
+        }
+
+      ],
+      "Code": [
+        "vec3 CrossProdResult = cross( $vector1 , $vector2 ) ; "
+      ]
+    },
+    {
+      "NodeType": "Function Node",
+      "Name": "NormalizeVec2",
+      "Category": "Mathematical",
+      "AvailableShaders": [
+        "Vertex",
+        "Tess_Control",
+        "Tess_Eval",
+        "Fragment",
+        "Geometry"
+      ],
+      "Slots": [
+        {
+          "SlotType": "Input",
+          "SlotName": "$vector",
+          "VariableType": "vec2"
+        },
+        {
+          "SlotType": "Output",
+          "SlotName": "NormalizedVec2",
+          "VariableType": "vec2"
+        }
+
+      ],
+      "Code": [
+        "vec2 NormalizedVec2 = normalize( $vector) ; "
+      ]
+    },
+    {
+      "NodeType": "Function Node",
+      "Name": "NormalizeVec3",
+      "Category": "Mathematical",
+      "AvailableShaders": [
+        "Vertex",
+        "Tess_Control",
+        "Tess_Eval",
+        "Fragment",
+        "Geometry"
+      ],
+      "Slots": [
+        {
+          "SlotType": "Input",
+          "SlotName": "$vector",
+          "VariableType": "vec3"
+        },
+        {
+          "SlotType": "Output",
+          "SlotName": "NormalizedVec3",
+          "VariableType": "vec3"
+        }
+
+      ],
+      "Code": [
+        "vec3 NormalizedVec3 = normalize( $vector) ; "
+      ]
+    },
+    {
+      "NodeType": "Function Node",
+      "Name": "NormalizeVec4",
+      "Category": "Mathematical",
+      "AvailableShaders": [
+        "Vertex",
+        "Tess_Control",
+        "Tess_Eval",
+        "Fragment",
+        "Geometry"
+      ],
+      "Slots": [
+        {
+          "SlotType": "Input",
+          "SlotName": "$vector",
+          "VariableType": "vec4"
+        },
+        {
+          "SlotType": "Output",
+          "SlotName": "NormalizedVec4",
+          "VariableType": "vec4"
+        }
+
+      ],
+      "Code": [
+        "vec4 NormalizedVec4 = normalize( $vector) ; "
+      ]
+    },
+    {
+      "NodeType": "Function Node",
+      "Name": "AbsoluteVal",
+      "Category": "Mathematical",
+      "AvailableShaders": [
+        "Vertex",
+        "Tess_Control",
+        "Tess_Eval",
+        "Fragment",
+        "Geometry"
+      ],
+      "Slots": [
+        {
+          "SlotType": "Input",
+          "SlotName": "$value",
+          "VariableType": "float"
+        },
+        {
+          "SlotType": "Output",
+          "SlotName": "AbsValue",
+          "VariableType": "float"
+        }
+
+      ],
+      "Code": [
+        "float AbsValue = abs( $value) ; "
+      ]
+    },
+    {
+      "NodeType": "Function Node",
+      "Name": "Sine",
+      "Category": "Mathematical",
+      "AvailableShaders": [
+        "Vertex",
+        "Tess_Control",
+        "Tess_Eval",
+        "Fragment",
+        "Geometry"
+      ],
+      "Slots": [
+        {
+          "SlotType": "Input",
+          "SlotName": "$value",
+          "VariableType": "float"
+        },
+        {
+          "SlotType": "Output",
+          "SlotName": "sinVal",
+          "VariableType": "float"
+        }
+
+      ],
+      "Code": [
+        "float sinVal = sin( $value) ; "
+      ]
+    },
+    {
+      "NodeType": "Function Node",
+      "Name": "Cosine",
+      "Category": "Mathematical",
+      "AvailableShaders": [
+        "Vertex",
+        "Tess_Control",
+        "Tess_Eval",
+        "Fragment",
+        "Geometry"
+      ],
+      "Slots": [
+        {
+          "SlotType": "Input",
+          "SlotName": "$value",
+          "VariableType": "float"
+        },
+        {
+          "SlotType": "Output",
+          "SlotName": "CosineVal",
+          "VariableType": "float"
+        }
+
+      ],
+      "Code": [
+        "float CosineVal = cos( $value) ; "
+      ]
+    },
+    {
+      "NodeType": "Function Node",
+      "Name": "Tangent",
+      "Category": "Mathematical",
+      "AvailableShaders": [
+        "Vertex",
+        "Tess_Control",
+        "Tess_Eval",
+        "Fragment",
+        "Geometry"
+      ],
+      "Slots": [
+        {
+          "SlotType": "Input",
+          "SlotName": "$value",
+          "VariableType": "float"
+        },
+        {
+          "SlotType": "Output",
+          "SlotName": "TanVal",
+          "VariableType": "float"
+        }
+
+      ],
+      "Code": [
+        "float TanVal = tan( $value) ; "
+      ]
+    },
+    {
+      "NodeType": "Function Node",
+      "Name": "MixVec3",
+      "Category": "Mathematical",
+      "AvailableShaders": [
+        "Vertex",
+        "Tess_Control",
+        "Tess_Eval",
+        "Fragment",
+        "Geometry"
+      ],
+      "Slots": [
+        {
+          "SlotType": "Input",
+          "SlotName": "$vector1",
+          "VariableType": "vec3"
+        },
+        {
+          "SlotType": "Input",
+          "SlotName": "$vector2",
+          "VariableType": "vec3"
+        },
+        {
+          "SlotType": "Input",
+          "SlotName": "$scalar",
+          "VariableType": "float"
+        },
+        {
+          "SlotType": "Output",
+          "SlotName": "MixVec3",
+          "VariableType": "vec3"
+        }
+
+      ],
+      "Code": [
+        "vec3 MixVec3 = mix ( $vector1, $vector2, $scalar) ; "
+      ]
+    },
+    {
+      "NodeType": "Function Node",
+      "Name": "MixVec4",
+      "Category": "Mathematical",
+      "AvailableShaders": [
+        "Vertex",
+        "Tess_Control",
+        "Tess_Eval",
+        "Fragment",
+        "Geometry"
+      ],
+      "Slots": [
+        {
+          "SlotType": "Input",
+          "SlotName": "$vector1",
+          "VariableType": "vec4"
+        },
+        {
+          "SlotType": "Input",
+          "SlotName": "$vector2",
+          "VariableType": "vec4"
+        },
+        {
+          "SlotType": "Input",
+          "SlotName": "$scalar",
+          "VariableType": "float"
+        },
+        {
+          "SlotType": "Output",
+          "SlotName": "MixVec4",
+          "VariableType": "vec4"
+        }
+
+      ],
+      "Code": [
+        "vec4 MixVec4 = mix ( $vector1, $vector2, $scalar) ; "
+      ]
+    },
     {
       "NodeType": "Function Node",
       "Name": "Blinn Phong",
+      "Category": "Lighting Effects",
       "AvailableShaders": [
         "Vertex",
         "Fragment"
@@ -159,6 +902,7 @@
     {
       "NodeType": "Function Node",
       "Name": "ScreenSpaceNormals",
+      "Category": "Lighting Effects",
       "AvailableShaders": [
         "Fragment"
       ],
@@ -171,7 +915,7 @@
         {
           "SlotType": "Input",
           "SlotName": "$LightColor",
-          "VariableType": "vec3"
+          "VariableType": "vec4"
         },
         {
           "SlotType": "Input",
@@ -212,10 +956,14 @@
 
     {
       "NodeType": "Function Node",
-      "Name": "floatTovec4",
+      "Name": "Vec4FromFloats",
+      "Category": "Type Conversion",
       "AvailableShaders": [
         "Vertex",
-        "Fragment"
+        "Tess_Control",
+        "Tess_Eval",
+        "Fragment",
+        "Geometry"
       ],
       "Slots": [
         {
@@ -234,25 +982,33 @@
           "VariableType": "float"
         },
         {
+          "SlotType": "Input",
+          "SlotName": "$a",
+          "VariableType": "float"
+        },
+        {
           "SlotType": "Output",
-          "SlotName": "Color",
+          "SlotName": "Vec4Construct",
           "VariableType": "vec4"
         }
 
 
       ],
       "Code": [
-        "vec4 Color = vec4($r , $g, $b ,1.0f);"
-
+        "vec4 Vec4Construct = vec4($r , $g, $b ,$a); " 
       ]
 
     },
     {
       "NodeType": "Function Node",
-      "Name": "floatTovec3",
+      "Name": "Vec3FromFloats",
+      "Category": "Type Conversion",
       "AvailableShaders": [
         "Vertex",
-        "Fragment"
+        "Tess_Control",
+        "Tess_Eval",
+        "Fragment",
+        "Geometry"
       ],
       "Slots": [
         {
@@ -272,24 +1028,27 @@
         },
         {
           "SlotType": "Output",
-          "SlotName": "Color",
+          "SlotName": "Vec3Construct",
           "VariableType": "vec3"
         }
 
 
       ],
       "Code": [
-        "vec3 Color = vec3($r , $g, $b );"
+        "vec3 Vec3Construct = vec3($r, $g, $b );"
 
       ]
-
     },
     {
       "NodeType": "Function Node",
       "Name": "PingPong",
+      "Category": "Utility",
       "AvailableShaders": [
         "Vertex",
-        "Fragment"
+        "Tess_Control",
+        "Tess_Eval",
+        "Fragment",
+        "Geometry"
       ],
       "Slots": [
         {
@@ -318,6 +1077,7 @@
     {
       "NodeType": "Function Node",
       "Name": "MVP",
+      "Category": "Utility",
       "AvailableShaders": [
         "Vertex"
       ],
@@ -336,14 +1096,17 @@
       "Code": [
         " vec4 MVPvec = Projection * View * Model* vec4($vec, 1.0); "
       ]
-
     },
     {
       "NodeType": "Function Node",
-      "Name": "vec3To4",
+      "Name": "Vec3ToVec4",
+      "Category": "Type Conversion",
       "AvailableShaders": [
         "Vertex",
-        "Fragment"
+        "Tess_Control",
+        "Tess_Eval",
+        "Fragment",
+        "Geometry"
       ],
       "Slots": [
         {
@@ -352,22 +1115,31 @@
           "VariableType": "vec3"
         },
         {
+          "SlotType": "Input",
+          "SlotName": "$w",
+          "VariableType":"float"
+        },
+        {
           "SlotType": "Output",
           "SlotName": "Vector4From3",
           "VariableType": "vec4"
         }
       ],
       "Code": [
-        " vec4 Vector4From3 = vec4($vector, 1.0) ; "
+        " vec4 Vector4From3 = vec4($vector, $w) ; "
       ]
 
     },
     {
       "NodeType": "Function Node",
-      "Name": "vec2To4",
+      "Name": "Vec2ToVec4",
+      "Category": "Type Conversion",
       "AvailableShaders": [
         "Vertex",
-        "Fragment"
+        "Tess_Control",
+        "Tess_Eval",
+        "Fragment",
+        "Geometry"
       ],
       "Slots": [
         {
@@ -377,21 +1149,25 @@
         },
         {
           "SlotType": "Output",
-          "SlotName": "Vector4From3",
+          "SlotName": "Vector4From2",
           "VariableType": "vec4"
         }
       ],
       "Code": [
-        " vec4 Vector4From3 = vec4($vector,1.0, 1.0) ; "
+        " vec4 Vector4From2 = vec4($vector, 1.0, 1.0) ; "
       ]
 
     },
     {
       "NodeType": "Function Node",
       "Name": "MatVecMult",
+      "Category": "Mathematical",
       "AvailableShaders": [
         "Vertex",
-        "Fragment"
+        "Tess_Control",
+        "Tess_Eval",
+        "Fragment",
+        "Geometry"
       ],
       "Slots": [
         {
@@ -417,69 +1193,14 @@
     },
     {
       "NodeType": "Function Node",
-      "Name": "floatVec4Mult",
-      "AvailableShaders": [
-        "Vertex",
-        "Fragment"
-      ],
-      "Slots": [
-        {
-          "SlotType": "Input",
-          "SlotName": "$float",
-          "VariableType": "float"
-        },
-        {
-          "SlotType": "Input",
-          "SlotName": "$vec4",
-          "VariableType": "vec4"
-        },
-        {
-          "SlotType": "Output",
-          "SlotName": "FV4mult",
-          "VariableType": "vec4"
-        }
-      ],
-      "Code": [
-        " vec4 FV4mult = $float * $vec4 ; "
-      ]
-
-    },
-
-    {
-      "NodeType": "Function Node",
-      "Name": "Vec4Addition",
-      "AvailableShaders": [
-        "Vertex",
-        "Fragment"
-      ],
-      "Slots": [
-        {
-          "SlotType": "Input",
-          "SlotName": "$vec1",
-          "VariableType": "vec4"
-        },
-        {
-          "SlotType": "Input",
-          "SlotName": "$vec2",
-          "VariableType": "vec4"
-        },
-        {
-          "SlotType": "Output",
-          "SlotName": "vec4Add",
-          "VariableType": "vec4"
-        }
-      ],
-      "Code": [
-        " vec4 vec4Add = $vec1 + $vec2 ; "
-      ]
-
-    },
-    {
-      "NodeType": "Function Node",
       "Name": "DivisionByW",
+      "Category": "Mathematical",
       "AvailableShaders": [
         "Vertex",
-        "Fragment"
+        "Tess_Control",
+        "Tess_Eval",
+        "Fragment",
+        "Geometry"
       ],
       "Slots": [
         {
@@ -494,13 +1215,13 @@
         }
       ],
       "Code": [
-        " vec3 DividedbyW =vec3( $vec4) / $vec4.w ;"
+        " vec3 DividedbyW = vec3( $vec4) / $vec4.w ;"
       ]
-
     },
     {
       "NodeType": "Function Node",
       "Name": "Explode",
+      "Category": "Geometric Effects",
       "AvailableShaders": [
         "Vertex",
         "Geometry"
@@ -541,6 +1262,7 @@
     {
       "NodeType": "Function Node",
       "Name": "ArrayIndex",
+      "Category": "Utility",
       "AvailableShaders": [
         "Vertex",
         "Tess_Control",
@@ -566,15 +1288,14 @@
         }
       ],
       "Code": [
-
         "vec4 ArrayIndex = $Array  ;"
-
       ]
 
     },
     {
       "NodeType": "Function Node",
       "Name": "SampleTexture",
+      "Category": "Texture Manipulation",
       "AvailableShaders": [
         "Fragment"
       ],
@@ -596,46 +1317,9 @@
         }
       ],
       "Code": [
-
         "vec4 TexColor = texture( $Texture, $TexCoords) ;"
-
-      ]
-
-    },
-    {
-      "NodeType": "Function Node",
-      "Name": "MultiplyVec4",
-      "AvailableShaders": [
-        "Vertex",
-        "Geometry",
-        "Fragment"
-      ],
-      "Slots": [
-        {
-          "SlotType": "Input",
-          "SlotName": "$vec1",
-          "VariableType": "vec4"
-        },
-        {
-          "SlotType": "Input",
-          "SlotName": "$vec2",
-          "VariableType": "vec4"
-        },
-        {
-          "SlotType": "Output",
-          "SlotName": "Vec4MultResult",
-          "VariableType": "vec4"
-        }
-      ],
-      "Code": [
-
-        "vec4 Vec4MultResult = $vec1 * $vec2 ;"
-
       ]
 
     }
-
-
-
   ]
 }

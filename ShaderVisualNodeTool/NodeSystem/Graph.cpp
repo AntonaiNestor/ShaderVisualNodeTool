@@ -15,6 +15,14 @@ Graph::Graph()
 	NameCounter = 0;
 	TextureCounter = 0;
 
+	//initialize the list with empty maps
+	for (int i = 0; i < FunctionNodeTypes.size(); i++) {
+	
+		std::vector<std::string> temp ;
+		FunctionSubCategories.push_back(temp);
+	}
+
+
 	//populate the vector of string with 5 empty ones
 	
 }
@@ -422,6 +430,17 @@ void Graph::ReadNodeTypes(std::string FilePath)
 
 			//ADD TO GRAPH INFO
 			FunctionNodes.insert(std::pair<std::string, FunctionNodeInformation>(tempNode.Name,tempNode));
+			
+			std::string NodeCategory = objectRead["Category"];
+			int count = 0;
+			for (std::string subcategoryName : FunctionNodeTypes) {
+				if (NodeCategory.compare(subcategoryName) == 0) {
+					FunctionSubCategories.at(count).push_back(tempNode.Name);
+					break;
+				}
+				count++;
+			}
+
 		}
 		
 

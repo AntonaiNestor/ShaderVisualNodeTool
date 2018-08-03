@@ -19,6 +19,7 @@ uniform mat4 Projection;
 layout(triangles, fractional_even_spacing) in;
 
 vec4 TesselatedPointPos = vec4(0,0,0,0);
+vec3 TessCoordinates = gl_TessCoord;
 
 void main()
 {	
@@ -26,16 +27,16 @@ void main()
 
 	vec2 tempTex = vec2(0,0); 
 	float x = tempTex[0];
-	//$MainGeom$
-
+	
+	//$Main$
 
 	for (int i=0; i < gl_PatchVerticesIn ; i++) {
 
 		if (i<3){
 			TesselatedPointPos+= gl_in[i].gl_Position * gl_TessCoord[i];
 		}
-		
-			//$Main$
+		//$MainGeom$
+			
 		
 	}
 	

@@ -507,7 +507,7 @@ void VisualNode::DrawInputNode(ImDrawList * drawList, ImVec2 offset)
 			
 		}
 		else {
-			OutputValPos = ImVec2(NodeRelevantPos.x + 50, OutputPos.y);
+			OutputValPos = ImVec2(NodeRelevantPos.x+20 , OutputPos.y);
 			ImGui::SetCursorScreenPos(OutputValPos);
 			ImGui::PushItemWidth(50);
 			ImGui::Text((GNode->Output[i].Name).c_str());

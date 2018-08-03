@@ -8,17 +8,12 @@ TimeNode::TimeNode()
 	Type = BaseNodeType::InputnodeT;
 
 	inputType = InputNodeType::UniformVariable;
-	//UniqueID = graph->AssignID();
-	//HasCompiled = false;
-
+	UniqueID = graph->AssignID();
 
 	ValueType type = Float;
 	//output struct creation
 	OutputConnection connect;
-	//connect.ConnectedNode = nullptr;
-	//connect.ConnectionIndex = -1;
 	connect.VariableType = type;
-
 	connect.Enabled = true;
 
 	Name = "Time";
@@ -49,7 +44,7 @@ void TimeNode::Compile(std::shared_ptr<Node> root) {
 
 	
 	Manager->CreateProgramUniform(CodeString());
-
+	HasCompiled = true;
 
 }
 

@@ -103,9 +103,17 @@ public:
 	// The information from these will be used on creation
 	//Same idea can be extended to everything
 	std::map<std::string,FunctionNodeInformation> FunctionNodes;
+
+	//Subcategory maps , for convenience
+	/*std::map<std::string, FunctionNodeInformation> MathematicalNodes;
+	std::map<std::string, FunctionNodeInformation> LogicNodes;
+	std::map<std::string, FunctionNodeInformation> TypeConversionNodes;
+	std::map<std::string, FunctionNodeInformation> GeometricEffectsNodes;
+	std::map<std::string, FunctionNodeInformation> LightingEffectsNodes;
+	TextureManipulationNodes*/
+	std::vector<std::vector<std::string>> FunctionSubCategories ;
+	
 	std::map<std::string, ShaderNodeInformation> ShaderNodes;
-
-
 
 	//adjacency list for nodes
 	//Does not save double info, only which nodes are connected to
@@ -117,6 +125,7 @@ public:
 	//std::string* ShaderCode = new std::string("");
 	
 	std::vector<std::string> Identifiers = {"$Version$","$Varyings$","$Uniforms$","$Constants$" ,"$Main$","$MainGeom$" };
+	std::vector<std::string> FunctionNodeTypes = {"Mathematical","Logic","Type Conversion","Geometric Effects","Lighting Effects","Texture Manipulation","Utility"};
 
 	Shader* daShader;
 	//Very nice that this is independent from the shadercode
