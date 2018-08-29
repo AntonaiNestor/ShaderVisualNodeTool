@@ -17,7 +17,7 @@ void ArrayIndex::Compile(std::shared_ptr<Node> root)
 	//only compile changes	
 
 	//I believe this works for any type of array declaration. Apart from the where to write the shadercode ofcourse
-	// which for now it is simply only written at MainGeomSeg
+	// which for now it is simply only written at MainLoopSeg
 	//
 
 	//If the incoming name is of the form xx[i] then the name generation should work
@@ -50,7 +50,7 @@ void ArrayIndex::Compile(std::shared_ptr<Node> root)
 
 	//Meant only to be used in the Geometry for now
 	if (CurrShaderType == GEOMETRY) {
-		dynamic_cast<OutputNode&>(*root).WriteToShaderCode(tempCode, MainGeomSeg, ShaderType(CurrShaderType));
+		dynamic_cast<OutputNode&>(*root).WriteToShaderCode(tempCode, MainLoopSeg, ShaderType(CurrShaderType));
 	}
 	else {
 		dynamic_cast<OutputNode&>(*root).WriteToShaderCode(tempCode, MainSeg, ShaderType(CurrShaderType));

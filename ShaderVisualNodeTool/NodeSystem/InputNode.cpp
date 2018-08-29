@@ -184,7 +184,7 @@ void InputNode::Compile(std::shared_ptr<Node> root) {
 						else if (ShaderType(CurrShaderType) == TESSELATION_EVALUATION && outslot != 0)
 							dynamic_cast<OutputNode&>(*root).WriteToShaderCode(AttribDeclaration, MainSeg, TESSELATION_EVALUATION);
 						else if (ShaderType(CurrShaderType) == GEOMETRY && outslot !=0)
-							dynamic_cast<OutputNode&>(*root).WriteToShaderCode(AttribDeclaration, MainGeomSeg, GEOMETRY);
+							dynamic_cast<OutputNode&>(*root).WriteToShaderCode(AttribDeclaration, MainLoopSeg, GEOMETRY);
 						else if (ShaderType(CurrShaderType) == FRAGMENT )
 							dynamic_cast<OutputNode&>(*root).WriteToShaderCode(AttribDeclaration, MainSeg, FRAGMENT);
 

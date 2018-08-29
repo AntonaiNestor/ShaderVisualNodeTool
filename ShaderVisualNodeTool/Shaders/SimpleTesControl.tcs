@@ -14,8 +14,8 @@ uniform float TessLevelOuter;
  //$Constants$
 
  //Using these constant variables to not have to write GLSL names in shadernode
- vec4 TesselationOuterLevels = vec4(4,4,4,4);
- vec2 TesselationInnerLevels = vec2(4,4);
+ vec4 TesselationOuterLevels = vec4(1,1,1,1);
+ vec2 TesselationInnerLevels = vec2(1,1);
  vec4 ControlPointPos =  gl_in[gl_InvocationID].gl_Position;
 
 
@@ -46,7 +46,7 @@ void main(){
 		gl_TessLevelOuter[3] = TesselationOuterLevels.w;
 
 	}
-	//$MainGeom$
+	//$MainLoop$
 
 }
 

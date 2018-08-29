@@ -46,7 +46,7 @@ void main()
 	
 	FragColor = InputCol;
 	
-	//$MainGeom$
+	//$MainLoop$
 	// -$
 
 

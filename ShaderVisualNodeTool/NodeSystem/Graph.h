@@ -55,7 +55,7 @@ enum ShaderSection {
 	UniformSeg,
 	ConstantSeg,
 	MainSeg, // the main segment which will run once
-	MainGeomSeg //the per vertex main body of geometry shader for the loop
+	MainLoopSeg //the per vertex main body of geometry shader for the loop
 	//I need an array of these segments if I am to not to have a loop in the geom
 };
 
@@ -105,12 +105,7 @@ public:
 	std::map<std::string,FunctionNodeInformation> FunctionNodes;
 
 	//Subcategory maps , for convenience
-	/*std::map<std::string, FunctionNodeInformation> MathematicalNodes;
-	std::map<std::string, FunctionNodeInformation> LogicNodes;
-	std::map<std::string, FunctionNodeInformation> TypeConversionNodes;
-	std::map<std::string, FunctionNodeInformation> GeometricEffectsNodes;
-	std::map<std::string, FunctionNodeInformation> LightingEffectsNodes;
-	TextureManipulationNodes*/
+
 	std::vector<std::vector<std::string>> FunctionSubCategories ;
 	
 	std::map<std::string, ShaderNodeInformation> ShaderNodes;
@@ -124,7 +119,7 @@ public:
 	//these two here are probably not correct
 	//std::string* ShaderCode = new std::string("");
 	
-	std::vector<std::string> Identifiers = {"$Version$","$Varyings$","$Uniforms$","$Constants$" ,"$Main$","$MainGeom$" };
+	std::vector<std::string> Identifiers = {"$Version$","$Varyings$","$Uniforms$","$Constants$" ,"$Main$","$MainLoop$" };
 	std::vector<std::string> FunctionNodeTypes = {"Mathematical","Logic","Type Conversion","Geometric Effects","Lighting Effects","Texture Manipulation","Utility"};
 
 	Shader* daShader;

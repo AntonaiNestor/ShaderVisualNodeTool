@@ -227,7 +227,7 @@ void FunctionNode::Compile(std::shared_ptr<Node> root)
 					}
 					else if (CurrShaderType == GEOMETRY) {
 						//the main part of the geom code is done manually
-						dynamic_cast<OutputNode&>(*root).WriteToShaderCode(tempCode, MainGeomSeg, ShaderType(CurrShaderType));
+						dynamic_cast<OutputNode&>(*root).WriteToShaderCode(tempCode, MainLoopSeg, ShaderType(CurrShaderType));
 
 					}
 
@@ -243,7 +243,7 @@ void FunctionNode::Compile(std::shared_ptr<Node> root)
 					}
 					else if (CurrShaderType == GEOMETRY) {
 						//the main part of the geom code is done manually
-						dynamic_cast<OutputNode&>(*root).WriteToShaderCode(code, MainGeomSeg, ShaderType(CurrShaderType));
+						dynamic_cast<OutputNode&>(*root).WriteToShaderCode(code, MainLoopSeg, ShaderType(CurrShaderType));
 
 					}
 					
@@ -259,7 +259,7 @@ void FunctionNode::Compile(std::shared_ptr<Node> root)
 					tempCode = Graph::getInstance()->ReplaceVarNames(tempCode, tempOutName, outName);
 
 					if (CurrShaderType == GEOMETRY) {
-						dynamic_cast<OutputNode&>(*root).WriteToShaderCode(tempCode, MainGeomSeg, ShaderType(CurrShaderType));
+						dynamic_cast<OutputNode&>(*root).WriteToShaderCode(tempCode, MainLoopSeg, ShaderType(CurrShaderType));
 					}
 					else {
 						dynamic_cast<OutputNode&>(*root).WriteToShaderCode(tempCode, MainSeg, ShaderType(CurrShaderType));
@@ -271,7 +271,7 @@ void FunctionNode::Compile(std::shared_ptr<Node> root)
 					std::string code = stringVarType + " " + outName + " = " + prefix + outName;
 
 					if (CurrShaderType == GEOMETRY) {
-						dynamic_cast<OutputNode&>(*root).WriteToShaderCode(code, MainGeomSeg, ShaderType(CurrShaderType));
+						dynamic_cast<OutputNode&>(*root).WriteToShaderCode(code, MainLoopSeg, ShaderType(CurrShaderType));
 					}
 					else {
 						dynamic_cast<OutputNode&>(*root).WriteToShaderCode(code, MainSeg, ShaderType(CurrShaderType));

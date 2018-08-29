@@ -86,10 +86,10 @@ void ShaderNode::Compile(std::shared_ptr<Node> root)
 				dynamic_cast<OutputNode&>(*root).WriteToShaderCode(tempCode, MainSeg, shadeType);
 			}
 			else if (shadeType == GEOMETRY && i != 0) {
-				dynamic_cast<OutputNode&>(*root).WriteToShaderCode(tempCode, MainGeomSeg, shadeType);
+				dynamic_cast<OutputNode&>(*root).WriteToShaderCode(tempCode, MainLoopSeg, shadeType);
 			}
 			else if (shadeType == TESSELATION_EVALUATION && i == 0) {
-				dynamic_cast<OutputNode&>(*root).WriteToShaderCode(tempCode, MainGeomSeg, shadeType);
+				dynamic_cast<OutputNode&>(*root).WriteToShaderCode(tempCode, MainLoopSeg, shadeType);
 			}
 			else {
 				dynamic_cast<OutputNode&>(*root).WriteToShaderCode(tempCode, MainSeg, shadeType);

@@ -48,7 +48,7 @@ void main() {
 		//GTex = TETex[i];
 		 gl_Position = gl_in[i].gl_Position;
 		
-		//$MainGeom$
+		//$MainLoop$
 	
 		// -$
 

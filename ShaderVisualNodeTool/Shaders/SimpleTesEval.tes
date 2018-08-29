@@ -35,7 +35,7 @@ void main()
 		if (i<3){
 			TesselatedPointPos+= gl_in[i].gl_Position * gl_TessCoord[i];
 		}
-		//$MainGeom$
+		//$MainLoop$
 			
 		
 	}

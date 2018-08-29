@@ -199,11 +199,11 @@ std::string OutputNode::CreateVaryingPipeline(ShaderType type,std::string varTyp
 		WriteToShaderCode(varyingNameTESin, VaryingSeg, TESSELATION_EVALUATION);
 		WriteToShaderCode(varyingNameTESout, VaryingSeg, TESSELATION_EVALUATION);
 		WriteToShaderCode(varyingDeclTESinit, MainSeg, TESSELATION_EVALUATION);
-		WriteToShaderCode(varyingDeclTES, MainGeomSeg, TESSELATION_EVALUATION);
+		WriteToShaderCode(varyingDeclTES, MainLoopSeg, TESSELATION_EVALUATION);
 		//Geometry
 		WriteToShaderCode(varyingNameGSin, VaryingSeg, GEOMETRY);
 		WriteToShaderCode(varyingNameGSout, VaryingSeg, GEOMETRY);
-		WriteToShaderCode(varyingDeclGS, MainGeomSeg, GEOMETRY);
+		WriteToShaderCode(varyingDeclGS, MainLoopSeg, GEOMETRY);
 
 		
 	}
@@ -217,7 +217,7 @@ std::string OutputNode::CreateVaryingPipeline(ShaderType type,std::string varTyp
 		//Geometry
 		WriteToShaderCode(varyingNameGSin, VaryingSeg, GEOMETRY);
 		WriteToShaderCode(varyingNameGSout, VaryingSeg, GEOMETRY);
-		WriteToShaderCode(varyingDeclGS, MainGeomSeg, GEOMETRY);
+		WriteToShaderCode(varyingDeclGS, MainLoopSeg, GEOMETRY);
 	}
 
 	else if (type == TESSELATION_EVALUATION) {
@@ -226,12 +226,12 @@ std::string OutputNode::CreateVaryingPipeline(ShaderType type,std::string varTyp
 		//Geometry
 		WriteToShaderCode(varyingNameGSin, VaryingSeg, GEOMETRY);
 		WriteToShaderCode(varyingNameGSout, VaryingSeg, GEOMETRY);
-		WriteToShaderCode(varyingDeclGS, MainGeomSeg, GEOMETRY);
+		WriteToShaderCode(varyingDeclGS, MainLoopSeg, GEOMETRY);
 	}
 	else if (type == GEOMETRY) {
 		WriteToShaderCode(varyingNameGSout, VaryingSeg, GEOMETRY);
 		//write it in the main geom seg. The floats are ok but the gl_position isn't if you write them in the main seg
-		WriteToShaderCode(varyingDeclGSE, MainGeomSeg, GEOMETRY);
+		WriteToShaderCode(varyingDeclGSE, MainLoopSeg, GEOMETRY);
 	}
 
 	//you will always retrieve a varying from the Geometry shader to the fragment no matter what
@@ -272,47 +272,6 @@ void OutputNode::WriteToShaderCode(std::string code, ShaderSection section , Sha
 
 	//Neat! way to go enums!
 	CodeSections[shaderIndex][section].append("\n" + code);
-
-
-	//maybe I can loop the enum for this
-	//switch (section) {
-	//case (VersionSeg): {
-	//	CodeSections[shaderIndex][0].append("\n" + code);
-	//	//(*ShaderCode).insert((*ShaderCode).find("$Version$") + 1, "\n" + code);
-	//	break;
-	//}
-	//case (VaryingSeg): {
-	//	CodeSections[shaderIndex][1].append("\n" + code);
-	//	//(*ShaderCode).insert((*ShaderCode).find("$Varyings$") + 1, "\n" + code);
-	//	break;
-	//}
-	//case (UniformSeg): {
-	//	CodeSections[shaderIndex][2].append("\n" + code);
-	//	//	(*ShaderCode).insert((*ShaderCode).find("$Uniforms$") + 1, "\n" + code);
-	//	break;
-	//}
-	//case (ConstantSeg): {
-	//	CodeSections[shaderIndex][3].append("\n" + code);
-	//	//(*ShaderCode).insert((*ShaderCode).find("$Constants$") + 1, "\n" + code);
-	//	break;
-	//}
-	//case (MainSeg): {
-	//	//WRITE IN THE MAIN SEGMENT IN MULTIPLE OCCASIONS
-	//	CodeSections[shaderIndex][4].append("\n" + code);
-	//	//(*ShaderCode).insert((*ShaderCode).find("$Main$") , "\n" + code);
-	//	break;
-	//}
-	//case (MainGeomSeg): {
-	//	//WRITE IN THE MAIN SEGMENT IN MULTIPLE OCCASIONS
-	//	CodeSections[shaderIndex][5].append("\n" + code);
-	//	//(*ShaderCode).insert((*ShaderCode).find("$Main$") , "\n" + code);
-	//	break;
-	//}
-	//default: {
-	//	CodeSections[shaderIndex][4].append("\n" + code);
-	//	//(*ShaderCode).insert((*ShaderCode).find("$Main$") + 6, "\n" + code);
-	//	break;
-	//}
 
 	//}
 

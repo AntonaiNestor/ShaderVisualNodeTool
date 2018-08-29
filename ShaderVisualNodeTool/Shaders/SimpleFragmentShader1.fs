@@ -19,7 +19,6 @@ uniform mat4 view;
 uniform vec4 InputCol;
 
 
-
 //$Uniforms$
 
 // -$

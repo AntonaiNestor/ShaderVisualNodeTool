@@ -243,7 +243,7 @@ void GUIManager::RenderDrawing(ImDrawList* drawlist)
 void GUIManager::SetupGUI(GLFWwindow* window)
 {
 	// NodeView Panel position and size
-	NodeViewPos = ImVec2(10, 100);
+	NodeViewPos = ImVec2(10,100);
 	NodeViewSize = ImVec2(1200, 900);
 
 	// Setup ImGui binding
@@ -266,7 +266,7 @@ void GUIManager::RenderGUI() {
 	//Nodeview window setup
 	ImGui::SetNextWindowPos(NodeViewPos, 0, ImVec2(0.0, 0.0)); // set next window position. call before Begin(). use pivot=(0.5f,0.5f) to center on given point, etc.
 	ImGui::SetNextWindowSize(NodeViewSize, 0);    // set next window size. set axis to 0.0f to force an auto-fit on this axis. call before Begin()
-	ImGui::Begin("Node View", &windowOpen, 0);
+	ImGui::Begin("Visual Shader Editor", &windowOpen, 0);
 	//the drawlist in the main GUI Manager for the node view
 	ImDrawList* drawList = ImGui::GetWindowDrawList();
 
